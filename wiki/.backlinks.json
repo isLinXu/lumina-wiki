@@ -1,24 +1,46 @@
 {
   "attention_is_all_you_need": [
     "index",
-    "Self_Attention",
-    "Transformer"
+    "Transformer",
+    "Self_Attention"
+  ],
+  "deep_residual_learning_for_image_recognition": [
+    "index",
+    "ResNet",
+    "Residual_Learning"
   ],
   "flashattention_fast_and_memory_efficient_exact_attention": [
     "index",
-    "Self_Attention",
-    "Transformer"
+    "Transformer",
+    "Self_Attention"
+  ],
+  "lumina_arxiv_paper": [
+    "index",
+    "ResNet",
+    "Residual_Learning"
+  ],
+  "resnet": [
+    "index",
+    "Deep_Residual_Learning_for_Image_Recognition",
+    "Lumina_arXiv_Paper"
+  ],
+  "residual_learning": [
+    "index"
   ],
   "self_attention": [
     "index"
   ],
   "transformer": [
     "index",
-    "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention",
-    "Attention_Is_All_You_Need"
+    "Attention_Is_All_You_Need",
+    "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
   ],
   "self-attention": [
-    "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention",
-    "Attention_Is_All_You_Need"
+    "Attention_Is_All_You_Need",
+    "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
+  ],
+  "residual learning": [
+    "Deep_Residual_Learning_for_Image_Recognition",
+    "Lumina_arXiv_Paper"
   ]
 }
