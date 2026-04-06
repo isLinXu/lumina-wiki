@@ -1,0 +1,148 @@
+name: Lumina Wiki Compiler
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "运行模式"
+        required: false
+        default: "full"
+        type: choice
+        options:
+          - full
+          - ingest-only
+          - compile-only
+      dry_run:
+        description: "只扫描不执行"
+        required: false
+        default: false
+        type: boolean
+
+  issues:
+    types: [opened, edited, labeled]
+
+  push:
+    paths:
+      - "raw/**"
+    branches: [main]
+
+permissions:
+  contents: write
+  issues: write
+  pages: write
+
+env:
+  PYTHON_VERSION: "3.12"
+
+jobs:
+  ingest:
+    name: 📥 Ingest Issues
+    runs-on: ubuntu-latest
+    if: |
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.mode != 'compile-only')
+      || github.event_name == 'issues'
+      || github.event_name == 'schedule'
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Ingest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          DRY_RUN=""
+          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+            DRY_RUN="--dry-run"
+          fi
+          python -m scripts.cli ingest $DRY_RUN || true
+
+      - name: Commit ingested files
+        run: |
+          git config user.name "lumina-bot[bot]"
+          git config user.email "lumina-bot@users.noreply.github.com"
+          if git diff --quiet && git diff --staged --quiet; then
+            echo "::notice::No new content to commit"
+          else
+            git add raw/
+            git commit -m "📥 Lumina: ingest $(date -u +'%Y-%m-%d') [skip ci]"
+            git push
+          fi
+
+  compile:
+    name: 🔧 Compile Wiki
+    runs-on: ubuntu-latest
+    needs: [ingest]
+    if: always() && (needs.ingest.result == 'success' || needs.ingest.result == 'skipped')
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Compiler (5-Pass Pipeline)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          DRY_RUN=""
+          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+            DRY_RUN="--dry-run"
+          fi
+          python -m scripts.cli compile $DRY_RUN
+
+      - name: Commit compiled wiki
+        run: |
+          git config user.name "lumina-bot[bot]"
+          git config user.email "lumina-bot@users.noreply.github.com"
+          if git diff --quiet && git diff --staged --quiet; then
+            echo "::notice::No changes to commit"
+          else
+            git add wiki/ docs/
+            git commit -m "🔧 Lumina: compiled wiki $(date -u +'%Y-%m-%d %H:%M') [skip ci]"
+            git push
+          fi
+
+  lint:
+    name: 🩺 Knowledge Lint
+    runs-on: ubuntu-latest
+    needs: [compile]
+    if: |
+      always() && needs.compile.result == 'success'
+      && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Run Health Check
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: python -m scripts.cli lint || true

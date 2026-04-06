@@ -1,0 +1,63 @@
+[repository]
+# GitHub 仓库信息
+owner = "isLinXu"
+name = "lumina-wiki"
+branch = "main"
+
+[ingest]
+# 摄入配置
+label = "lumina"           # 只处理带此 label 的 Issue
+raw_dir = "raw"             # 原始素材存储路径
+date_format = "%Y-%m-%d"    # 日期子目录格式
+process_images = true       # 是否用多模态模型描述图片
+close_after_ingest = true   # 摄入完成后关闭 Issue
+
+[compiler]
+# 编译器配置
+wiki_dir = "wiki"           # Wiki 输出根目录
+concepts_dir = "concepts"   # 概念页面子目录
+papers_dir = "papers"       # 论文总结子目录
+notes_dir = "notes"         # 笔记子目录
+auto_link = true            # 自动添加 wikilink
+summary_max_tokens = 500    # 摘要最大 token 数
+entity_confidence = 0.7     # 实体提取置信度阈值
+
+[llm]
+# 大模型配置
+provider = "github-copilot"  # 可选: github-copilot, openai, azure, ollama
+model = "gpt-4o"
+temperature = 0.3
+max_tokens = 4096
+
+# 各 provider 的额外配置（按需填写）
+[llm.openai]
+api_key_env = "OPENAI_API_KEY"
+base_url = "https://api.openai.com/v1"
+
+[llm.azure]
+api_key_env = "AZURE_OPENAI_API_KEY"
+endpoint_env = "AZURE_OPENAI_ENDPOINT"
+deployment = "gpt-4o"
+
+[llm.ollama]
+base_url = "http://localhost:11434"
+model = "qwen2.5:14b"
+
+[linking]
+# 反向链接配置
+min_concept_length = 3      # 最短概念名长度
+max_concept_length = 50     # 最长概念名长度
+case_sensitive = false      # 是否区分大小写
+exclude_common_words = true # 排除常见词
+
+[linting]
+# 知识体检配置
+conflict_threshold = 0.2    # 冲突检测差异阈值
+suggest_issues = true       # 自动创建探索建议 Issue
+health_score_enabled = true # 启用健康度评分
+
+[output]
+# 输出格式配置
+front_matter = true         # 生成 YAML front matter
+timestamp_format = "%Y-%m-%d %H:%M:%S"
+author = "Lumina Compiler"

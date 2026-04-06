@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌙 Lumina Wiki — Knowledge Dashboard</title>
+    <style>
+        /* ═══ CSS Variables ═══ */
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-card: #1c2333;
+            --bg-card-hover: #22293a;
+            --border: #30363d;
+            --text-primary: #e6edf3;
+            --text-secondary: #8b949e;
+            --text-dim: #6e7681;
+            --accent-cyan: #58a6ff;
+            --accent-green: #3fb950;
+            --accent-yellow: #d29922;
+            --accent-orange: #db6d28;
+            --accent-red: #f85149;
+            --accent-purple: #bc8cff;
+            --accent-pink: #f778ba;
+            --glow-cyan: rgba(88, 166, 255, 0.15);
+            --glow-green: rgba(63, 185, 80, 0.15);
+            --pixel-font: 'Courier New', 'Consolas', monospace;
+            --card-radius: 12px;
+        }
+
+        /* ═══ Reset & Base ═══ */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ═══ Animated Background ═══ */
+        .bg-grid {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                linear-gradient(rgba(88,166,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(88,166,255,0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 0;
+            animation: gridMove 20s linear infinite;
+        }
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(40px, 40px); }
+        }
+
+        /* ═══ Header ═══ */
+        .header {
+            position: relative;
+            z-index: 10;
+            padding: 2rem 2rem 1rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+            background: linear-gradient(180deg, rgba(13,17,23,0.95), rgba(13,17,23,0.8));
+            backdrop-filter: blur(10px);
+        }
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.3rem;
+        }
+        .header .subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            font-family: var(--pixel-font);
+            letter-spacing: 0.05em;
+        }
+        .header .badges {
+            margin-top: 0.8rem;
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.25rem 0.7rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border: 1px solid var(--border);
+            background: var(--bg-secondary);
+        }
+        .badge.green { border-color: var(--accent-green); color: var(--accent-green); }
+        .badge.cyan { border-color: var(--accent-cyan); color: var(--accent-cyan); }
+        .badge.purple { border-color: var(--accent-purple); color: var(--accent-purple); }
+        .badge.yellow { border-color: var(--accent-yellow); color: var(--accent-yellow); }
+
+        /* ═══ Main Layout ═══ */
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+
+        /* ═══ Stats Row ═══ */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--card-radius);
+            padding: 1.2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .stat-card:hover { background: var(--bg-card-hover); transform: translateY(-2px); }
+        .stat-card:hover::before { opacity: 1; }
+        .stat-card .icon { font-size: 1.5rem; margin-bottom: 0.3rem; }
+        .stat-card .number {
+            font-size: 2rem;
+            font-weight: 800;
+            font-family: var(--pixel-font);
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .stat-card .label { color: var(--text-secondary); font-size: 0.8rem; margin-top: 0.2rem; }
+
+        /* ═══ Health Bar ═══ */
+        .health-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--card-radius);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .health-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; }
+        .health-header h3 { font-size: 1rem; color: var(--text-secondary); }
+        .health-score {
+            font-size: 1.8rem;
+            font-weight: 800;
+            font-family: var(--pixel-font);
+        }
+        .health-bar-track {
+            width: 100%;
+            height: 12px;
+            background: var(--bg-secondary);
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+        .health-bar-fill {
+            height: 100%;
+            border-radius: 6px;
+            transition: width 1.5s ease;
+            background: linear-gradient(90deg, var(--accent-green), var(--accent-cyan));
+            box-shadow: 0 0 10px var(--glow-green);
+        }
+        .health-level {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            font-family: var(--pixel-font);
+        }
+
+        /* ═══ Wiki Pages ═══ */
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .section-title .count {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            padding: 0.15rem 0.5rem;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .pages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .page-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--card-radius);
+            padding: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: inherit;
+            position: relative;
+        }
+        .page-card:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--accent-cyan);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px var(--glow-cyan);
+        }
+        .page-card .card-type {
+            display: inline-block;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            margin-bottom: 0.6rem;
+        }
+        .card-type.paper { background: rgba(219,109,40,0.15); color: var(--accent-orange); border: 1px solid rgba(219,109,40,0.3); }
+        .card-type.concept { background: rgba(188,140,255,0.15); color: var(--accent-purple); border: 1px solid rgba(188,140,255,0.3); }
+        .card-type.note { background: rgba(63,185,80,0.15); color: var(--accent-green); border: 1px solid rgba(63,185,80,0.3); }
+
+        .page-card h4 { font-size: 1rem; margin-bottom: 0.4rem; }
+        .page-card .excerpt {
+            color: var(--text-secondary);
+            font-size: 0.82rem;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .page-card .tags {
+            margin-top: 0.8rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.3rem;
+        }
+        .tag {
+            font-size: 0.68rem;
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            color: var(--text-dim);
+        }
+
+        /* ═══ Knowledge Graph Visual ═══ */
+        .graph-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--card-radius);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        .graph-container {
+            width: 100%;
+            height: 300px;
+            position: relative;
+            overflow: hidden;
+        }
+        .graph-node {
+            position: absolute;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+            z-index: 2;
+        }
+        .graph-node:hover { transform: scale(1.1); z-index: 10; }
+        .graph-node.model { background: rgba(88,166,255,0.2); border: 1px solid var(--accent-cyan); color: var(--accent-cyan); }
+        .graph-node.algorithm { background: rgba(188,140,255,0.2); border: 1px solid var(--accent-purple); color: var(--accent-purple); }
+        .graph-node.paper { background: rgba(219,109,40,0.2); border: 1px solid var(--accent-orange); color: var(--accent-orange); }
+
+        .graph-line {
+            position: absolute;
+            height: 1px;
+            background: var(--border);
+            transform-origin: left center;
+            z-index: 1;
+        }
+
+        /* ═══ Pipeline Visual ═══ */
+        .pipeline-visual {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            margin: 1.5rem 0;
+            flex-wrap: wrap;
+        }
+        .pipe-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0.8rem 1.2rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            min-width: 100px;
+            transition: all 0.3s;
+        }
+        .pipe-step:hover { border-color: var(--accent-cyan); background: var(--bg-card-hover); }
+        .pipe-step .step-icon { font-size: 1.5rem; margin-bottom: 0.3rem; }
+        .pipe-step .step-name { font-size: 0.72rem; font-weight: 700; color: var(--accent-cyan); }
+        .pipe-step .step-desc { font-size: 0.65rem; color: var(--text-dim); margin-top: 0.15rem; }
+        .pipe-arrow { color: var(--text-dim); font-size: 1.2rem; margin: 0 0.3rem; }
+
+        /* ═══ Footer ═══ */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-dim);
+            font-size: 0.8rem;
+            border-top: 1px solid var(--border);
+        }
+        .footer a { color: var(--accent-cyan); text-decoration: none; }
+        .footer a:hover { text-decoration: underline; }
+
+        /* ═══ Search ═══ */
+        .search-box {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+        .search-box input {
+            width: 100%;
+            padding: 0.8rem 1rem 0.8rem 2.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--card-radius);
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .search-box input:focus { border-color: var(--accent-cyan); }
+        .search-box input::placeholder { color: var(--text-dim); }
+        .search-box .search-icon {
+            position: absolute;
+            left: 0.8rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-dim);
+            font-size: 1rem;
+        }
+
+        /* ═══ Responsive ═══ */
+        @media (max-width: 640px) {
+            .header h1 { font-size: 1.8rem; }
+            .stats-row { grid-template-columns: repeat(2, 1fr); }
+            .pages-grid { grid-template-columns: 1fr; }
+            .pipeline-visual { gap: 0.5rem; }
+            .pipe-step { min-width: 70px; padding: 0.5rem 0.6rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+
+    <!-- Header -->
+    <header class="header">
+        <h1>🌙 Lumina Wiki</h1>
+        <p class="subtitle">Read-only for Humans, Write-only for LLMs</p>
+        <div class="badges">
+            <span class="badge green">● v1.1.0</span>
+            <span class="badge cyan">GitHub-Native</span>
+            <span class="badge purple">5-Pass Pipeline</span>
+            <span class="badge yellow">Karpathy LLM Wiki</span>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <!-- 5-Pass Pipeline Visualization -->
+        <div class="pipeline-visual">
+            <div class="pipe-step">
+                <span class="step-icon">📥</span>
+                <span class="step-name">Ingest</span>
+                <span class="step-desc">Issue / URL / PDF</span>
+            </div>
+            <span class="pipe-arrow">→</span>
+            <div class="pipe-step">
+                <span class="step-icon">🔍</span>
+                <span class="step-name">Pass 1</span>
+                <span class="step-desc">Diff</span>
+            </div>
+            <span class="pipe-arrow">→</span>
+            <div class="pipe-step">
+                <span class="step-icon">📝</span>
+                <span class="step-name">Pass 2</span>
+                <span class="step-desc">Summarize</span>
+            </div>
+            <span class="pipe-arrow">→</span>
+            <div class="pipe-step">
+                <span class="step-icon">🏷️</span>
+                <span class="step-name">Pass 3</span>
+                <span class="step-desc">Extract</span>
+            </div>
+            <span class="pipe-arrow">→</span>
+            <div class="pipe-step">
+                <span class="step-icon">✍️</span>
+                <span class="step-name">Pass 4</span>
+                <span class="step-desc">Write</span>
+            </div>
+            <span class="pipe-arrow">→</span>
+            <div class="pipe-step">
+                <span class="step-icon">🔗</span>
+                <span class="step-name">Pass 5</span>
+                <span class="step-desc">Post</span>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-row" id="stats-row">
+            <div class="stat-card">
+                <div class="icon">📄</div>
+                <div class="number" id="stat-total">-</div>
+                <div class="label">总页面</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon">💡</div>
+                <div class="number" id="stat-concepts">-</div>
+                <div class="label">概念</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon">📑</div>
+                <div class="number" id="stat-papers">-</div>
+                <div class="label">论文</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon">📝</div>
+                <div class="number" id="stat-notes">-</div>
+                <div class="label">笔记</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon">📂</div>
+                <div class="number" id="stat-raw">-</div>
+                <div class="label">Raw 文件</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon">🔗</div>
+                <div class="number" id="stat-links">-</div>
+                <div class="label">交叉引用</div>
+            </div>
+        </div>
+
+        <!-- Health -->
+        <div class="health-section">
+            <div class="health-header">
+                <h3>🩺 知识库健康度</h3>
+                <span class="health-score" id="health-score">—</span>
+            </div>
+            <div class="health-bar-track">
+                <div class="health-bar-fill" id="health-bar" style="width: 0%"></div>
+            </div>
+            <div class="health-level">
+                <span>🔴 0</span><span>🟠 50</span><span>🟡 70</span><span>🟢 90</span><span>💎 100</span>
+            </div>
+        </div>
+
+        <!-- Search -->
+        <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="search-input" placeholder="搜索概念、论文、笔记..." oninput="filterPages(this.value)">
+        </div>
+
+        <!-- Knowledge Graph -->
+        <div class="graph-section">
+            <h3 class="section-title" style="justify-content: center;">🕸️ 知识图谱</h3>
+            <div class="graph-container" id="graph-container"></div>
+        </div>
+
+        <!-- Papers -->
+        <h3 class="section-title">📑 论文 <span class="count" id="papers-count">0</span></h3>
+        <div class="pages-grid" id="papers-grid"></div>
+
+        <!-- Concepts -->
+        <h3 class="section-title">💡 概念 <span class="count" id="concepts-count">0</span></h3>
+        <div class="pages-grid" id="concepts-grid"></div>
+
+        <!-- Notes -->
+        <h3 class="section-title" id="notes-title" style="display:none;">📝 笔记 <span class="count" id="notes-count">0</span></h3>
+        <div class="pages-grid" id="notes-grid"></div>
+
+    </main>
+
+    <footer class="footer">
+        <p>🌙 <strong>Lumina Wiki</strong> v1.1.0 — GitHub-native 个人知识编译器</p>
+        <p style="margin-top:0.3rem;">
+            Inspired by <a href="https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f" target="_blank">Karpathy's LLM Wiki</a>
+            · Architecture from <a href="https://github.com/xoai/sage-wiki" target="_blank">sage-wiki</a>
+            · Powered by LLM 5-Pass Pipeline
+        </p>
+        <p style="margin-top:0.3rem; font-family: var(--pixel-font);">
+            <a href="https://github.com/isLinXu/lumina-wiki" target="_blank">GitHub Repository</a>
+        </p>
+    </footer>
+
+    <script>
+    // ═══════════════════════════════════════════════════════════════
+    // Lumina Wiki Dashboard — 前端数据加载与渲染
+    // ═══════════════════════════════════════════════════════════════
+
+    // Wiki 页面数据（由 GitHub Actions 编译时生成，或手动维护）
+    const WIKI_DATA = {
+        stats: {
+            total: 4,
+            concepts: 2,
+            papers: 2,
+            notes: 0,
+            raw_files: 2,
+            backlinks: 5,
+            health_score: 99.0,
+            last_compile: "2026-04-06T02:20:52Z"
+        },
+        papers: [
+            {
+                title: "Attention Is All You Need",
+                path: "wiki/papers/Attention_Is_All_You_Need.md",
+                type: "paper",
+                excerpt: "提出了完全基于注意力机制的 Transformer 架构，摒弃了传统的 RNN 和 CNN 结构。在 WMT 2014 翻译任务上显著超越前代模型。",
+                tags: ["Transformer", "Self-Attention", "Multi-Head Attention", "NeurIPS 2017"],
+                authors: "Vaswani et al.",
+                date: "2026-04-06"
+            },
+            {
+                title: "FlashAttention: Fast and Memory-Efficient Exact Attention",
+                path: "wiki/papers/FlashAttention_Fast_and_Memory_Efficient_Exact_Attention.md",
+                type: "paper",
+                excerpt: "提出 IO 感知的精确注意力算法，通过分块计算和重计算策略将内存从 O(N²) 降到 O(N)，在 A100 上实现 1.5-3x 加速。",
+                tags: ["FlashAttention", "IO-Aware", "Tiling", "GPU Optimization"],
+                authors: "Dao et al.",
+                date: "2026-04-06"
+            }
+        ],
+        concepts: [
+            {
+                title: "Transformer",
+                path: "wiki/concepts/Transformer.md",
+                type: "concept",
+                excerpt: "完全基于注意力机制的神经网络架构，由 Vaswani 等人于 2017 年提出。使用 Self-Attention 替代 RNN，是现代大语言模型的基础架构。",
+                tags: ["model", "architecture", "NLP"],
+                date: "2026-04-06"
+            },
+            {
+                title: "Self-Attention",
+                path: "wiki/concepts/Self_Attention.md",
+                type: "concept",
+                excerpt: "允许序列中每个位置关注所有其他位置的注意力机制。计算复杂度 O(n²·d)，是 Transformer 的核心组件。",
+                tags: ["algorithm", "attention", "mechanism"],
+                date: "2026-04-06"
+            }
+        ],
+        notes: [],
+        graph: {
+            nodes: [
+                { id: "transformer", label: "Transformer", type: "model", x: 50, y: 40 },
+                { id: "self-attention", label: "Self-Attention", type: "algorithm", x: 25, y: 70 },
+                { id: "flash-attention", label: "FlashAttention", type: "algorithm", x: 75, y: 70 },
+                { id: "attention-paper", label: "Attention Is All\nYou Need", type: "paper", x: 20, y: 25 },
+                { id: "flash-paper", label: "FlashAttention\nPaper", type: "paper", x: 80, y: 25 },
+            ],
+            edges: [
+                ["attention-paper", "transformer"],
+                ["attention-paper", "self-attention"],
+                ["flash-paper", "flash-attention"],
+                ["flash-paper", "self-attention"],
+                ["transformer", "self-attention"],
+                ["flash-attention", "self-attention"],
+            ]
+        }
+    };
+
+    // ─── 渲染统计 ─────────────────────────────────────────────
+    function renderStats(stats) {
+        document.getElementById('stat-total').textContent = stats.total;
+        document.getElementById('stat-concepts').textContent = stats.concepts;
+        document.getElementById('stat-papers').textContent = stats.papers;
+        document.getElementById('stat-notes').textContent = stats.notes;
+        document.getElementById('stat-raw').textContent = stats.raw_files;
+        document.getElementById('stat-links').textContent = stats.backlinks;
+
+        // Health bar
+        const score = stats.health_score;
+        document.getElementById('health-score').textContent = score.toFixed(1);
+        const bar = document.getElementById('health-bar');
+        setTimeout(() => { bar.style.width = score + '%'; }, 300);
+
+        // Color by score
+        const scoreEl = document.getElementById('health-score');
+        if (score >= 90) { scoreEl.style.color = 'var(--accent-green)'; bar.style.background = 'linear-gradient(90deg, var(--accent-green), var(--accent-cyan))'; }
+        else if (score >= 70) { scoreEl.style.color = 'var(--accent-yellow)'; bar.style.background = 'linear-gradient(90deg, var(--accent-yellow), var(--accent-green))'; }
+        else if (score >= 50) { scoreEl.style.color = 'var(--accent-orange)'; bar.style.background = 'linear-gradient(90deg, var(--accent-orange), var(--accent-yellow))'; }
+        else { scoreEl.style.color = 'var(--accent-red)'; bar.style.background = 'var(--accent-red)'; }
+    }
+
+    // ─── 渲染页面卡片 ────────────────────────────────────────
+    function renderPageCard(page) {
+        const tagsHtml = (page.tags || []).map(t => `<span class="tag">${t}</span>`).join('');
+        return `
+            <a class="page-card" href="${page.path}" target="_blank">
+                <span class="card-type ${page.type}">${page.type}</span>
+                <h4>${page.title}</h4>
+                <p class="excerpt">${page.excerpt || ''}</p>
+                <div class="tags">${tagsHtml}</div>
+            </a>
+        `;
+    }
+
+    function renderGrid(containerId, pages, countId) {
+        const grid = document.getElementById(containerId);
+        grid.innerHTML = pages.map(renderPageCard).join('');
+        document.getElementById(countId).textContent = pages.length;
+    }
+
+    // ─── 搜索过滤 ──────────────────────────────────────────
+    function filterPages(query) {
+        const q = query.toLowerCase();
+        document.querySelectorAll('.page-card').forEach(card => {
+            const text = card.textContent.toLowerCase();
+            card.style.display = text.includes(q) ? '' : 'none';
+        });
+    }
+
+    // ─── 知识图谱 ──────────────────────────────────────────
+    function renderGraph(graphData) {
+        const container = document.getElementById('graph-container');
+        const W = container.clientWidth;
+        const H = container.clientHeight;
+
+        // 渲染边（先渲染，在节点下面）
+        const nodeMap = {};
+        graphData.nodes.forEach(n => { nodeMap[n.id] = n; });
+
+        graphData.edges.forEach(([fromId, toId]) => {
+            const from = nodeMap[fromId];
+            const to = nodeMap[toId];
+            if (!from || !to) return;
+            const x1 = from.x / 100 * W;
+            const y1 = from.y / 100 * H;
+            const x2 = to.x / 100 * W;
+            const y2 = to.y / 100 * H;
+            const dx = x2 - x1;
+            const dy = y2 - y1;
+            const length = Math.sqrt(dx * dx + dy * dy);
+            const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+
+            const line = document.createElement('div');
+            line.className = 'graph-line';
+            line.style.left = x1 + 'px';
+            line.style.top = y1 + 'px';
+            line.style.width = length + 'px';
+            line.style.transform = `rotate(${angle}deg)`;
+            container.appendChild(line);
+        });
+
+        // 渲染节点
+        graphData.nodes.forEach(n => {
+            const node = document.createElement('div');
+            node.className = `graph-node ${n.type}`;
+            node.textContent = n.label;
+            node.style.left = (n.x / 100 * W - 50) + 'px';
+            node.style.top = (n.y / 100 * H - 15) + 'px';
+            container.appendChild(node);
+        });
+    }
+
+    // ─── 初始化 ─────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', () => {
+        renderStats(WIKI_DATA.stats);
+        renderGrid('papers-grid', WIKI_DATA.papers, 'papers-count');
+        renderGrid('concepts-grid', WIKI_DATA.concepts, 'concepts-count');
+        
+        if (WIKI_DATA.notes.length > 0) {
+            document.getElementById('notes-title').style.display = '';
+            renderGrid('notes-grid', WIKI_DATA.notes, 'notes-count');
+        }
+
+        renderGraph(WIKI_DATA.graph);
+
+        // 统计数字动画
+        document.querySelectorAll('.stat-card .number').forEach(el => {
+            const target = parseInt(el.textContent);
+            if (isNaN(target)) return;
+            el.textContent = '0';
+            let current = 0;
+            const step = Math.max(1, Math.floor(target / 20));
+            const timer = setInterval(() => {
+                current += step;
+                if (current >= target) { current = target; clearInterval(timer); }
+                el.textContent = current;
+            }, 50);
+        });
+    });
+    </script>
+</body>
+</html>

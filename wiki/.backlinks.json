@@ -1,0 +1,24 @@
+{
+  "attention_is_all_you_need": [
+    "index",
+    "Transformer",
+    "Self_Attention"
+  ],
+  "flashattention_fast_and_memory_efficient_exact_attention": [
+    "index",
+    "Transformer",
+    "Self_Attention"
+  ],
+  "self_attention": [
+    "index"
+  ],
+  "transformer": [
+    "index",
+    "Attention_Is_All_You_Need",
+    "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
+  ],
+  "self-attention": [
+    "Attention_Is_All_You_Need",
+    "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
+  ]
+}

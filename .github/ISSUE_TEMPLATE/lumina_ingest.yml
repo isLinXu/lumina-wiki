@@ -1,0 +1,42 @@
+---
+name: 📚 Lumina 投喂
+description: 向知识库投喂新的素材（论文、笔记、链接、图片等）
+title: "[Lumina] "
+labels: [lumina]
+body:
+  - type: dropdown
+    id: type
+    attributes:
+      label: 类型
+      options:
+        - 论文阅读
+        - 技术笔记
+        - 链接收藏
+        - 代码片段
+        - 图片/截图
+        - 其他
+    validations:
+      required: true
+
+  - type: textarea
+    id: content
+    attributes:
+      label: 内容
+      description: 粘贴内容，支持 Markdown 格式。
+      placeholder: |
+        ### 标题
+        内容正文...
+
+        ### 链接
+        https://arxiv.org/abs/...
+
+        ### 关键标签
+        MoE, Transformer, Quantization
+    validations:
+      required: true
+
+  - type: textarea
+    id: tags
+    attributes:
+      label: 关键标签（逗号分隔）
+      placeholder: "MoE, Transformer, Quantization, CVPR2026"
