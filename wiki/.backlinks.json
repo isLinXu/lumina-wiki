@@ -1,24 +1,24 @@
 {
   "attention_is_all_you_need": [
     "index",
-    "Transformer",
-    "Self_Attention"
+    "Self_Attention",
+    "Transformer"
   ],
   "flashattention_fast_and_memory_efficient_exact_attention": [
     "index",
-    "Transformer",
-    "Self_Attention"
+    "Self_Attention",
+    "Transformer"
   ],
   "self_attention": [
     "index"
   ],
   "transformer": [
     "index",
-    "Attention_Is_All_You_Need",
-    "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
+    "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention",
+    "Attention_Is_All_You_Need"
   ],
   "self-attention": [
-    "Attention_Is_All_You_Need",
-    "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
+    "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention",
+    "Attention_Is_All_You_Need"
   ]
 }
