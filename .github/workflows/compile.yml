@@ -114,6 +114,9 @@ jobs:
           fi
           python -m scripts.cli compile $DRY_RUN
 
+      - name: Build Dashboard Data
+        run: python -c "import sys; sys.path.insert(0,'.'); from scripts.build_dashboard import build_dashboard_data; build_dashboard_data()"
+
       - name: Commit compiled wiki
         run: |
           git config user.name "lumina-bot[bot]"

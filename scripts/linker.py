@@ -110,7 +110,7 @@ class AutoLinker:
 
 def _normalize_page_name(name: str) -> str:
     """规范化页面名称：统一大小写和分隔符。"""
-    return name.lower().replace("-", "_").replace(" ", "_").strip()
+    return name.strip().lower().replace("-", "_").replace(" ", "_").strip("_")
 
 
 def find_broken_links(wiki_path: Path) -> list[dict]:
