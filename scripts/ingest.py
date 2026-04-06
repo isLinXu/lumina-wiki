@@ -119,7 +119,7 @@ class IngestEngine:
         table.add_column("#", style="cyan", width=4)
         table.add_column("标题", style="green", min_width=30)
         table.add_column("作者", style="blue")
-        table.add_column("创建时间", dim=True)
+        table.add_column("创建时间", style="dim")
 
         for i, issue in enumerate(issues, 1):
             table.add_row(
