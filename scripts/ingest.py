@@ -161,58 +161,124 @@ class IngestEngine:
     async def ingest_issue(self, issue: Issue.Issue) -> list[Path]:
         """
         处理单个 Issue，保存到 raw/ 目录。
-        返回保存的文件路径列表。
+        - 智能文件命名：从 body 中提取实际标题/URL 生成有意义的名称
+        - 自动抓取 URL 内容（arXiv、网页等）
+        - 不输出 .meta.json（仅生成 .md）
         """
         now = datetime.now().strftime(self.config.ingest.date_format)
         raw_dir = Path(self.config.ingest.raw_dir) / now
         raw_dir.mkdir(parents=True, exist_ok=True)
 
-        safe_name = _slugify(issue.title)
-        md_path = raw_dir / f"{safe_name}.md"
-
+        body = issue.body or ""
         console.print(f"\n📥 处理 [bold cyan]#{issue.number}: {issue.title}[/bold cyan]")
 
-        # 提取元数据
+        # ── 1. 从 body 中提取 URL ──
+        urls = re.findall(r'(https?://[^\s\)]+)', body)
+        fetched_content = ""
+        resolved_title = ""
+
+        for url in urls:
+            console.print(f"  🔗 发现 URL: {url[:80]}")
+            try:
+                import httpx
+                async with httpx.AsyncClient(timeout=20.0, follow_redirects=True) as client:
+                    resp = await client.get(url)
+                    if resp.status_code == 200:
+                        html = resp.text
+
+                        # 提取页面标题
+                        title_match = re.search(r'<title>([^<]+)</title>', html, re.IGNORECASE)
+                        if title_match:
+                            resolved_title = title_match.group(1).strip()[:100]
+                            console.print(f"  📖 页面标题: {resolved_title}")
+
+                        # arXiv 特殊处理
+                        if "arxiv.org" in url:
+                            # 提取 arXiv 元数据
+                            ct = re.search(r'<meta name="citation_title" content="([^"]+)"', html)
+                            if ct:
+                                resolved_title = ct.group(1)
+                            ca = re.findall(r'<meta name="citation_author" content="([^"]+)"', html)
+                            ab = re.search(r'<meta name="citation_abstract" content="([^"]+)"', html)
+                            fetched_content = f"## {resolved_title or 'arXiv Paper'}\n\n"
+                            if ca:
+                                fetched_content += f"**Authors**: {', '.join(ca)}\n\n"
+                            if ab:
+                                fetched_content += f"### Abstract\n\n{ab.group(1)}\n\n"
+                            fetched_content += f"**arXiv URL**: {url}\n"
+                        else:
+                            # 通用网页：提取纯文本
+                            text = re.sub(r'<script[^>]*>.*?</script>', '', html, flags=re.DOTALL)
+                            text = re.sub(r'<style[^>]*>.*?</style>', '', text, flags=re.DOTALL)
+                            text = re.sub(r'<[^>]+>', ' ', text)
+                            text = re.sub(r'\s+', ' ', text).strip()
+                            fetched_content = f"## {resolved_title or url}\n\n{text[:5000]}\n"
+
+                        console.print(f"  ✅ 内容已抓取 ({len(fetched_content)} 字)")
+            except Exception as e:
+                console.print(f"  ⚠️ URL 抓取失败: {e}")
+
+        # ── 2. 智能文件命名 ──
+        # 优先级: body 中的标题行 > URL 页面标题 > arXiv ID > Issue 标题
+        name_candidates = []
+        
+        # 从 body 中查找 "标题：xxx" 或 "## 标题：xxx"
+        title_in_body = re.search(r'(?:标题|title)[：:]\s*(.+)', body, re.IGNORECASE)
+        if title_in_body:
+            name_candidates.append(title_in_body.group(1).strip())
+        
+        if resolved_title:
+            name_candidates.append(resolved_title)
+        
+        # arXiv ID
+        arxiv_id = re.search(r'(\d{4}\.\d{4,5})', body)
+        if arxiv_id:
+            name_candidates.append(f"arXiv_{arxiv_id.group(1)}")
+        
+        # Issue 标题（去掉 [Lumina] 前缀）
+        clean_title = re.sub(r'\[.*?\]\s*', '', issue.title).strip()
+        if clean_title:
+            name_candidates.append(clean_title)
+
+        # 选最佳名称
+        best_name = name_candidates[0] if name_candidates else f"issue_{issue.number}"
+        safe_name = _slugify(best_name)
+        md_path = raw_dir / f"{safe_name}.md"
+
+        console.print(f"  📛 文件命名: {safe_name}.md")
+
+        # ── 3. 提取元数据 ──
         metadata = {
             "source": "github-issue",
             "issue_number": issue.number,
-            "title": issue.title,
+            "title": resolved_title or clean_title or issue.title,
             "author": issue.user.login if issue.user else "unknown",
-            "created_at": (
-                issue.created_at.isoformat() if issue.created_at else None
-            ),
+            "created_at": issue.created_at.isoformat() if issue.created_at else None,
             "url": issue.html_url,
             "labels": [label.name for label in issue.labels],
             "ingested_at": datetime.now(timezone.utc).isoformat(),
         }
 
-        # 提取正文内容（支持 Markdown）
-        body = issue.body or ""
-
-        # 提取图片并下载
+        # ── 4. 提取图片 ──
         images_info = await self._extract_images(body, raw_dir, safe_name)
-
-        # 如果配置了图片描述生成，对每张图生成 .desc.md
-        if self.config.ingest.process_images and images_info and len(images_info) > 0:
+        if self.config.ingest.process_images and images_info and self.llm:
             for img_info in images_info:
                 desc = await self._describe_and_save(img_info, raw_dir)
                 img_info["description"] = desc
 
-        # 构建 Markdown 文件
+        # ── 5. 构建最终 Markdown ──
         content = self._build_markdown(metadata, body, images_info)
+        
+        # 如果抓取到了 URL 内容，追加到文件中
+        if fetched_content:
+            content += f"\n\n## 抓取内容\n\n{fetched_content}\n"
 
-        # 写入文件
+        # ── 6. 写入文件 ──
         with open(md_path, "w", encoding="utf-8") as f:
             f.write(content)
 
-        console.print(f"  💾 保存到: {md_path}")
-
-        # 同时导出 JSON 元数据
-        meta_path = raw_dir / f"{safe_name}.meta.json"
-        with open(meta_path, "w", encoding="utf-8") as f:
-            json.dump(metadata | {"images": images_info}, f, ensure_ascii=False, indent=2)
-
-        return [md_path, meta_path]
+        console.print(f"  💾 保存到: {md_path} ({md_path.stat().st_size:,} bytes)")
+        return [md_path]
 
     async def _extract_images(
         self, body: str, output_dir: Path, prefix: str
