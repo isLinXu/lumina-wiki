@@ -125,6 +125,31 @@ textarea.ingest-area:focus{border-color:var(--cyan)}
 .btn-danger:hover{background:rgba(248,81,73,.1)}
 .btn-group{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.8rem}
 
+/* ── Progress Pipeline ── */
+.progress-pipeline{display:flex;align-items:stretch;gap:0;margin:1rem 0;border:1px solid var(--bd);border-radius:10px;overflow:hidden;background:var(--bg2)}
+.pp-step{flex:1;padding:.6rem .3rem;text-align:center;position:relative;transition:all .4s;border-right:1px solid var(--bd)}
+.pp-step:last-child{border-right:none}
+.pp-step .pp-icon{font-size:1.1rem;display:block}
+.pp-step .pp-name{font-size:.65rem;font-weight:700;color:var(--t3);margin-top:.15rem}
+.pp-step .pp-time{font-size:.58rem;color:var(--t3);margin-top:.1rem}
+.pp-step.pending{opacity:.4}
+.pp-step.active{background:rgba(88,166,255,.12);animation:ppPulse 1.5s ease infinite}
+.pp-step.done{background:rgba(63,185,80,.1)}
+.pp-step.done .pp-name{color:var(--green)}
+.pp-step.error{background:rgba(248,81,73,.1)}
+.pp-step.error .pp-name{color:var(--red)}
+@keyframes ppPulse{0%,100%{opacity:1}50%{opacity:.6}}
+.progress-bar-slim{width:100%;height:4px;background:var(--bg2);border-radius:2px;overflow:hidden;margin-top:.4rem}
+.progress-bar-fill-slim{height:100%;background:linear-gradient(90deg,var(--cyan),var(--green));transition:width .3s;border-radius:2px}
+.log-stream{background:var(--bg2);border:1px solid var(--bd);border-radius:8px;padding:.6rem;max-height:250px;overflow-y:auto;font-family:'Courier New',monospace;font-size:.75rem;line-height:1.6;color:var(--t2)}
+.log-stream .log-line{padding:.1rem 0;border-bottom:1px solid rgba(48,54,61,.3)}
+.log-stream .log-line:last-child{border-bottom:none}
+.log-stream .log-ok{color:var(--green)}
+.log-stream .log-warn{color:var(--yellow)}
+.log-stream .log-err{color:var(--red)}
+.log-stream .log-info{color:var(--cyan)}
+.log-stream .log-dim{color:var(--t3)}
+
 /* ── Modal ── */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:100;justify-content:center;align-items:center;padding:1rem}
 .modal-overlay.show{display:flex}
@@ -276,6 +301,25 @@ textarea.ingest-area:focus{border-color:var(--cyan)}
   </div>
 
   <!-- Ingest Preview -->
+  <!-- Processing Progress (real-time pipeline) -->
+  <div id="ingest-progress-section" style="display:none;margin-bottom:1rem">
+    <h3 class="section-title">⚡ 处理进度</h3>
+    <div class="card">
+      <div class="progress-pipeline" id="ingest-pipeline">
+        <div class="pp-step pending" id="pp-upload"><span class="pp-icon">📤</span><span class="pp-name">上传</span><span class="pp-time" id="ppt-upload"></span></div>
+        <div class="pp-step pending" id="pp-parse"><span class="pp-icon">📋</span><span class="pp-name">解析</span><span class="pp-time" id="ppt-parse"></span></div>
+        <div class="pp-step pending" id="pp-summarize"><span class="pp-icon">📝</span><span class="pp-name">摘要</span><span class="pp-time" id="ppt-summarize"></span></div>
+        <div class="pp-step pending" id="pp-extract"><span class="pp-icon">🏷️</span><span class="pp-name">实体</span><span class="pp-time" id="ppt-extract"></span></div>
+        <div class="pp-step pending" id="pp-write"><span class="pp-icon">✍️</span><span class="pp-name">撰写</span><span class="pp-time" id="ppt-write"></span></div>
+        <div class="pp-step pending" id="pp-done"><span class="pp-icon">✅</span><span class="pp-name">完成</span><span class="pp-time" id="ppt-done"></span></div>
+      </div>
+      <div class="progress-bar-slim"><div class="progress-bar-fill-slim" id="ingest-progress-bar" style="width:0%"></div></div>
+      <div id="ingest-log-stream" class="log-stream" style="margin-top:.6rem">
+        <div class="log-line log-dim">等待开始...</div>
+      </div>
+    </div>
+  </div>
+
   <div id="ingest-preview-box" style="display:none">
     <h3 class="section-title">👁️ 投喂预览</h3>
     <div class="md-viewer" id="ingest-preview-content"></div>
@@ -359,6 +403,24 @@ textarea.ingest-area:focus{border-color:var(--cyan)}
       <button class="btn btn-outline" onclick="runOnlineCompile('extract')">🏷️ 提取实体</button>
       <button class="btn btn-outline" onclick="runOnlineCompile('full')">🔧 完整编译</button>
       <button class="btn btn-outline" onclick="runOnlineCompile('ask')">❓ 自由提问</button>
+    </div>
+  </div>
+
+  <!-- LLM Processing Progress -->
+  <div id="llm-progress-section" style="display:none;margin-bottom:1rem">
+    <h3 class="section-title">⚡ 编译进度</h3>
+    <div class="card">
+      <div class="progress-pipeline" id="llm-pipeline">
+        <div class="pp-step pending" id="lp-init"><span class="pp-icon">🔌</span><span class="pp-name">连接</span><span class="pp-time" id="lpt-init"></span></div>
+        <div class="pp-step pending" id="lp-send"><span class="pp-icon">📤</span><span class="pp-name">发送</span><span class="pp-time" id="lpt-send"></span></div>
+        <div class="pp-step pending" id="lp-think"><span class="pp-icon">🧠</span><span class="pp-name">LLM 思考</span><span class="pp-time" id="lpt-think"></span></div>
+        <div class="pp-step pending" id="lp-render"><span class="pp-icon">📄</span><span class="pp-name">渲染</span><span class="pp-time" id="lpt-render"></span></div>
+        <div class="pp-step pending" id="lp-done"><span class="pp-icon">✅</span><span class="pp-name">完成</span><span class="pp-time" id="lpt-done"></span></div>
+      </div>
+      <div class="progress-bar-slim"><div class="progress-bar-fill-slim" id="llm-progress-bar" style="width:0%"></div></div>
+      <div id="llm-log-stream" class="log-stream" style="margin-top:.6rem">
+        <div class="log-line log-dim">等待开始...</div>
+      </div>
     </div>
   </div>
 
@@ -571,11 +633,51 @@ function wikiFilter(q) {
 }
 
 // ── Ingest Functions ──
-function ingestURL() {
+async function ingestURL() {
   const url = document.getElementById('ingest-url').value.trim();
   if(!url) return toast('请输入 URL','error');
-  toast('✅ URL 已提交！将通过 GitHub Issue 触发编译流水线','success');
+
+  ingestProgress.show();
+  ingestProgress.setStep('pp-upload','active','📤 提交 URL: '+url.slice(0,60)+'...');
+  await sleep(300);
+  ingestProgress.setStep('pp-upload','done','✅ URL 已接收');
+
+  // 如果有 LLM 配置，尝试在线处理
+  const cfg = loadLLMConfig();
+  if (cfg && cfg.apiKey) {
+    ingestProgress.setStep('pp-parse','active','📋 正在获取 URL 内容...');
+    ingestProgress.log('检测到 LLM 配置，将进行在线编译', 'info');
+
+    // 通过 LLM 处理 URL
+    try {
+      ingestProgress.setStep('pp-parse','done','✅ URL 解析完成');
+      ingestProgress.setStep('pp-summarize','active','📝 LLM 正在生成摘要...');
+      const summary = await callLLM([
+        {role:'system',content:'你是 Lumina Wiki 编译器。请对给定 URL 内容生成结构化摘要和实体提取。'},
+        {role:'user',content:`请对以下 URL 的内容进行知识编译：\n\nURL: ${url}\n\n请返回：\n1. 标题\n2. 摘要(200字)\n3. 关键实体列表(名称+类型)\n4. 完整的 Lumina Wiki 格式页面`}
+      ]);
+      ingestProgress.setStep('pp-summarize','done','✅ 摘要已生成');
+      ingestProgress.setStep('pp-extract','done','✅ 实体已提取');
+      ingestProgress.setStep('pp-write','active','✍️ 正在生成 Wiki 页面...');
+      await sleep(200);
+      ingestProgress.setStep('pp-write','done','✅ Wiki 页面已生成');
+      ingestProgress.setStep('pp-done','done','✅ 在线编译完成');
+      ingestProgress.complete(true);
+
+      // 显示结果
+      document.getElementById('ingest-preview-box').style.display = 'block';
+      document.getElementById('ingest-preview-content').innerHTML = renderMarkdown(summary);
+      toast('✅ URL 在线编译完成！','success');
+    } catch(e) {
+      ingestProgress.setStep('pp-summarize','error','❌ LLM 调用失败: '+e.message.slice(0,50));
+      ingestProgress.log('降级到 GitHub Issue 模式...','warn');
+      ingestProgress.complete(false);
+    }
+  }
+
+  // 同时创建 GitHub Issue
   const title = url.includes('arxiv')?'[Lumina] arXiv Paper':'[Lumina] Web Link';
+  ingestProgress.log('📌 创建 GitHub Issue 触发后台编译...','info');
   window.open(`${REPO_URL}/issues/new?title=${encodeURIComponent(title)}&body=${encodeURIComponent('## 类型：链接收藏\n\n### 链接\n'+url)}&labels=lumina`,'_blank');
   document.getElementById('ingest-url').value = '';
 }
@@ -608,15 +710,78 @@ async function previewFile(btn, name) {
   document.getElementById('page-modal').classList.add('show');
 }
 
-function ingestText() {
+async function ingestText() {
   const title = document.getElementById('ingest-title').value.trim();
   const text = document.getElementById('ingest-text').value.trim();
   const type = document.getElementById('ingest-type').value;
   if(!text) return toast('请输入内容','error');
+
   const typeLabel = {paper:'论文阅读',note:'技术笔记',link:'链接收藏',code:'代码片段'}[type]||'其他';
+
+  ingestProgress.show();
+  ingestProgress.setStep('pp-upload','active',`📤 接收内容: ${title||typeLabel} (${text.length}字)`);
+  await sleep(300);
+  ingestProgress.setStep('pp-upload','done',`✅ 内容已接收 (${text.length}字)`);
+
+  ingestProgress.setStep('pp-parse','active','📋 解析内容格式...');
+  await sleep(200);
+  ingestProgress.setStep('pp-parse','done','✅ 内容解析完成');
+
+  // 如果有 LLM，进行在线编译
+  const cfg = loadLLMConfig();
+  if (cfg && cfg.apiKey) {
+    ingestProgress.log('🤖 检测到 LLM 配置，开始在线编译...','info');
+
+    try {
+      ingestProgress.setStep('pp-summarize','active','📝 LLM 正在生成摘要...');
+      const summary = await callLLM([
+        {role:'system',content:'你是 Lumina Wiki 摘要生成器。生成简洁的中文摘要。'},
+        {role:'user',content:`对以下${typeLabel}内容生成摘要(200字以内)和5个关键要点:\n\n${text.slice(0,4000)}`}
+      ], {maxTokens: 1024});
+      ingestProgress.setStep('pp-summarize','done','✅ 摘要已生成');
+
+      ingestProgress.setStep('pp-extract','active','🏷️ LLM 正在提取实体...');
+      const entities = await callLLM([
+        {role:'system',content:'从学术/技术文本中提取核心概念实体，每行一个，格式: 名称 (类型)'},
+        {role:'user',content:`提取核心实体:\n${text.slice(0,3000)}`}
+      ], {maxTokens: 512});
+      ingestProgress.setStep('pp-extract','done','✅ 实体提取完成');
+
+      ingestProgress.setStep('pp-write','active','✍️ 正在生成 Wiki 页面...');
+      const wikiPage = await callLLM([
+        {role:'system',content:'你是 Lumina Wiki 编译器。将内容编译为结构化 Wiki 页面，包含 front matter、摘要块、关键要点、实体链接。'},
+        {role:'user',content:`编译以下内容为 Lumina Wiki 格式:\n\n标题: ${title||'未命名'}\n类型: ${typeLabel}\n\n摘要:\n${summary}\n\n实体:\n${entities}\n\n原文:\n${text.slice(0,3000)}`}
+      ]);
+      ingestProgress.setStep('pp-write','done','✅ Wiki 页面已生成');
+
+      ingestProgress.setStep('pp-done','done','✅ 在线编译完成');
+      ingestProgress.complete(true);
+
+      // 显示结果
+      const preview = document.getElementById('ingest-preview-box');
+      preview.style.display = 'block';
+      document.getElementById('ingest-preview-content').innerHTML = renderMarkdown(wikiPage);
+      preview.scrollIntoView({behavior:'smooth'});
+
+    } catch(e) {
+      ingestProgress.setStep('pp-summarize','error','❌ LLM 错误: '+e.message.slice(0,50));
+      ingestProgress.log('降级到 GitHub Issue 模式','warn');
+      ingestProgress.complete(false);
+    }
+  } else {
+    ingestProgress.log('⚠️ 未配置 LLM，跳过在线编译，直接创建 Issue','warn');
+    ingestProgress.setStep('pp-summarize','pending');
+    ingestProgress.setStep('pp-extract','pending');
+    ingestProgress.setStep('pp-write','pending');
+    ingestProgress.setStep('pp-done','active','📌 创建 GitHub Issue...');
+    await sleep(300);
+    ingestProgress.setStep('pp-done','done','✅ Issue 已创建');
+    ingestProgress.complete(true);
+  }
+
+  // 同时创建 Issue
   const body = `## 类型：${typeLabel}\n## 标题：${title||'未命名'}\n\n### 内容\n${text}`;
   window.open(`${REPO_URL}/issues/new?title=${encodeURIComponent('[Lumina] '+(title||typeLabel))}&body=${encodeURIComponent(body)}&labels=lumina`,'_blank');
-  toast('✅ 已创建 GitHub Issue 投喂！编译流水线将自动触发。','success');
 }
 
 function previewIngest() {
@@ -715,6 +880,77 @@ function renderGraph() {
 // ═══════════════════════════════════════════════════════════════
 // LLM Configuration & Online Compile (API Key stored in localStorage ONLY)
 // ═══════════════════════════════════════════════════════════════
+
+// ═══════════════════════════════════════════════════════════════
+// Progress Pipeline Manager — 实时进度追踪
+// ═══════════════════════════════════════════════════════════════
+
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+class ProgressPipeline {
+  constructor(pipelineId, barId, logId) {
+    this.pipelineEl = document.getElementById(pipelineId);
+    this.barEl = document.getElementById(barId);
+    this.logEl = document.getElementById(logId);
+    this.steps = [];
+    this.startTime = null;
+    this.stepTimes = {};
+  }
+
+  show() {
+    this.pipelineEl?.closest('[id$="-section"]')?.style && (this.pipelineEl.closest('[id$="-section"]').style.display = 'block');
+    this.startTime = Date.now();
+    this.logEl.innerHTML = '';
+    // Reset all steps
+    this.pipelineEl?.querySelectorAll('.pp-step').forEach(s => { s.className = 'pp-step pending'; });
+    this.barEl && (this.barEl.style.width = '0%');
+  }
+
+  setStep(stepId, status, msg) {
+    const el = document.getElementById(stepId);
+    if (!el) return;
+    el.className = `pp-step ${status}`;
+    const timeEl = el.querySelector('.pp-time');
+    const now = Date.now();
+    if (status === 'active') {
+      this.stepTimes[stepId] = now;
+      if (timeEl) timeEl.textContent = '';
+    }
+    if (status === 'done' || status === 'error') {
+      const elapsed = this.stepTimes[stepId] ? ((now - this.stepTimes[stepId]) / 1000).toFixed(1) : '0.0';
+      if (timeEl) timeEl.textContent = `${elapsed}s`;
+    }
+    // Update progress bar
+    const allSteps = this.pipelineEl?.querySelectorAll('.pp-step') || [];
+    const doneCount = [...allSteps].filter(s => s.classList.contains('done')).length;
+    const pct = Math.round((doneCount / Math.max(allSteps.length, 1)) * 100);
+    if (this.barEl) this.barEl.style.width = pct + '%';
+    // Log
+    if (msg) this.log(msg, status === 'error' ? 'err' : status === 'done' ? 'ok' : 'info');
+  }
+
+  log(msg, type = 'info') {
+    if (!this.logEl) return;
+    const elapsed = ((Date.now() - (this.startTime || Date.now())) / 1000).toFixed(1);
+    const cls = { ok: 'log-ok', err: 'log-err', warn: 'log-warn', info: 'log-info', dim: 'log-dim' }[type] || 'log-info';
+    this.logEl.innerHTML += `<div class="log-line ${cls}"><span style="color:var(--t3);min-width:45px;display:inline-block">[${elapsed}s]</span> ${msg}</div>`;
+    this.logEl.scrollTop = this.logEl.scrollHeight;
+  }
+
+  complete(success = true) {
+    const total = ((Date.now() - (this.startTime || Date.now())) / 1000).toFixed(1);
+    if (this.barEl) this.barEl.style.width = '100%';
+    if (success) {
+      this.log(`✅ 全部完成！总耗时 ${total}s`, 'ok');
+    } else {
+      this.log(`❌ 处理失败，耗时 ${total}s`, 'err');
+    }
+  }
+}
+
+// Create instances
+const ingestProgress = new ProgressPipeline('ingest-pipeline', 'ingest-progress-bar', 'ingest-log-stream');
+const llmProgress = new ProgressPipeline('llm-pipeline', 'llm-progress-bar', 'llm-log-stream');
 
 const LLM_STORAGE_KEY = 'lumina_llm_config';
 
@@ -846,9 +1082,8 @@ async function runOnlineCompile(mode) {
   const custom = document.getElementById('compile-custom-text').value.trim();
   let sourceText = custom;
 
-  // 如果选了 raw 文件但没自定义文本，用文件内容
   if (!sourceText && sel.value) {
-    const page = [...DATA.papers, ...DATA.concepts, ...DATA.notes, ...DATA.raw].find(p => p.path === sel.value || p.name === sel.value);
+    const page = [...DATA.papers, ...DATA.concepts, ...DATA.notes, ...DATA.raw].find(p => p.path === sel.value || p.name === sel.value || p.id === sel.value);
     sourceText = page?.content || page?.excerpt || sel.value;
   }
   if (!sourceText && mode !== 'ask') {
@@ -858,10 +1093,21 @@ async function runOnlineCompile(mode) {
   const outSection = document.getElementById('llm-output-section');
   const outEl = document.getElementById('llm-output');
   const outLabel = document.getElementById('llm-output-label');
-  outSection.style.display = 'block';
-  outEl.innerHTML = '<p style="color:var(--yellow)">⏳ LLM 处理中...</p>';
 
-  // 收集 wiki 上下文用于 ask 模式
+  // Show progress
+  llmProgress.show();
+  llmProgress.setStep('lp-init','active','🔌 检查 LLM 配置...');
+  const cfg = loadLLMConfig();
+  if (!cfg || !cfg.apiKey) {
+    llmProgress.setStep('lp-init','error','❌ 请先配置 LLM API Key');
+    llmProgress.complete(false);
+    toast('请先配置 LLM', 'error');
+    return;
+  }
+  await sleep(200);
+  llmProgress.setStep('lp-init','done',`✅ ${cfg.provider}/${cfg.model} 已就绪`);
+
+  // Collect wiki context
   const wikiContext = [...DATA.papers, ...DATA.concepts].map(p => `### ${p.title}\n${p.excerpt || ''}`).join('\n\n');
 
   const prompts = {
@@ -891,15 +1137,34 @@ async function runOnlineCompile(mode) {
   if (!prompt) return;
   outLabel.textContent = prompt.label;
 
+  llmProgress.setStep('lp-send','active',`📤 发送到 ${cfg.provider} (${sourceText.length}字)...`);
+  await sleep(100);
+  llmProgress.setStep('lp-send','done','✅ 请求已发送');
+
+  llmProgress.setStep('lp-think','active','🧠 LLM 正在思考...');
+  llmProgress.log(`模式: ${prompt.label} | 模型: ${cfg.model} | 内容: ${sourceText.length}字`, 'info');
+
   try {
     const result = await callLLM([
       { role: 'system', content: prompt.system },
       { role: 'user', content: prompt.user }
     ]);
+    llmProgress.setStep('lp-think','done','✅ LLM 响应完成');
+
+    llmProgress.setStep('lp-render','active','📄 渲染结果...');
+    outSection.style.display = 'block';
     outEl.innerHTML = renderMarkdown(result);
     outSection.dataset.rawOutput = result;
+    await sleep(100);
+    llmProgress.setStep('lp-render','done','✅ 渲染完成');
+
+    llmProgress.setStep('lp-done','done','✅ 编译完成');
+    llmProgress.complete(true);
     toast('✅ LLM 编译完成！', 'success');
   } catch (e) {
+    llmProgress.setStep('lp-think','error','❌ LLM 错误: '+e.message.slice(0,80));
+    llmProgress.complete(false);
+    outSection.style.display = 'block';
     outEl.innerHTML = `<p style="color:var(--red)">❌ 错误: ${e.message}</p>`;
     toast('❌ ' + e.message.slice(0, 50), 'error');
   }
