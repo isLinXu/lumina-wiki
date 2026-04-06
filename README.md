@@ -18,7 +18,7 @@
 
 ## 💡 核心理念
 
-受 [Karpathy 的 LLM Wiki 模式](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) 启发，参考 [sage-wiki (xoai/sage-wiki)](https://github.com/xoai/sage-wiki) 架构设计。
+受 [Karpathy 的 LLM Wiki 模式](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) 启发。
 
 ```
 传统 RAG:  每次"检索+合成"，无积累
