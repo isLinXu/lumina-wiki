@@ -35,16 +35,31 @@ async def cmd_init(args: argparse.Namespace):
 
 
 async def cmd_ingest(args: argparse.Namespace):
-    """摄入素材（支持 URL、本地路径）。"""
+    """摄入素材（支持 URL、本地路径、Issue 编号）。"""
     from .ingest_enhanced import EnhancedIngestEngine
 
+    # 优先处理 --issue 参数（由 Actions 传入）
+    issue_num = getattr(args, 'issue', None)
+
     if not args.target:
-        # 无参数时：回退到 Issue 摄入模式
-        from .ingest import IngestEngine, main as ingest_main
-        sys.argv = ["lumina-ingest"]
-        if args.dry_run:
-            sys.argv.append("--dry-run")
-        await ingest_main()
+        # 无 URL/Path 参数 → 走 Issue 摄入模式
+        from .ingest import IngestEngine
+        from .config import load_config
+
+        cfg = load_config(getattr(args, 'config', None))
+        engine = IngestEngine(cfg)
+
+        if getattr(args, 'dry_run', False):
+            issues = engine.find_issues(issue_number=issue_num)
+            if not issues:
+                print("没有待处理的 Issue。")
+            else:
+                for issue in issues:
+                    print(f"  #{issue.number}: {issue.title} (@{issue.user.login})")
+            return
+
+        files = await engine.ingest_all(issue_number=issue_num)
+        print(f"\n✅ 摄入完成！共处理 {len(files)} 个文件")
         return
 
     engine = EnhancedIngestEngine()
@@ -330,6 +345,7 @@ def main():
     # ─── ingest ───────────────────────────────────────────
     p = subparsers.add_parser("ingest", help="摄入素材 (URL|Path|Issue)")
     p.add_argument("target", nargs="?", help="URL 或本地文件路径（省略则走Issue模式）")
+    p.add_argument("--issue", type=int, help="直接处理指定 Issue 编号")
     p.add_argument("--auto-compile", action="store_true", help="摄入后自动编译")
     p.add_argument("--dry-run", action="store_true", help="只扫描不执行")
     p.set_defaults(func=cmd_ingest)

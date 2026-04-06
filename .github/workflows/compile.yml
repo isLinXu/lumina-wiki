@@ -66,10 +66,16 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
           DRY_RUN=""
+          ISSUE_FLAG=""
           if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
             DRY_RUN="--dry-run"
           fi
-          python -m scripts.cli ingest $DRY_RUN || true
+          # 如果由 Issue 事件触发，直接传入 Issue 编号
+          if [ "${{ github.event_name }}" = "issues" ] && [ -n "${{ github.event.issue.number }}" ]; then
+            ISSUE_FLAG="--issue ${{ github.event.issue.number }}"
+            echo "📌 Processing Issue #${{ github.event.issue.number }}: ${{ github.event.issue.title }}"
+          fi
+          python -m scripts.cli ingest $ISSUE_FLAG $DRY_RUN || true
 
       - name: Commit ingested files
         run: |

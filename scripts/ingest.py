@@ -43,22 +43,70 @@ class IngestEngine:
         self.repo = self.gh.get_repo(
             f"{self.config.repository.owner}/{self.config.repository.name}"
         )
-        self.llm = LLMClient(self.config)
+        # LLM 客户端（可选，摄入不强制需要 LLM）
+        try:
+            self.llm = LLMClient(self.config)
+        except Exception:
+            self.llm = None
 
-    def find_issues(self) -> list[Issue.Issue]:
-        """查找待处理的 lumina Issue。"""
+    def find_issues(self, issue_number: int | None = None) -> list[Issue.Issue]:
+        """
+        查找待处理的 Issue。
+
+        策略（按优先级）：
+        1. 如果指定了 issue_number → 直接获取该 Issue
+        2. 查找带 lumina label 的 open issues
+        3. 如果没有 label 匹配 → 查找标题含 [Lumina] 的 open issues
+        """
+        # 策略 1：直接获取指定 Issue
+        if issue_number:
+            console.print(f"🔍 直接获取 Issue #{issue_number}...")
+            try:
+                issue = self.repo.get_issue(issue_number)
+                if issue.state == "open":
+                    console.print(f"   ✅ 找到: #{issue.number} {issue.title}")
+                    return [issue]
+                else:
+                    console.print(f"   ⚠️  Issue #{issue_number} 已关闭")
+                    return []
+            except Exception as e:
+                console.print(f"   ❌ 获取 Issue #{issue_number} 失败: {e}")
+                return []
+
+        # 策略 2：按 label 过滤
         label = self.config.ingest.label
         console.print(f"🔍 查找带 [bold]{label}[/bold] 标签的 open issues...")
-        issues = self.repo.get_issues(state="open", labels=[label])
-        issue_list = list(issues)
-        console.print(f"   找到 {len(issue_list)} 个待处理 issue\n")
-        return issue_list
+        try:
+            issues = list(self.repo.get_issues(state="open", labels=[label]))
+            if issues:
+                console.print(f"   找到 {len(issues)} 个待处理 issue\n")
+                return issues
+        except Exception:
+            pass
 
-    async def ingest_all(self) -> list[Path]:
+        # 策略 3：fallback — 查找标题含 [Lumina] 的 Issues
+        console.print(f"   未找到带 '{label}' 标签的 issue，尝试标题匹配...")
+        try:
+            all_issues = list(self.repo.get_issues(state="open"))
+            matched = [
+                i for i in all_issues
+                if "[lumina]" in i.title.lower()
+                or "lumina" in (i.body or "").lower()[:200]
+            ]
+            if matched:
+                console.print(f"   📌 通过标题/内容匹配到 {len(matched)} 个 issue\n")
+                return matched
+        except Exception as e:
+            console.print(f"   ❌ 查询失败: {e}")
+
+        console.print("   未找到任何待处理的 issue\n")
+        return []
+
+    async def ingest_all(self, issue_number: int | None = None) -> list[Path]:
         """
         处理所有待处理 issue，返回保存的文件路径列表。
         """
-        issues = self.find_issues()
+        issues = self.find_issues(issue_number=issue_number)
 
         if not issues:
             console.print("[yellow]⚠️  没有需要处理的 issue。[/yellow]")
@@ -249,6 +297,9 @@ class IngestEngine:
 
     async def _describe_and_save(self, img_info: dict, output_dir: Path) -> str:
         """调用多模态 LLM 生成图片描述并保存为 .desc.md 文件。"""
+        if not self.llm:
+            console.print(f"  ⚠️ 跳过图片描述（LLM 未配置）")
+            return ""
         try:
             description = await self.llm.describe_image(img_info["local_path"])
 
@@ -320,6 +371,7 @@ async def main():
     parser = argparse.ArgumentParser(description="Lumina Wiki - Issue Ingest")
     parser.add_argument("--token", help="GitHub Token（或设置 GITHUB_TOKEN 环境变量）")
     parser.add_argument("--config", "-c", help="lumina.toml 路径")
+    parser.add_argument("--issue", type=int, help="直接处理指定 Issue 编号")
     parser.add_argument("--dry-run", action="store_true", help="只显示将要处理的 Issue，不实际执行")
     args = parser.parse_args()
 
@@ -331,7 +383,7 @@ async def main():
     engine = IngestEngine(config)
 
     if args.dry_run:
-        issues = engine.find_issues()
+        issues = engine.find_issues(issue_number=args.issue)
         if not issues:
             print("没有待处理的 Issue。")
             return
@@ -339,7 +391,7 @@ async def main():
             print(f"  #{issue.number}: {issue.title} (@{issue.user.login})")
         return
 
-    files = await engine.ingest_all()
+    files = await engine.ingest_all(issue_number=args.issue)
     console.print(f"\n✅ 摄入完成！共处理 {len(files)} 个文件")
 
 
