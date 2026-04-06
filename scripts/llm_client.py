@@ -142,28 +142,24 @@ class LLMClient:
 
     async def summarize(self, text: str, context: str = "") -> str:
         """生成文本摘要。"""
-        prompt = f"""请对以下内容生成一个简洁的摘要（中文，{self.config.compiler.summary_max_tokens} 字以内）。
-保留核心观点、关键数据和重要结论。
+        prompt = f"""用中文对以下内容写一个简洁摘要（{self.config.compiler.summary_max_tokens}字以内）。保留核心观点、关键数据和结论。
 
-原文：
-{text}
-
-{"上下文：" + context if context else ""}
-"""
+内容:
+{text[:5000]}
+{"上下文: " + context if context else ""}"""
         return await self.chat([{"role": "user", "content": prompt}])
 
     async def extract_entities(self, text: str) -> list[dict]:
         """从文本中提取实体/概念。"""
-        prompt = f"""从以下学术/技术文本中提取核心概念和实体。
+        prompt = f"""从以下文本中提取核心技术概念。直接输出 JSON。
 
-返回 JSON 格式：
-{{"entities": [{{"name": "概念名", "type": "类型(algorithm/model/paper/method/concept/other)", "confidence": 0.95}}]}}
+类型: algorithm | model | method | concept | metric | dataset | tool | paper
+只提取重要的、有独立 Wiki 页面价值的实体。
 
-只提取重要的、有独立页面价值的概念。过滤掉过于通用的词。
+输出: {{"entities": [{{"name": "名称", "type": "类型", "confidence": 0.95}}]}}
 
-文本：
-{text[:4000]}
-"""
+文本:
+{text[:4000]}"""
         result = await self.extract_json([{"role": "user", "content": prompt}])
         entities = result.get("entities", [])
         # 过滤低置信度

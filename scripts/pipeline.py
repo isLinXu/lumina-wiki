@@ -335,31 +335,22 @@ class CompilerPipeline:
         metadata, body = self._parse_raw_markdown(raw_file.read_text(encoding="utf-8"))
         title = metadata.get("title", raw_file.stem.replace("_", " ").title())
 
-        prompt = f"""你是一个学术/技术知识提炼专家。请对以下内容生成结构化摘要。
+        prompt = f"""请对以下学术/技术文档生成结构化摘要。直接输出 JSON，不要包含任何其他文字。
 
-## 输出格式（严格 JSON）
-```json
-{{
-  "summary": "一段话概括核心内容（200-300字，中文）",
-  "key_points": ["要点1", "要点2", "要点3", "要点4", "要点5"],
-  "authors": "作者（如有）",
-  "methodology": "使用的方法/技术路线",
-  "results": "关键结果/数据",
-  "limitations": "局限性",
-  "doc_type": "paper|note|other"
-}}
-```
+输出格式:
+{{"summary": "200-300字中文摘要，概括核心贡献、方法和结果", "key_points": ["要点1", "要点2", "要点3", "要点4", "要点5"], "authors": "作者姓名", "methodology": "核心方法/技术路线（一句话）", "results": "关键实验结果和数据", "limitations": "主要局限性", "doc_type": "paper或note或other"}}
 
-## 原始内容
-标题：{title}
+示例输出:
+{{"summary": "本文提出了Transformer架构，完全基于自注意力机制，在机器翻译任务上达到SOTA效果。", "key_points": ["提出Self-Attention替代RNN", "Multi-Head Attention并行计算"], "authors": "Vaswani et al.", "methodology": "Self-Attention + Positional Encoding", "results": "WMT14 EN-DE 28.4 BLEU", "limitations": "O(n²)计算复杂度", "doc_type": "paper"}}
 
-{body[:6000]}
-"""
+文档标题: {title}
+文档内容:
+{body[:6000]}"""
 
         try:
             result = await self.llm.extract_json(
                 [{"role": "user", "content": prompt}],
-                system_prompt="你是 Lumina Wiki 的摘要生成器。输出严格的 JSON 格式，不要添加任何额外文字。",
+                system_prompt="你是一个 JSON 输出机器。只输出合法 JSON，不要输出任何其他文字、解释或 markdown 标记。",
             )
         except Exception:
             # 降级：如果 JSON 解析失败，用纯文本摘要
@@ -407,33 +398,21 @@ class CompilerPipeline:
             sample = sorted(list(self._all_concepts))[:20]
             existing_hint = f"以下概念已经存在，不需要重复提取：{', '.join(sample)}\n"
 
-        prompt = f"""从以下学术/技术文档中提取核心概念和实体。
+        prompt = f"""从以下文档中提取核心技术概念和实体。直接输出 JSON，不要包含其他文字。
 
+类型: algorithm(算法) | model(模型) | method(方法) | concept(概念) | metric(指标) | dataset(数据集) | tool(工具) | paper(论文) | person(人物)
+
+规则:
+- 只提取有独立 Wiki 页面价值的重要实体
+- 不要提取"深度学习""神经网络"等过于宽泛的词
+- 每个实体给出 0.7-1.0 的置信度
 {existing_hint}
-## 分类体系
-- algorithm: 具体算法（如 FlashAttention, RMSNorm, MoE Routing）
-- model: 模型架构（如 GPT-4, Llama, Mixtral, DeepSeek）
-- paper: 论文（作为引用实体）
-- method: 训练技巧/方法（如 LoRA, RLHF, KV-Cache）
-- concept: 抽象概念（如 Scaling Law, Emergence, Grokking）
-- metric: 评估指标（如 mAP, BLEU, Perplexity, FLOPs）
-- dataset: 数据集（如 ImageNet, C4, The Pile）
-- person: 研究者
-- tool: 工具/框架（如 PyTorch, vLLM, Triton）
-- other: 其他
+输出格式: {{"entities": [{{"name": "实体名", "type": "类型", "confidence": 0.95}}]}}
 
-## 输出格式（严格 JSON）
-```json
-{{"entities": [{{"name": "概念名", "type": "类型", "confidence": 0.95}}]}}
-```
+示例: {{"entities": [{{"name": "FlashAttention", "type": "algorithm", "confidence": 0.95}}, {{"name": "Transformer", "type": "model", "confidence": 0.98}}]}}
 
-只提取重要的、有独立页面价值的实体。
-过滤掉过于通用的词（如"深度学习"、"神经网络"，除非有特定上下文）。
-置信度 < 0.7 的不要包含。
-
-## 文档内容
-{combined}
-"""
+文档内容:
+{combined}"""
 
         try:
             result = await self.llm.extract_json([{"role": "user", "content": prompt}])
@@ -699,18 +678,16 @@ class CompilerPipeline:
                 page_path.write_text(existing + append_block, encoding="utf-8")
         else:
             # 新建概念页 —— 使用 LLM 定义
-            definition_prompt = f"""为以下技术/学术概念写一个简洁的百科条目。
+            definition_prompt = f"""用中文为技术概念「{name}」写一个简洁的百科条目（3段，共150字左右）：
 
-概念名称: {name}
-类型: {etype}
-首次发现于: {summary.title}
+第1段：**{name}** 是...（一句话加粗定义）
+第2段：详细解释（2-3句，通俗但专业）
+第3段：典型应用或相关工作
 
-要求（中文）：
-1. 第一行：一句话定义（用 **加粗**
-2. 第二段：详细解释（2-3句话，通俗易懂但专业）
-3. 第三段：典型应用场景或相关工作
-不要使用markdown标题符号(#)，直接用段落即可。
-"""
+概念类型: {etype}
+发现于论文: {summary.title}
+
+不要使用 # 标题符号，直接写段落。"""
             try:
                 definition = await self.llm.chat([{"role": "user", "content": definition_prompt}])
             except Exception:
