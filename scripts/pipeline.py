@@ -196,12 +196,27 @@ class CompilerPipeline:
                 try:
                     # Pass 2: Summarize
                     progress.update(main_task, description=f"📝 摘要: {rel}")
-                    summary = await self.pass2_summarize(raw_file)
-                    stats.summarized += 1
+                    try:
+                        summary = await self.pass2_summarize(raw_file)
+                        stats.summarized += 1
+                    except Exception as llm_err:
+                        console.print(f"[yellow]  ⚠️ LLM 摘要失败({llm_err}), 使用原文降级[/yellow]")
+                        metadata, body = self._parse_raw_markdown(raw_file.read_text(encoding="utf-8"))
+                        summary = SummaryResult(
+                            source_file=raw_file,
+                            title=metadata.get("title", raw_file.stem.replace("_", " ")),
+                            summary_text=body[:300] + "..." if len(body) > 300 else body,
+                            doc_type="note",
+                        )
+                        stats.summarized += 1
 
                     # Pass 3: Extract Concepts
                     progress.update(main_task, description=f"🏷️  提取: {rel}")
-                    extract = await self.pass3_extract(raw_file, summary)
+                    try:
+                        extract = await self.pass3_extract(raw_file, summary)
+                    except Exception as llm_err:
+                        console.print(f"[yellow]  ⚠️ LLM 实体提取失败({llm_err}), 跳过[/yellow]")
+                        extract = ExtractResult(entities=[])
                     stats.concepts_extracted += len(extract.entities)
 
                     # Pass 4: Write Articles
@@ -209,7 +224,7 @@ class CompilerPipeline:
                     article = await self.pass4_write(raw_file, summary, extract)
                     stats.articles_written += 1
                     if article.created:
-                        stats.added += 1  # 或细分
+                        stats.added += 1
                     stats.new_concepts += article.concept_pages_created
 
                     # 更新编译索引

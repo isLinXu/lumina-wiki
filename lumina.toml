@@ -24,15 +24,18 @@ entity_confidence = 0.7     # 实体提取置信度阈值
 
 [llm]
 # 大模型配置
-provider = "github-copilot"  # 可选: github-copilot, openai, azure, ollama
-model = "gpt-4o"
+# 在 GitHub Actions 中通过 Secrets 设置 OPENAI_API_KEY 和 OPENAI_API_BASE
+# 本地开发时通过环境变量或此处配置
+provider = "openai"           # openai 兼容接口（支持 DashScope/Azure/本地）
+model = "qwen-turbo"          # 模型名称
 temperature = 0.3
 max_tokens = 4096
 
 # 各 provider 的额外配置（按需填写）
 [llm.openai]
 api_key_env = "OPENAI_API_KEY"
-base_url = "https://api.openai.com/v1"
+base_url_env = "OPENAI_API_BASE"
+base_url = "https://dashscope.aliyuncs.com/compatible-mode/v1"
 
 [llm.azure]
 api_key_env = "AZURE_OPENAI_API_KEY"

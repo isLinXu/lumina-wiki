@@ -40,8 +40,11 @@ class LLMClient:
             api_key = os.environ.get(
                 self.config.llm.openai_api_key_env or "OPENAI_API_KEY", ""
             )
+            # base_url: 环境变量 > 配置文件 > 默认值
             base_url = (
-                self.config.llm.openai_base_url or "https://api.openai.com/v1"
+                os.environ.get("OPENAI_API_BASE", "")
+                or self.config.llm.openai_base_url
+                or "https://api.openai.com/v1"
             )
             self.api_key = api_key
             self.base_url = base_url.rstrip("/")
