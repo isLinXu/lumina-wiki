@@ -1,727 +1,659 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🌙 Lumina Wiki — Knowledge Dashboard</title>
-    <style>
-        /* ═══ CSS Variables ═══ */
-        :root {
-            --bg-primary: #0d1117;
-            --bg-secondary: #161b22;
-            --bg-card: #1c2333;
-            --bg-card-hover: #22293a;
-            --border: #30363d;
-            --text-primary: #e6edf3;
-            --text-secondary: #8b949e;
-            --text-dim: #6e7681;
-            --accent-cyan: #58a6ff;
-            --accent-green: #3fb950;
-            --accent-yellow: #d29922;
-            --accent-orange: #db6d28;
-            --accent-red: #f85149;
-            --accent-purple: #bc8cff;
-            --accent-pink: #f778ba;
-            --glow-cyan: rgba(88, 166, 255, 0.15);
-            --glow-green: rgba(63, 185, 80, 0.15);
-            --pixel-font: 'Courier New', 'Consolas', monospace;
-            --card-radius: 12px;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌙 Lumina Wiki — Knowledge Dashboard</title>
+<style>
+:root{--bg:#0d1117;--bg2:#161b22;--bg3:#1c2333;--bg4:#22293a;--bd:#30363d;--t1:#e6edf3;--t2:#8b949e;--t3:#6e7681;--cyan:#58a6ff;--green:#3fb950;--yellow:#d29922;--orange:#db6d28;--red:#f85149;--purple:#bc8cff;--pink:#f778ba;--r:12px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--t1);min-height:100vh}
+.bg-grid{position:fixed;inset:0;background-image:linear-gradient(rgba(88,166,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(88,166,255,.03) 1px,transparent 1px);background-size:40px 40px;z-index:0;animation:gm 20s linear infinite}
+@keyframes gm{to{transform:translate(40px,40px)}}
 
-        /* ═══ Reset & Base ═══ */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
+/* ── Layout ── */
+.app{position:relative;z-index:10;display:flex;flex-direction:column;min-height:100vh}
+header{padding:1.2rem 2rem;border-bottom:1px solid var(--bd);background:rgba(13,17,23,.92);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.8rem}
+header h1{font-size:1.5rem;font-weight:800;background:linear-gradient(135deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+header .sub{color:var(--t2);font-size:.8rem;font-family:'Courier New',monospace}
+.nav-tabs{display:flex;gap:0;background:var(--bg2);border-radius:8px;border:1px solid var(--bd);overflow:hidden}
+.nav-tab{padding:.5rem 1rem;font-size:.82rem;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--t2);transition:all .2s;white-space:nowrap}
+.nav-tab:hover{color:var(--t1);background:var(--bg3)}
+.nav-tab.active{color:var(--cyan);background:var(--bg3);box-shadow:inset 0 -2px 0 var(--cyan)}
 
-        /* ═══ Animated Background ═══ */
-        .bg-grid {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-image:
-                linear-gradient(rgba(88,166,255,0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(88,166,255,0.03) 1px, transparent 1px);
-            background-size: 40px 40px;
-            z-index: 0;
-            animation: gridMove 20s linear infinite;
-        }
-        @keyframes gridMove {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(40px, 40px); }
-        }
+.main{flex:1;max-width:1280px;width:100%;margin:0 auto;padding:1.5rem}
+.panel{display:none}
+.panel.active{display:block}
 
-        /* ═══ Header ═══ */
-        .header {
-            position: relative;
-            z-index: 10;
-            padding: 2rem 2rem 1rem;
-            text-align: center;
-            border-bottom: 1px solid var(--border);
-            background: linear-gradient(180deg, rgba(13,17,23,0.95), rgba(13,17,23,0.8));
-            backdrop-filter: blur(10px);
-        }
-        .header h1 {
-            font-size: 2.5rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 0.3rem;
-        }
-        .header .subtitle {
-            color: var(--text-secondary);
-            font-size: 1rem;
-            font-family: var(--pixel-font);
-            letter-spacing: 0.05em;
-        }
-        .header .badges {
-            margin-top: 0.8rem;
-            display: flex;
-            justify-content: center;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.3rem;
-            padding: 0.25rem 0.7rem;
-            border-radius: 999px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            border: 1px solid var(--border);
-            background: var(--bg-secondary);
-        }
-        .badge.green { border-color: var(--accent-green); color: var(--accent-green); }
-        .badge.cyan { border-color: var(--accent-cyan); color: var(--accent-cyan); }
-        .badge.purple { border-color: var(--accent-purple); color: var(--accent-purple); }
-        .badge.yellow { border-color: var(--accent-yellow); color: var(--accent-yellow); }
+/* ── Cards & Common ── */
+.card{background:var(--bg3);border:1px solid var(--bd);border-radius:var(--r);padding:1.2rem;transition:all .3s}
+.card:hover{background:var(--bg4);border-color:var(--cyan)}
+.grid{display:grid;gap:1rem}
+.grid-2{grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
+.grid-4{grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}
+.badge{display:inline-flex;align-items:center;gap:.3rem;padding:.15rem .6rem;border-radius:999px;font-size:.7rem;font-weight:600;border:1px solid}
+.badge-cyan{border-color:var(--cyan);color:var(--cyan)}
+.badge-green{border-color:var(--green);color:var(--green)}
+.badge-orange{border-color:var(--orange);color:var(--orange)}
+.badge-purple{border-color:var(--purple);color:var(--purple)}
+.tag{font-size:.68rem;padding:.1rem .4rem;border-radius:4px;background:var(--bg2);border:1px solid var(--bd);color:var(--t3);display:inline-block;margin:.1rem}
 
-        /* ═══ Main Layout ═══ */
-        .container {
-            position: relative;
-            z-index: 10;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 1.5rem;
-        }
+.section-title{font-size:1.05rem;font-weight:700;margin:1.2rem 0 .8rem;display:flex;align-items:center;gap:.5rem}
+.section-title .cnt{background:var(--bg2);border:1px solid var(--bd);border-radius:999px;padding:.1rem .4rem;font-size:.72rem;color:var(--t2)}
 
-        /* ═══ Stats Row ═══ */
-        .stats-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-        .stat-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--card-radius);
-            padding: 1.2rem;
-            text-align: center;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        .stat-card:hover { background: var(--bg-card-hover); transform: translateY(-2px); }
-        .stat-card:hover::before { opacity: 1; }
-        .stat-card .icon { font-size: 1.5rem; margin-bottom: 0.3rem; }
-        .stat-card .number {
-            font-size: 2rem;
-            font-weight: 800;
-            font-family: var(--pixel-font);
-            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-green));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .stat-card .label { color: var(--text-secondary); font-size: 0.8rem; margin-top: 0.2rem; }
+/* ── Stats ── */
+.stat{text-align:center;position:relative;overflow:hidden}
+.stat::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--cyan),var(--purple));opacity:0;transition:opacity .3s}
+.stat:hover::before{opacity:1}
+.stat .icon{font-size:1.3rem}
+.stat .num{font-size:1.8rem;font-weight:800;font-family:'Courier New',monospace;background:linear-gradient(135deg,var(--cyan),var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stat .lbl{color:var(--t2);font-size:.75rem;margin-top:.15rem}
 
-        /* ═══ Health Bar ═══ */
-        .health-section {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--card-radius);
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-        .health-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; }
-        .health-header h3 { font-size: 1rem; color: var(--text-secondary); }
-        .health-score {
-            font-size: 1.8rem;
-            font-weight: 800;
-            font-family: var(--pixel-font);
-        }
-        .health-bar-track {
-            width: 100%;
-            height: 12px;
-            background: var(--bg-secondary);
-            border-radius: 6px;
-            overflow: hidden;
-            border: 1px solid var(--border);
-        }
-        .health-bar-fill {
-            height: 100%;
-            border-radius: 6px;
-            transition: width 1.5s ease;
-            background: linear-gradient(90deg, var(--accent-green), var(--accent-cyan));
-            box-shadow: 0 0 10px var(--glow-green);
-        }
-        .health-level {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 0.5rem;
-            font-size: 0.7rem;
-            color: var(--text-dim);
-            font-family: var(--pixel-font);
-        }
+/* ── Health Bar ── */
+.health{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem}
+.health-bar{flex:1;height:14px;background:var(--bg2);border-radius:7px;overflow:hidden;border:1px solid var(--bd)}
+.health-fill{height:100%;border-radius:7px;transition:width 1.5s;background:linear-gradient(90deg,var(--green),var(--cyan));box-shadow:0 0 12px rgba(63,185,80,.3)}
+.health-score{font-size:1.5rem;font-weight:800;font-family:'Courier New',monospace;min-width:60px}
 
-        /* ═══ Wiki Pages ═══ */
-        .section-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .section-title .count {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 999px;
-            padding: 0.15rem 0.5rem;
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-        }
+/* ── Pipeline vis ── */
+.pipeline{display:flex;align-items:center;justify-content:center;gap:0;margin:1rem 0 1.5rem;flex-wrap:wrap}
+.pipe{display:flex;flex-direction:column;align-items:center;padding:.6rem .8rem;background:var(--bg3);border:1px solid var(--bd);border-radius:8px;min-width:80px;transition:all .3s}
+.pipe:hover{border-color:var(--cyan);background:var(--bg4)}
+.pipe .pi{font-size:1.3rem}
+.pipe .pn{font-size:.68rem;font-weight:700;color:var(--cyan);margin-top:.2rem}
+.pipe .pd{font-size:.6rem;color:var(--t3)}
+.parr{color:var(--t3);font-size:1rem;margin:0 .15rem}
 
-        .pages-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-        .page-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--card-radius);
-            padding: 1.2rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-            color: inherit;
-            position: relative;
-        }
-        .page-card:hover {
-            background: var(--bg-card-hover);
-            border-color: var(--accent-cyan);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 20px var(--glow-cyan);
-        }
-        .page-card .card-type {
-            display: inline-block;
-            font-size: 0.65rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            padding: 0.15rem 0.5rem;
-            border-radius: 4px;
-            margin-bottom: 0.6rem;
-        }
-        .card-type.paper { background: rgba(219,109,40,0.15); color: var(--accent-orange); border: 1px solid rgba(219,109,40,0.3); }
-        .card-type.concept { background: rgba(188,140,255,0.15); color: var(--accent-purple); border: 1px solid rgba(188,140,255,0.3); }
-        .card-type.note { background: rgba(63,185,80,0.15); color: var(--accent-green); border: 1px solid rgba(63,185,80,0.3); }
+/* ── Page card ── */
+.pg-card{cursor:pointer;text-decoration:none;color:inherit;display:block}
+.pg-card h4{font-size:.95rem;margin:.3rem 0}
+.pg-card .exc{color:var(--t2);font-size:.8rem;line-height:1.5;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.pg-type{display:inline-block;font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:.12rem .4rem;border-radius:4px}
+.pg-type.paper{background:rgba(219,109,40,.12);color:var(--orange);border:1px solid rgba(219,109,40,.3)}
+.pg-type.concept{background:rgba(188,140,255,.12);color:var(--purple);border:1px solid rgba(188,140,255,.3)}
+.pg-type.note{background:rgba(63,185,80,.12);color:var(--green);border:1px solid rgba(63,185,80,.3)}
 
-        .page-card h4 { font-size: 1rem; margin-bottom: 0.4rem; }
-        .page-card .excerpt {
-            color: var(--text-secondary);
-            font-size: 0.82rem;
-            line-height: 1.5;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-        .page-card .tags {
-            margin-top: 0.8rem;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.3rem;
-        }
-        .tag {
-            font-size: 0.68rem;
-            padding: 0.1rem 0.4rem;
-            border-radius: 4px;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            color: var(--text-dim);
-        }
+/* ── Search ── */
+.search-box{position:relative;margin-bottom:1.2rem}
+.search-box input{width:100%;padding:.7rem 1rem .7rem 2.3rem;background:var(--bg3);border:1px solid var(--bd);border-radius:var(--r);color:var(--t1);font-size:.9rem;outline:none;transition:border .3s}
+.search-box input:focus{border-color:var(--cyan)}
+.search-box input::placeholder{color:var(--t3)}
+.search-box .si{position:absolute;left:.7rem;top:50%;transform:translateY(-50%);color:var(--t3);font-size:.9rem}
 
-        /* ═══ Knowledge Graph Visual ═══ */
-        .graph-section {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--card-radius);
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            text-align: center;
-        }
-        .graph-container {
-            width: 100%;
-            height: 300px;
-            position: relative;
-            overflow: hidden;
-        }
-        .graph-node {
-            position: absolute;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            white-space: nowrap;
-            z-index: 2;
-        }
-        .graph-node:hover { transform: scale(1.1); z-index: 10; }
-        .graph-node.model { background: rgba(88,166,255,0.2); border: 1px solid var(--accent-cyan); color: var(--accent-cyan); }
-        .graph-node.algorithm { background: rgba(188,140,255,0.2); border: 1px solid var(--accent-purple); color: var(--accent-purple); }
-        .graph-node.paper { background: rgba(219,109,40,0.2); border: 1px solid var(--accent-orange); color: var(--accent-orange); }
+/* ── Graph ── */
+.graph-wrap{width:100%;height:340px;position:relative;overflow:hidden;border-radius:8px;background:rgba(22,27,34,.6)}
+.gn{position:absolute;padding:.4rem .8rem;border-radius:6px;font-size:.75rem;font-weight:600;cursor:pointer;transition:all .3s;white-space:nowrap;z-index:2;user-select:none}
+.gn:hover{transform:scale(1.12);z-index:10}
+.gn.model{background:rgba(88,166,255,.18);border:1px solid var(--cyan);color:var(--cyan)}
+.gn.algorithm{background:rgba(188,140,255,.18);border:1px solid var(--purple);color:var(--purple)}
+.gn.paper{background:rgba(219,109,40,.18);border:1px solid var(--orange);color:var(--orange)}
+svg.graph-svg{position:absolute;inset:0;width:100%;height:100%;z-index:1}
+svg.graph-svg line{stroke:var(--bd);stroke-width:1.5;stroke-dasharray:4 3}
 
-        .graph-line {
-            position: absolute;
-            height: 1px;
-            background: var(--border);
-            transform-origin: left center;
-            z-index: 1;
-        }
+/* ── Markdown Preview ── */
+.md-viewer{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);padding:1.5rem 2rem;max-height:70vh;overflow-y:auto;line-height:1.7;font-size:.9rem}
+.md-viewer h1{font-size:1.6rem;margin:.8rem 0 .5rem;border-bottom:1px solid var(--bd);padding-bottom:.3rem}
+.md-viewer h2{font-size:1.2rem;margin:.8rem 0 .4rem;color:var(--cyan)}
+.md-viewer h3{font-size:1rem;margin:.6rem 0 .3rem;color:var(--purple)}
+.md-viewer blockquote{border-left:3px solid var(--cyan);padding:.5rem 1rem;margin:.5rem 0;background:rgba(88,166,255,.06);border-radius:0 6px 6px 0}
+.md-viewer table{border-collapse:collapse;width:100%;margin:.5rem 0}
+.md-viewer th,.md-viewer td{border:1px solid var(--bd);padding:.4rem .6rem;text-align:left;font-size:.82rem}
+.md-viewer th{background:var(--bg3);font-weight:600}
+.md-viewer code{background:var(--bg3);padding:.1rem .3rem;border-radius:3px;font-size:.82rem;font-family:'Courier New',monospace}
+.md-viewer a,.md-viewer .wikilink{color:var(--cyan);text-decoration:none;cursor:pointer}
+.md-viewer a:hover,.md-viewer .wikilink:hover{text-decoration:underline}
+.md-viewer ul,.md-viewer ol{padding-left:1.5rem;margin:.3rem 0}
+.md-viewer hr{border:none;border-top:1px solid var(--bd);margin:1rem 0}
+.md-viewer strong{color:var(--t1)}
+.md-viewer em{color:var(--t2)}
 
-        /* ═══ Pipeline Visual ═══ */
-        .pipeline-visual {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0;
-            margin: 1.5rem 0;
-            flex-wrap: wrap;
-        }
-        .pipe-step {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 0.8rem 1.2rem;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            min-width: 100px;
-            transition: all 0.3s;
-        }
-        .pipe-step:hover { border-color: var(--accent-cyan); background: var(--bg-card-hover); }
-        .pipe-step .step-icon { font-size: 1.5rem; margin-bottom: 0.3rem; }
-        .pipe-step .step-name { font-size: 0.72rem; font-weight: 700; color: var(--accent-cyan); }
-        .pipe-step .step-desc { font-size: 0.65rem; color: var(--text-dim); margin-top: 0.15rem; }
-        .pipe-arrow { color: var(--text-dim); font-size: 1.2rem; margin: 0 0.3rem; }
+/* ── Upload / Ingest ── */
+.upload-zone{border:2px dashed var(--bd);border-radius:var(--r);padding:2rem;text-align:center;cursor:pointer;transition:all .3s;background:var(--bg3);margin-bottom:1rem}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--cyan);background:var(--bg4)}
+.upload-zone .uz-icon{font-size:2.5rem;margin-bottom:.5rem}
+.upload-zone .uz-text{color:var(--t2);font-size:.9rem}
+.upload-zone .uz-hint{color:var(--t3);font-size:.75rem;margin-top:.3rem}
+textarea.ingest-area{width:100%;min-height:200px;padding:1rem;background:var(--bg3);border:1px solid var(--bd);border-radius:var(--r);color:var(--t1);font-family:'Courier New',monospace;font-size:.85rem;resize:vertical;outline:none;transition:border .3s}
+textarea.ingest-area:focus{border-color:var(--cyan)}
+.btn{padding:.5rem 1.2rem;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;border:1px solid;transition:all .2s}
+.btn-primary{background:var(--cyan);color:#0d1117;border-color:var(--cyan)}
+.btn-primary:hover{opacity:.85}
+.btn-outline{background:transparent;color:var(--cyan);border-color:var(--cyan)}
+.btn-outline:hover{background:rgba(88,166,255,.1)}
+.btn-danger{background:transparent;color:var(--red);border-color:var(--red)}
+.btn-danger:hover{background:rgba(248,81,73,.1)}
+.btn-group{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.8rem}
 
-        /* ═══ Footer ═══ */
-        .footer {
-            text-align: center;
-            padding: 2rem;
-            color: var(--text-dim);
-            font-size: 0.8rem;
-            border-top: 1px solid var(--border);
-        }
-        .footer a { color: var(--accent-cyan); text-decoration: none; }
-        .footer a:hover { text-decoration: underline; }
+/* ── Modal ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:100;justify-content:center;align-items:center;padding:1rem}
+.modal-overlay.show{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--bd);border-radius:16px;width:100%;max-width:800px;max-height:85vh;overflow-y:auto;position:relative}
+.modal-header{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.5rem;border-bottom:1px solid var(--bd)}
+.modal-header h3{font-size:1.1rem}
+.modal-close{background:none;border:none;color:var(--t2);font-size:1.5rem;cursor:pointer;padding:.2rem .5rem;border-radius:4px}
+.modal-close:hover{color:var(--t1);background:var(--bg3)}
+.modal-body{padding:1.5rem}
 
-        /* ═══ Search ═══ */
-        .search-box {
-            position: relative;
-            margin-bottom: 1.5rem;
-        }
-        .search-box input {
-            width: 100%;
-            padding: 0.8rem 1rem 0.8rem 2.5rem;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--card-radius);
-            color: var(--text-primary);
-            font-size: 0.95rem;
-            outline: none;
-            transition: border-color 0.3s;
-        }
-        .search-box input:focus { border-color: var(--accent-cyan); }
-        .search-box input::placeholder { color: var(--text-dim); }
-        .search-box .search-icon {
-            position: absolute;
-            left: 0.8rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-dim);
-            font-size: 1rem;
-        }
+/* ── Raw files ── */
+.raw-item{display:flex;align-items:center;justify-content:space-between;padding:.8rem 1rem;border-bottom:1px solid var(--bd)}
+.raw-item:last-child{border-bottom:none}
+.raw-info{flex:1}
+.raw-name{font-weight:600;font-size:.85rem}
+.raw-meta{color:var(--t3);font-size:.72rem;margin-top:.15rem}
 
-        /* ═══ Responsive ═══ */
-        @media (max-width: 640px) {
-            .header h1 { font-size: 1.8rem; }
-            .stats-row { grid-template-columns: repeat(2, 1fr); }
-            .pages-grid { grid-template-columns: 1fr; }
-            .pipeline-visual { gap: 0.5rem; }
-            .pipe-step { min-width: 70px; padding: 0.5rem 0.6rem; }
-        }
-    </style>
+/* ── Responsive ── */
+@media(max-width:640px){header{padding:.8rem 1rem}.main{padding:1rem}.grid-4{grid-template-columns:repeat(2,1fr)}.pipeline{gap:.3rem}.pipe{min-width:60px;padding:.4rem}.nav-tab{padding:.4rem .6rem;font-size:.75rem}}
+
+/* ── Toast ── */
+.toast{position:fixed;bottom:2rem;right:2rem;padding:.8rem 1.5rem;border-radius:8px;font-size:.85rem;font-weight:600;z-index:200;transform:translateY(100px);opacity:0;transition:all .4s}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.success{background:var(--green);color:#0d1117}
+.toast.error{background:var(--red);color:#fff}
+.toast.info{background:var(--cyan);color:#0d1117}
+</style>
 </head>
 <body>
-    <div class="bg-grid"></div>
+<div class="bg-grid"></div>
+<div class="app">
 
-    <!-- Header -->
-    <header class="header">
-        <h1>🌙 Lumina Wiki</h1>
-        <p class="subtitle">Read-only for Humans, Write-only for LLMs</p>
-        <div class="badges">
-            <span class="badge green">● v1.1.0</span>
-            <span class="badge cyan">GitHub-Native</span>
-            <span class="badge purple">5-Pass Pipeline</span>
-            <span class="badge yellow">Karpathy LLM Wiki</span>
-        </div>
-    </header>
+<!-- Header -->
+<header>
+  <div>
+    <h1>🌙 Lumina Wiki</h1>
+    <span class="sub">Read-only for Humans · Write-only for LLMs</span>
+  </div>
+  <nav class="nav-tabs">
+    <button class="nav-tab active" onclick="switchTab('dashboard')">📊 Dashboard</button>
+    <button class="nav-tab" onclick="switchTab('wiki')">📖 Wiki 浏览</button>
+    <button class="nav-tab" onclick="switchTab('ingest')">📥 投喂上传</button>
+    <button class="nav-tab" onclick="switchTab('manage')">⚙️ 管理</button>
+  </nav>
+</header>
 
-    <main class="container">
+<div class="main">
 
-        <!-- 5-Pass Pipeline Visualization -->
-        <div class="pipeline-visual">
-            <div class="pipe-step">
-                <span class="step-icon">📥</span>
-                <span class="step-name">Ingest</span>
-                <span class="step-desc">Issue / URL / PDF</span>
-            </div>
-            <span class="pipe-arrow">→</span>
-            <div class="pipe-step">
-                <span class="step-icon">🔍</span>
-                <span class="step-name">Pass 1</span>
-                <span class="step-desc">Diff</span>
-            </div>
-            <span class="pipe-arrow">→</span>
-            <div class="pipe-step">
-                <span class="step-icon">📝</span>
-                <span class="step-name">Pass 2</span>
-                <span class="step-desc">Summarize</span>
-            </div>
-            <span class="pipe-arrow">→</span>
-            <div class="pipe-step">
-                <span class="step-icon">🏷️</span>
-                <span class="step-name">Pass 3</span>
-                <span class="step-desc">Extract</span>
-            </div>
-            <span class="pipe-arrow">→</span>
-            <div class="pipe-step">
-                <span class="step-icon">✍️</span>
-                <span class="step-name">Pass 4</span>
-                <span class="step-desc">Write</span>
-            </div>
-            <span class="pipe-arrow">→</span>
-            <div class="pipe-step">
-                <span class="step-icon">🔗</span>
-                <span class="step-name">Pass 5</span>
-                <span class="step-desc">Post</span>
-            </div>
-        </div>
+<!-- ═══════ Panel: Dashboard ═══════ -->
+<div class="panel active" id="panel-dashboard">
 
-        <!-- Stats -->
-        <div class="stats-row" id="stats-row">
-            <div class="stat-card">
-                <div class="icon">📄</div>
-                <div class="number" id="stat-total">-</div>
-                <div class="label">总页面</div>
-            </div>
-            <div class="stat-card">
-                <div class="icon">💡</div>
-                <div class="number" id="stat-concepts">-</div>
-                <div class="label">概念</div>
-            </div>
-            <div class="stat-card">
-                <div class="icon">📑</div>
-                <div class="number" id="stat-papers">-</div>
-                <div class="label">论文</div>
-            </div>
-            <div class="stat-card">
-                <div class="icon">📝</div>
-                <div class="number" id="stat-notes">-</div>
-                <div class="label">笔记</div>
-            </div>
-            <div class="stat-card">
-                <div class="icon">📂</div>
-                <div class="number" id="stat-raw">-</div>
-                <div class="label">Raw 文件</div>
-            </div>
-            <div class="stat-card">
-                <div class="icon">🔗</div>
-                <div class="number" id="stat-links">-</div>
-                <div class="label">交叉引用</div>
-            </div>
-        </div>
+  <!-- Pipeline -->
+  <div class="pipeline">
+    <div class="pipe"><span class="pi">📥</span><span class="pn">Ingest</span><span class="pd">Issue/URL/PDF</span></div><span class="parr">→</span>
+    <div class="pipe"><span class="pi">🔍</span><span class="pn">Diff</span><span class="pd">增量检测</span></div><span class="parr">→</span>
+    <div class="pipe"><span class="pi">📝</span><span class="pn">Summarize</span><span class="pd">摘要</span></div><span class="parr">→</span>
+    <div class="pipe"><span class="pi">🏷️</span><span class="pn">Extract</span><span class="pd">实体</span></div><span class="parr">→</span>
+    <div class="pipe"><span class="pi">✍️</span><span class="pn">Write</span><span class="pd">撰写</span></div><span class="parr">→</span>
+    <div class="pipe"><span class="pi">🔗</span><span class="pn">Post</span><span class="pd">索引</span></div>
+  </div>
 
-        <!-- Health -->
-        <div class="health-section">
-            <div class="health-header">
-                <h3>🩺 知识库健康度</h3>
-                <span class="health-score" id="health-score">—</span>
-            </div>
-            <div class="health-bar-track">
-                <div class="health-bar-fill" id="health-bar" style="width: 0%"></div>
-            </div>
-            <div class="health-level">
-                <span>🔴 0</span><span>🟠 50</span><span>🟡 70</span><span>🟢 90</span><span>💎 100</span>
-            </div>
-        </div>
+  <!-- Stats -->
+  <div class="grid grid-4" style="margin-bottom:1.2rem" id="stats-grid"></div>
 
-        <!-- Search -->
-        <div class="search-box">
-            <span class="search-icon">🔍</span>
-            <input type="text" id="search-input" placeholder="搜索概念、论文、笔记..." oninput="filterPages(this.value)">
-        </div>
+  <!-- Health -->
+  <div class="card" style="margin-bottom:1.2rem">
+    <div class="health">
+      <span style="color:var(--t2);font-size:.9rem">🩺 健康度</span>
+      <div class="health-bar"><div class="health-fill" id="hbar" style="width:0%"></div></div>
+      <span class="health-score" id="hscore" style="color:var(--green)">—</span>
+    </div>
+  </div>
 
-        <!-- Knowledge Graph -->
-        <div class="graph-section">
-            <h3 class="section-title" style="justify-content: center;">🕸️ 知识图谱</h3>
-            <div class="graph-container" id="graph-container"></div>
-        </div>
+  <!-- Graph -->
+  <h3 class="section-title">🕸️ 知识图谱</h3>
+  <div class="card" style="padding:.5rem;margin-bottom:1.2rem">
+    <div class="graph-wrap" id="graph-box"></div>
+  </div>
 
-        <!-- Papers -->
-        <h3 class="section-title">📑 论文 <span class="count" id="papers-count">0</span></h3>
-        <div class="pages-grid" id="papers-grid"></div>
+  <!-- Pages preview -->
+  <h3 class="section-title">📑 论文 <span class="cnt" id="pc-papers">0</span></h3>
+  <div class="grid grid-2" id="grid-papers"></div>
+  <h3 class="section-title">💡 概念 <span class="cnt" id="pc-concepts">0</span></h3>
+  <div class="grid grid-2" id="grid-concepts"></div>
+</div>
 
-        <!-- Concepts -->
-        <h3 class="section-title">💡 概念 <span class="count" id="concepts-count">0</span></h3>
-        <div class="pages-grid" id="concepts-grid"></div>
+<!-- ═══════ Panel: Wiki Browser ═══════ -->
+<div class="panel" id="panel-wiki">
+  <div class="search-box">
+    <span class="si">🔍</span>
+    <input type="text" id="wiki-search" placeholder="搜索论文、概念、笔记..." oninput="wikiFilter(this.value)">
+  </div>
 
-        <!-- Notes -->
-        <h3 class="section-title" id="notes-title" style="display:none;">📝 笔记 <span class="count" id="notes-count">0</span></h3>
-        <div class="pages-grid" id="notes-grid"></div>
+  <h3 class="section-title">📑 论文 <span class="cnt" id="wc-papers">0</span></h3>
+  <div class="grid grid-2" id="wgrid-papers"></div>
+  <h3 class="section-title">💡 概念 <span class="cnt" id="wc-concepts">0</span></h3>
+  <div class="grid grid-2" id="wgrid-concepts"></div>
+  <h3 class="section-title" id="wt-notes" style="display:none">📝 笔记 <span class="cnt" id="wc-notes">0</span></h3>
+  <div class="grid grid-2" id="wgrid-notes"></div>
+</div>
 
-    </main>
+<!-- ═══════ Panel: Ingest / Upload ═══════ -->
+<div class="panel" id="panel-ingest">
 
-    <footer class="footer">
-        <p>🌙 <strong>Lumina Wiki</strong> v1.1.0 — GitHub-native 个人知识编译器</p>
-        <p style="margin-top:0.3rem;">
-            Inspired by <a href="https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f" target="_blank">Karpathy's LLM Wiki</a>
-            · Architecture from <a href="https://github.com/xoai/sage-wiki" target="_blank">sage-wiki</a>
-            · Powered by LLM 5-Pass Pipeline
-        </p>
-        <p style="margin-top:0.3rem; font-family: var(--pixel-font);">
-            <a href="https://github.com/isLinXu/lumina-wiki" target="_blank">GitHub Repository</a>
-        </p>
-    </footer>
+  <h3 class="section-title">📥 投喂新知识</h3>
+  <p style="color:var(--t2);font-size:.85rem;margin-bottom:1rem">将原始素材投喂到 Lumina Wiki，LLM 将自动编译为结构化知识页面。</p>
 
-    <script>
-    // ═══════════════════════════════════════════════════════════════
-    // Lumina Wiki Dashboard — 前端数据加载与渲染
-    // ═══════════════════════════════════════════════════════════════
+  <!-- URL Ingest -->
+  <div class="card" style="margin-bottom:1rem">
+    <h4 style="margin-bottom:.6rem">🔗 URL 投喂</h4>
+    <div style="display:flex;gap:.5rem">
+      <input type="text" id="ingest-url" placeholder="粘贴 arXiv / GitHub / 网页链接..." style="flex:1;padding:.5rem .8rem;background:var(--bg2);border:1px solid var(--bd);border-radius:8px;color:var(--t1);font-size:.85rem;outline:none">
+      <button class="btn btn-primary" onclick="ingestURL()">摄入</button>
+    </div>
+    <div style="margin-top:.4rem;font-size:.72rem;color:var(--t3)">支持 arXiv、GitHub、一般网页 URL</div>
+  </div>
 
-    // Wiki 页面数据（由 GitHub Actions 编译时生成，或手动维护）
-    const WIKI_DATA = {
-        stats: {
-            total: 4,
-            concepts: 2,
-            papers: 2,
-            notes: 0,
-            raw_files: 2,
-            backlinks: 5,
-            health_score: 99.0,
-            last_compile: "2026-04-06T02:20:52Z"
-        },
-        papers: [
-            {
-                title: "Attention Is All You Need",
-                path: "wiki/papers/Attention_Is_All_You_Need.md",
-                type: "paper",
-                excerpt: "提出了完全基于注意力机制的 Transformer 架构，摒弃了传统的 RNN 和 CNN 结构。在 WMT 2014 翻译任务上显著超越前代模型。",
-                tags: ["Transformer", "Self-Attention", "Multi-Head Attention", "NeurIPS 2017"],
-                authors: "Vaswani et al.",
-                date: "2026-04-06"
-            },
-            {
-                title: "FlashAttention: Fast and Memory-Efficient Exact Attention",
-                path: "wiki/papers/FlashAttention_Fast_and_Memory_Efficient_Exact_Attention.md",
-                type: "paper",
-                excerpt: "提出 IO 感知的精确注意力算法，通过分块计算和重计算策略将内存从 O(N²) 降到 O(N)，在 A100 上实现 1.5-3x 加速。",
-                tags: ["FlashAttention", "IO-Aware", "Tiling", "GPU Optimization"],
-                authors: "Dao et al.",
-                date: "2026-04-06"
-            }
-        ],
-        concepts: [
-            {
-                title: "Transformer",
-                path: "wiki/concepts/Transformer.md",
-                type: "concept",
-                excerpt: "完全基于注意力机制的神经网络架构，由 Vaswani 等人于 2017 年提出。使用 Self-Attention 替代 RNN，是现代大语言模型的基础架构。",
-                tags: ["model", "architecture", "NLP"],
-                date: "2026-04-06"
-            },
-            {
-                title: "Self-Attention",
-                path: "wiki/concepts/Self_Attention.md",
-                type: "concept",
-                excerpt: "允许序列中每个位置关注所有其他位置的注意力机制。计算复杂度 O(n²·d)，是 Transformer 的核心组件。",
-                tags: ["algorithm", "attention", "mechanism"],
-                date: "2026-04-06"
-            }
-        ],
-        notes: [],
-        graph: {
-            nodes: [
-                { id: "transformer", label: "Transformer", type: "model", x: 50, y: 40 },
-                { id: "self-attention", label: "Self-Attention", type: "algorithm", x: 25, y: 70 },
-                { id: "flash-attention", label: "FlashAttention", type: "algorithm", x: 75, y: 70 },
-                { id: "attention-paper", label: "Attention Is All\nYou Need", type: "paper", x: 20, y: 25 },
-                { id: "flash-paper", label: "FlashAttention\nPaper", type: "paper", x: 80, y: 25 },
-            ],
-            edges: [
-                ["attention-paper", "transformer"],
-                ["attention-paper", "self-attention"],
-                ["flash-paper", "flash-attention"],
-                ["flash-paper", "self-attention"],
-                ["transformer", "self-attention"],
-                ["flash-attention", "self-attention"],
-            ]
-        }
-    };
+  <!-- File Upload -->
+  <div class="card" style="margin-bottom:1rem">
+    <h4 style="margin-bottom:.6rem">📄 文件上传</h4>
+    <div class="upload-zone" id="drop-zone" onclick="document.getElementById('file-input').click()" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleDrop(event)">
+      <div class="uz-icon">📂</div>
+      <div class="uz-text">点击或拖拽文件到此处</div>
+      <div class="uz-hint">支持 .md .txt .pdf 图片 等格式</div>
+    </div>
+    <input type="file" id="file-input" style="display:none" accept=".md,.txt,.pdf,.png,.jpg,.jpeg,.gif,.webp" multiple onchange="handleFiles(this.files)">
+    <div id="file-list"></div>
+  </div>
 
-    // ─── 渲染统计 ─────────────────────────────────────────────
-    function renderStats(stats) {
-        document.getElementById('stat-total').textContent = stats.total;
-        document.getElementById('stat-concepts').textContent = stats.concepts;
-        document.getElementById('stat-papers').textContent = stats.papers;
-        document.getElementById('stat-notes').textContent = stats.notes;
-        document.getElementById('stat-raw').textContent = stats.raw_files;
-        document.getElementById('stat-links').textContent = stats.backlinks;
+  <!-- Text Paste -->
+  <div class="card" style="margin-bottom:1rem">
+    <h4 style="margin-bottom:.6rem">📝 文本粘贴</h4>
+    <div style="display:flex;gap:.5rem;margin-bottom:.5rem">
+      <select id="ingest-type" style="padding:.4rem .6rem;background:var(--bg2);border:1px solid var(--bd);border-radius:6px;color:var(--t1);font-size:.82rem">
+        <option value="paper">📑 论文阅读</option>
+        <option value="note">📝 技术笔记</option>
+        <option value="link">🔗 链接收藏</option>
+        <option value="code">💻 代码片段</option>
+      </select>
+      <input type="text" id="ingest-title" placeholder="标题" style="flex:1;padding:.4rem .6rem;background:var(--bg2);border:1px solid var(--bd);border-radius:6px;color:var(--t1);font-size:.85rem;outline:none">
+    </div>
+    <textarea class="ingest-area" id="ingest-text" placeholder="粘贴论文摘要、笔记内容、代码片段...&#10;&#10;支持 Markdown 格式"></textarea>
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="ingestText()">📥 提交投喂</button>
+      <button class="btn btn-outline" onclick="previewIngest()">👁️ 预览</button>
+      <button class="btn btn-outline" onclick="createIssue()">🐙 创建 GitHub Issue</button>
+    </div>
+  </div>
 
-        // Health bar
-        const score = stats.health_score;
-        document.getElementById('health-score').textContent = score.toFixed(1);
-        const bar = document.getElementById('health-bar');
-        setTimeout(() => { bar.style.width = score + '%'; }, 300);
+  <!-- Ingest Preview -->
+  <div id="ingest-preview-box" style="display:none">
+    <h3 class="section-title">👁️ 投喂预览</h3>
+    <div class="md-viewer" id="ingest-preview-content"></div>
+  </div>
+</div>
 
-        // Color by score
-        const scoreEl = document.getElementById('health-score');
-        if (score >= 90) { scoreEl.style.color = 'var(--accent-green)'; bar.style.background = 'linear-gradient(90deg, var(--accent-green), var(--accent-cyan))'; }
-        else if (score >= 70) { scoreEl.style.color = 'var(--accent-yellow)'; bar.style.background = 'linear-gradient(90deg, var(--accent-yellow), var(--accent-green))'; }
-        else if (score >= 50) { scoreEl.style.color = 'var(--accent-orange)'; bar.style.background = 'linear-gradient(90deg, var(--accent-orange), var(--accent-yellow))'; }
-        else { scoreEl.style.color = 'var(--accent-red)'; bar.style.background = 'var(--accent-red)'; }
-    }
+<!-- ═══════ Panel: Manage ═══════ -->
+<div class="panel" id="panel-manage">
 
-    // ─── 渲染页面卡片 ────────────────────────────────────────
-    function renderPageCard(page) {
-        const tagsHtml = (page.tags || []).map(t => `<span class="tag">${t}</span>`).join('');
-        return `
-            <a class="page-card" href="${page.path}" target="_blank">
-                <span class="card-type ${page.type}">${page.type}</span>
-                <h4>${page.title}</h4>
-                <p class="excerpt">${page.excerpt || ''}</p>
-                <div class="tags">${tagsHtml}</div>
-            </a>
-        `;
-    }
+  <h3 class="section-title">📊 编译状态</h3>
+  <div class="card" style="margin-bottom:1rem">
+    <div id="compile-info" style="font-size:.85rem;line-height:1.8"></div>
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="triggerCompile()">🔧 触发编译</button>
+      <button class="btn btn-outline" onclick="triggerLint()">🩺 运行体检</button>
+      <button class="btn btn-outline" onclick="showLog()">📋 查看日志</button>
+    </div>
+  </div>
 
-    function renderGrid(containerId, pages, countId) {
-        const grid = document.getElementById(containerId);
-        grid.innerHTML = pages.map(renderPageCard).join('');
-        document.getElementById(countId).textContent = pages.length;
-    }
+  <h3 class="section-title">📂 Raw 文件管理 <span class="cnt" id="raw-cnt">0</span></h3>
+  <div class="card" id="raw-list" style="margin-bottom:1rem"></div>
 
-    // ─── 搜索过滤 ──────────────────────────────────────────
-    function filterPages(query) {
-        const q = query.toLowerCase();
-        document.querySelectorAll('.page-card').forEach(card => {
-            const text = card.textContent.toLowerCase();
-            card.style.display = text.includes(q) ? '' : 'none';
-        });
-    }
+  <h3 class="section-title">🔗 反向链接</h3>
+  <div class="card" id="backlinks-info" style="margin-bottom:1rem;font-size:.85rem"></div>
 
-    // ─── 知识图谱 ──────────────────────────────────────────
-    function renderGraph(graphData) {
-        const container = document.getElementById('graph-container');
-        const W = container.clientWidth;
-        const H = container.clientHeight;
+  <h3 class="section-title">📋 编译日志</h3>
+  <div class="card" id="log-box" style="display:none">
+    <div class="md-viewer" id="log-content" style="max-height:40vh"></div>
+  </div>
+</div>
 
-        // 渲染边（先渲染，在节点下面）
-        const nodeMap = {};
-        graphData.nodes.forEach(n => { nodeMap[n.id] = n; });
+</div><!-- /main -->
+</div><!-- /app -->
 
-        graphData.edges.forEach(([fromId, toId]) => {
-            const from = nodeMap[fromId];
-            const to = nodeMap[toId];
-            if (!from || !to) return;
-            const x1 = from.x / 100 * W;
-            const y1 = from.y / 100 * H;
-            const x2 = to.x / 100 * W;
-            const y2 = to.y / 100 * H;
-            const dx = x2 - x1;
-            const dy = y2 - y1;
-            const length = Math.sqrt(dx * dx + dy * dy);
-            const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+<!-- Modal for page preview -->
+<div class="modal-overlay" id="page-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modal-title">页面预览</h3>
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="md-viewer" id="modal-content"></div>
+    </div>
+  </div>
+</div>
 
-            const line = document.createElement('div');
-            line.className = 'graph-line';
-            line.style.left = x1 + 'px';
-            line.style.top = y1 + 'px';
-            line.style.width = length + 'px';
-            line.style.transform = `rotate(${angle}deg)`;
-            container.appendChild(line);
-        });
+<!-- Toast -->
+<div class="toast" id="toast"></div>
 
-        // 渲染节点
-        graphData.nodes.forEach(n => {
-            const node = document.createElement('div');
-            node.className = `graph-node ${n.type}`;
-            node.textContent = n.label;
-            node.style.left = (n.x / 100 * W - 50) + 'px';
-            node.style.top = (n.y / 100 * H - 15) + 'px';
-            container.appendChild(node);
-        });
-    }
+<script>
+// ═══════════════════════════════════════════════════════════════
+// Lumina Wiki Dashboard — Full Interactive Frontend
+// ═══════════════════════════════════════════════════════════════
 
-    // ─── 初始化 ─────────────────────────────────────────────
-    document.addEventListener('DOMContentLoaded', () => {
-        renderStats(WIKI_DATA.stats);
-        renderGrid('papers-grid', WIKI_DATA.papers, 'papers-count');
-        renderGrid('concepts-grid', WIKI_DATA.concepts, 'concepts-count');
-        
-        if (WIKI_DATA.notes.length > 0) {
-            document.getElementById('notes-title').style.display = '';
-            renderGrid('notes-grid', WIKI_DATA.notes, 'notes-count');
-        }
+// ── Wiki Data (embedded from compile output) ──
+const DATA = {
+  stats: { total:4, concepts:2, papers:2, notes:0, raw_files:2, backlinks:5, health: 99.0, lastCompile: "2026-04-06 02:27 UTC" },
+  papers: [
+    { id:"attention", title:"Attention Is All You Need", path:"wiki/papers/Attention_Is_All_You_Need.md", type:"paper",
+      excerpt:"提出了完全基于注意力机制的 Transformer 架构，摒弃了 RNN/CNN。WMT 2014 英德翻译 28.4 BLEU，训练速度提升 10-100 倍。",
+      tags:["Transformer","Self-Attention","Multi-Head Attention","NeurIPS 2017"], author:"Vaswani et al.",
+      content:"---\ntitle: \"Attention Is All You Need\"\ntype: paper\ncreated: 2026-04-06\nauthor: \"Vaswani\"\n---\n\n# Attention Is All You Need\n\n> 💡 **摘要**\n> Transformer 架构论文 — 完全基于 Self-Attention 机制\n\n| 属性 | 值 |\n|------|-----|\n| 作者 | Vaswani et al. |\n| 方法论 | Self-Attention + Multi-Head Attention |\n| 关键结果 | WMT14 EN-DE: 28.4 BLEU |\n| 来源 | `raw/2026-04-06/Attention_Is_All_You_Need.md` |\n\n## 关键要点\n\n1. **Self-Attention 机制** — 允许模型关注序列中所有位置\n2. **Multi-Head Attention** — 并行执行多个注意力计算\n3. **Positional Encoding** — 正弦/余弦函数编码位置\n4. **Encoder-Decoder 架构** — 6层堆叠\n5. 训练速度比 RNN 快 **10-100 倍**\n\n## 实验结果\n\n| 任务 | BLEU | 提升 |\n|------|------|------|\n| EN-DE | 28.4 | +2.0 |\n| EN-FR | 41.0 | SOTA |\n\n## 局限性\n\nSelf-Attention 计算复杂度 O(n²·d)，限制长序列处理。\n\n## 相关实体\n\n- **[[Transformer]]** (`model`) — 98%\n- **[[Self-Attention]]** (`algorithm`) — 95%\n- **[[FlashAttention]]** — 后续优化工作\n\n---\n*由 Lumina Compiler 自动生成*" },
+    { id:"flash", title:"FlashAttention: Fast and Memory-Efficient", path:"wiki/papers/FlashAttention_Fast_and_Memory_Efficient_Exact_Attention.md", type:"paper",
+      excerpt:"IO 感知的精确注意力算法，通过分块计算将内存从 O(N²) 降到 O(N)，A100 上实现 1.5-3x 加速。",
+      tags:["FlashAttention","IO-Aware","Tiling","GPU"], author:"Dao et al.",
+      content:"---\ntitle: \"FlashAttention: Fast and Memory-Efficient\"\ntype: paper\nauthor: \"Dao et al.\"\n---\n\n# FlashAttention\n\n> 💡 **摘要**\n> IO 感知的精确注意力算法，显著降低内存占用\n\n| 属性 | 值 |\n|------|-----|\n| 内存 | O(N²) → O(N) |\n| 加速 | 1.5-3x on A100 |\n| 最大序列 | 1K → 64K |\n\n## 核心思想\n\n1. **IO-Aware** — 瓶颈在 HBM↔SRAM 数据搬运\n2. **Tiling** — 分块在 SRAM 中完成 softmax\n3. **Online Softmax** — 增量计算\n4. **Recomputation** — 用计算换内存\n\n## 后续发展\n\n- FlashAttention-2: warp-level 并行优化\n- FlashAttention-3: Hopper (H100) 适配\n- 已被 PyTorch SDPA / xFormers / Triton 集成\n\n## 相关实体\n\n- **[[Self-Attention]]** (`algorithm`)\n- **[[Transformer]]** (`model`)\n\n---\n*由 Lumina Compiler 自动生成*" }
+  ],
+  concepts: [
+    { id:"transformer", title:"Transformer", path:"wiki/concepts/Transformer.md", type:"concept",
+      excerpt:"完全基于注意力机制的神经网络架构，由 Vaswani 等人 2017 年提出。现代 LLM 的基础。",
+      tags:["model","architecture"],
+      content:"---\ntitle: \"Transformer\"\ntype: model\nstatus: seed\n---\n\n# Transformer\n\n**Transformer** 是一种完全基于注意力机制的神经网络架构。\n\n使用 Self-Attention 替代 RNN 循环结构，实现并行处理。是 BERT、GPT、T5 等大语言模型的基础。\n\n## 来源\n- [[Attention_Is_All_You_Need]] — 首次发现\n- [[FlashAttention]] — 效率优化\n\n---\n*由 Lumina Compiler 自动创建*" },
+    { id:"self-attention", title:"Self-Attention", path:"wiki/concepts/Self_Attention.md", type:"concept",
+      excerpt:"允许序列中每个位置关注所有其他位置的注意力机制，计算复杂度 O(n²·d)。",
+      tags:["algorithm","attention"],
+      content:"---\ntitle: \"Self-Attention\"\ntype: algorithm\nstatus: seed\n---\n\n# Self-Attention\n\n**Self-Attention** 允许序列中每个位置关注所有其他位置的注意力机制。\n\n计算复杂度 O(n²·d)，是 Transformer 的核心组件。Multi-Head Attention 将其并行执行多次。\n\n## 来源\n- [[Attention_Is_All_You_Need]] — 首次提出\n\n---\n*由 Lumina Compiler 自动创建*" }
+  ],
+  notes: [],
+  raw: [
+    { name:"Attention_Is_All_You_Need.md", date:"2026-04-06", size:"1.7 KB", path:"raw/2026-04-06/Attention_Is_All_You_Need.md" },
+    { name:"FlashAttention_Paper.md", date:"2026-04-06", size:"1.6 KB", path:"raw/2026-04-06/FlashAttention_Paper.md" }
+  ],
+  backlinks: {"transformer":["Attention_Is_All_You_Need","FlashAttention"],"self-attention":["Attention_Is_All_You_Need","FlashAttention"],"attention_is_all_you_need":["index","Transformer","Self_Attention"],"flashattention":["index","Transformer","Self_Attention"]},
+  log: "## [2026-04-06 02:27:42 UTC]\n\n| 指标 | 数值 |\n|------|------|\n| 新增 | 4 |\n| 摘要生成 | 2 |\n| 概念提取 | 4 (新: 2) |\n| 文章撰写 | 2 |\n| 错误 | 0 |",
+  graph: {
+    nodes: [
+      {id:"transformer",label:"Transformer",type:"model",x:50,y:30},
+      {id:"self-attention",label:"Self-Attention",type:"algorithm",x:25,y:65},
+      {id:"flash-attention",label:"FlashAttention",type:"algorithm",x:75,y:65},
+      {id:"paper1",label:"Attention Is All\nYou Need",type:"paper",x:15,y:20},
+      {id:"paper2",label:"FlashAttention\nPaper",type:"paper",x:85,y:20}
+    ],
+    edges:[["paper1","transformer"],["paper1","self-attention"],["paper2","flash-attention"],["paper2","self-attention"],["transformer","self-attention"],["flash-attention","self-attention"]]
+  }
+};
 
-        renderGraph(WIKI_DATA.graph);
+const REPO_URL = "https://github.com/isLinXu/lumina-wiki";
+let ingestedFiles = [];
 
-        // 统计数字动画
-        document.querySelectorAll('.stat-card .number').forEach(el => {
-            const target = parseInt(el.textContent);
-            if (isNaN(target)) return;
-            el.textContent = '0';
-            let current = 0;
-            const step = Math.max(1, Math.floor(target / 20));
-            const timer = setInterval(() => {
-                current += step;
-                if (current >= target) { current = target; clearInterval(timer); }
-                el.textContent = current;
-            }, 50);
-        });
-    });
-    </script>
+// ── Tab Switch ──
+function switchTab(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// ── Toast ──
+function toast(msg, type='info') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast ' + type + ' show';
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ── Render Stats ──
+function renderStats() {
+  const s = DATA.stats;
+  const items = [
+    {icon:'📄',num:s.total,label:'总页面'},
+    {icon:'💡',num:s.concepts,label:'概念'},
+    {icon:'📑',num:s.papers,label:'论文'},
+    {icon:'📝',num:s.notes,label:'笔记'},
+    {icon:'📂',num:s.raw_files,label:'Raw 文件'},
+    {icon:'🔗',num:s.backlinks,label:'交叉引用'}
+  ];
+  document.getElementById('stats-grid').innerHTML = items.map(i => `
+    <div class="card stat"><div class="icon">${i.icon}</div><div class="num">${i.num}</div><div class="lbl">${i.label}</div></div>
+  `).join('');
+  // Health
+  const sc = s.health;
+  document.getElementById('hscore').textContent = sc.toFixed(1);
+  document.getElementById('hscore').style.color = sc>=90?'var(--green)':sc>=70?'var(--yellow)':sc>=50?'var(--orange)':'var(--red)';
+  setTimeout(()=>{document.getElementById('hbar').style.width=sc+'%'},300);
+}
+
+// ── Render Page Cards ──
+function pgCard(p, clickable=true) {
+  const tags = (p.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('');
+  return `<div class="card pg-card" ${clickable?`onclick="openPage('${p.id}','${p.type}')"`:''}>
+    <span class="pg-type ${p.type}">${p.type}</span>
+    <h4>${p.title}</h4>
+    <p class="exc">${p.excerpt||''}</p>
+    <div style="margin-top:.5rem">${tags}</div>
+  </div>`;
+}
+function renderGrids(prefix) {
+  [['papers','pc'],['concepts','pc']].forEach(([key,_])=>{
+    const cid = prefix+'-'+key;
+    const cnt = prefix.replace('grid','c')+'-'+key;
+    const el = document.getElementById(cid.startsWith('w')?'w'+cid.slice(0):cid);
+  });
+  const gp = document.getElementById(prefix+'-papers');
+  const gc = document.getElementById(prefix+'-concepts');
+  if(gp) gp.innerHTML = DATA.papers.map(p=>pgCard(p)).join('');
+  if(gc) gc.innerHTML = DATA.concepts.map(p=>pgCard(p)).join('');
+  const cp = document.getElementById(prefix.replace('grid','pc')+'-papers') || document.getElementById(prefix.replace('grid','c')+'-papers');
+  const cc = document.getElementById(prefix.replace('grid','pc')+'-concepts') || document.getElementById(prefix.replace('grid','c')+'-concepts');
+}
+
+// ── Open Page Modal ──
+function openPage(id, type) {
+  const all = [...DATA.papers,...DATA.concepts,...DATA.notes];
+  const page = all.find(p=>p.id===id);
+  if(!page) return;
+  document.getElementById('modal-title').textContent = page.title;
+  document.getElementById('modal-content').innerHTML = renderMarkdown(page.content || page.excerpt);
+  document.getElementById('page-modal').classList.add('show');
+}
+function closeModal() { document.getElementById('page-modal').classList.remove('show'); }
+document.getElementById('page-modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal()});
+
+// ── Simple Markdown Renderer ──
+function renderMarkdown(md) {
+  if(!md) return '';
+  let h = md
+    .replace(/^---[\s\S]*?---\n*/,'')
+    .replace(/^### (.+)$/gm,'<h3>$1</h3>')
+    .replace(/^## (.+)$/gm,'<h2>$1</h2>')
+    .replace(/^# (.+)$/gm,'<h1>$1</h1>')
+    .replace(/^> (.+)$/gm,'<blockquote>$1</blockquote>')
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g,'<em>$1</em>')
+    .replace(/`([^`]+)`/g,'<code>$1</code>')
+    .replace(/\[\[([^\]]+)\]\]/g,'<span class="wikilink" onclick="searchWikilink(\'$1\')">🔗 $1</span>')
+    .replace(/^\| (.+)$/gm, (m) => {
+      const cells = m.split('|').filter(c=>c.trim()).map(c=>c.trim());
+      if(cells.every(c=>/^[-:]+$/.test(c))) return '';
+      const tag = m.includes('---')?'th':'td';
+      return '<tr>'+cells.map(c=>`<${tag}>${c}</${tag}>`).join('')+'</tr>';
+    })
+    .replace(/^(\d+)\. (.+)$/gm,'<li>$2</li>')
+    .replace(/^- (.+)$/gm,'<li>$1</li>')
+    .replace(/^---$/gm,'<hr>')
+    .replace(/\n{2,}/g,'</p><p>')
+    .replace(/\n/g,'<br>');
+  // Wrap tables
+  h = h.replace(/(<tr>[\s\S]*?<\/tr>[\s<br>]*)+/g,'<table>$&</table>');
+  h = h.replace(/(<li>[\s\S]*?<\/li>[\s<br>]*)+/g,'<ul>$&</ul>');
+  return '<p>'+h+'</p>';
+}
+function searchWikilink(name) {
+  closeModal();
+  const all = [...DATA.papers,...DATA.concepts,...DATA.notes];
+  const norm = name.toLowerCase().replace(/[-_ ]/g,'');
+  const found = all.find(p=>p.title.toLowerCase().replace(/[-_ ]/g,'').includes(norm) || p.id.replace(/[-_ ]/g,'').includes(norm));
+  if(found) openPage(found.id, found.type);
+  else toast('未找到页面: '+name, 'error');
+}
+
+// ── Wiki Filter ──
+function wikiFilter(q) {
+  const ql = q.toLowerCase();
+  document.querySelectorAll('#panel-wiki .pg-card').forEach(c => {
+    c.style.display = c.textContent.toLowerCase().includes(ql) ? '' : 'none';
+  });
+}
+
+// ── Ingest Functions ──
+function ingestURL() {
+  const url = document.getElementById('ingest-url').value.trim();
+  if(!url) return toast('请输入 URL','error');
+  toast('✅ URL 已提交！将通过 GitHub Issue 触发编译流水线','success');
+  const title = url.includes('arxiv')?'[Lumina] arXiv Paper':'[Lumina] Web Link';
+  window.open(`${REPO_URL}/issues/new?title=${encodeURIComponent(title)}&body=${encodeURIComponent('## 类型：链接收藏\n\n### 链接\n'+url)}&labels=lumina`,'_blank');
+  document.getElementById('ingest-url').value = '';
+}
+
+function handleDrop(e) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag');
+  handleFiles(e.dataTransfer.files);
+}
+
+function handleFiles(files) {
+  const list = document.getElementById('file-list');
+  for(const f of files) {
+    ingestedFiles.push(f);
+    const div = document.createElement('div');
+    div.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:.5rem .8rem;background:var(--bg2);border:1px solid var(--bd);border-radius:8px;margin-top:.5rem;font-size:.82rem';
+    div.innerHTML = `<span>📄 ${f.name} <span style="color:var(--t3)">(${(f.size/1024).toFixed(1)} KB)</span></span>
+      <span style="display:flex;gap:.4rem"><button class="btn btn-outline" style="padding:.2rem .5rem;font-size:.72rem" onclick="previewFile(this,'${f.name}')">预览</button><button class="btn btn-danger" style="padding:.2rem .5rem;font-size:.72rem" onclick="this.parentElement.parentElement.remove()">删除</button></span>`;
+    list.appendChild(div);
+  }
+  if(files.length) toast(`📄 已添加 ${files.length} 个文件`,'success');
+}
+
+async function previewFile(btn, name) {
+  const f = ingestedFiles.find(x=>x.name===name);
+  if(!f) return;
+  const text = await f.text();
+  document.getElementById('modal-title').textContent = '📄 ' + name;
+  document.getElementById('modal-content').innerHTML = renderMarkdown(text);
+  document.getElementById('page-modal').classList.add('show');
+}
+
+function ingestText() {
+  const title = document.getElementById('ingest-title').value.trim();
+  const text = document.getElementById('ingest-text').value.trim();
+  const type = document.getElementById('ingest-type').value;
+  if(!text) return toast('请输入内容','error');
+  const typeLabel = {paper:'论文阅读',note:'技术笔记',link:'链接收藏',code:'代码片段'}[type]||'其他';
+  const body = `## 类型：${typeLabel}\n## 标题：${title||'未命名'}\n\n### 内容\n${text}`;
+  window.open(`${REPO_URL}/issues/new?title=${encodeURIComponent('[Lumina] '+(title||typeLabel))}&body=${encodeURIComponent(body)}&labels=lumina`,'_blank');
+  toast('✅ 已创建 GitHub Issue 投喂！编译流水线将自动触发。','success');
+}
+
+function previewIngest() {
+  const title = document.getElementById('ingest-title').value.trim()||'未命名';
+  const text = document.getElementById('ingest-text').value.trim();
+  if(!text) return toast('请输入内容','error');
+  const box = document.getElementById('ingest-preview-box');
+  box.style.display = 'block';
+  const md = `# ${title}\n\n${text}`;
+  document.getElementById('ingest-preview-content').innerHTML = renderMarkdown(md);
+  box.scrollIntoView({behavior:'smooth'});
+}
+
+function createIssue() {
+  const title = document.getElementById('ingest-title').value.trim()||'新知识';
+  const text = document.getElementById('ingest-text').value.trim();
+  const type = document.getElementById('ingest-type').value;
+  const typeLabel = {paper:'论文阅读',note:'技术笔记',link:'链接收藏',code:'代码片段'}[type];
+  const body = `## 类型：${typeLabel}\n## 标题：${title}\n\n### 内容\n${text||'(待填写)'}`;
+  window.open(`${REPO_URL}/issues/new?title=${encodeURIComponent('[Lumina] '+title)}&body=${encodeURIComponent(body)}&labels=lumina`,'_blank');
+}
+
+// ── Manage Functions ──
+function renderManage() {
+  // Compile info
+  document.getElementById('compile-info').innerHTML = `
+    <div>最后编译: <strong>${DATA.stats.lastCompile}</strong></div>
+    <div>已编译文件: <strong>${DATA.stats.raw_files}</strong> 个</div>
+    <div>总 Wiki 页面: <strong>${DATA.stats.total}</strong></div>
+    <div>健康度: <strong style="color:var(--green)">${DATA.stats.health}</strong> / 100</div>
+  `;
+  // Raw list
+  const rawEl = document.getElementById('raw-list');
+  rawEl.innerHTML = DATA.raw.map(r => `
+    <div class="raw-item">
+      <div class="raw-info">
+        <div class="raw-name">📄 ${r.name}</div>
+        <div class="raw-meta">${r.date} · ${r.size} · ${r.path}</div>
+      </div>
+      <button class="btn btn-outline" style="font-size:.72rem;padding:.2rem .5rem" onclick="viewRawOnGH('${r.path}')">GitHub 查看</button>
+    </div>
+  `).join('');
+  document.getElementById('raw-cnt').textContent = DATA.raw.length;
+  // Backlinks
+  const blEl = document.getElementById('backlinks-info');
+  let blHtml = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:.5rem">';
+  for(const [target,sources] of Object.entries(DATA.backlinks)) {
+    blHtml += `<div style="padding:.5rem;background:var(--bg3);border-radius:6px"><strong style="color:var(--cyan)">[[${target}]]</strong><br><span style="color:var(--t3);font-size:.75rem">← ${sources.join(', ')}</span></div>`;
+  }
+  blHtml += '</div>';
+  blEl.innerHTML = blHtml;
+}
+
+function viewRawOnGH(path) { window.open(`${REPO_URL}/blob/main/${path}`,'_blank'); }
+
+function triggerCompile() {
+  window.open(`${REPO_URL}/actions/workflows/compile.yml`,'_blank');
+  toast('请在 GitHub Actions 中手动触发编译','info');
+}
+function triggerLint() {
+  toast('体检将在下次编译时自动运行','info');
+}
+function showLog() {
+  const box = document.getElementById('log-box');
+  box.style.display = box.style.display==='none'?'block':'none';
+  document.getElementById('log-content').innerHTML = renderMarkdown(DATA.log);
+}
+
+// ── Knowledge Graph ──
+function renderGraph() {
+  const container = document.getElementById('graph-box');
+  const W = container.clientWidth, H = container.clientHeight;
+  const nmap = {};
+  DATA.graph.nodes.forEach(n=>{nmap[n.id]=n});
+
+  // SVG edges
+  let svgLines = '';
+  DATA.graph.edges.forEach(([a,b])=>{
+    const n1=nmap[a],n2=nmap[b];
+    if(!n1||!n2)return;
+    svgLines+=`<line x1="${n1.x/100*W}" y1="${n1.y/100*H}" x2="${n2.x/100*W}" y2="${n2.y/100*H}"/>`;
+  });
+  const svg = `<svg class="graph-svg">${svgLines}</svg>`;
+
+  // Nodes
+  let nodesHtml = '';
+  DATA.graph.nodes.forEach(n=>{
+    const x = n.x/100*W - 50;
+    const y = n.y/100*H - 15;
+    nodesHtml += `<div class="gn ${n.type}" style="left:${x}px;top:${y}px">${n.label.replace('\n','<br>')}</div>`;
+  });
+
+  container.innerHTML = svg + nodesHtml;
+}
+
+// ── Init ──
+document.addEventListener('DOMContentLoaded', () => {
+  renderStats();
+  // Dashboard grids
+  document.getElementById('grid-papers').innerHTML = DATA.papers.map(p=>pgCard(p)).join('');
+  document.getElementById('grid-concepts').innerHTML = DATA.concepts.map(p=>pgCard(p)).join('');
+  document.getElementById('pc-papers').textContent = DATA.papers.length;
+  document.getElementById('pc-concepts').textContent = DATA.concepts.length;
+  // Wiki grids
+  document.getElementById('wgrid-papers').innerHTML = DATA.papers.map(p=>pgCard(p)).join('');
+  document.getElementById('wgrid-concepts').innerHTML = DATA.concepts.map(p=>pgCard(p)).join('');
+  document.getElementById('wc-papers').textContent = DATA.papers.length;
+  document.getElementById('wc-concepts').textContent = DATA.concepts.length;
+  // Manage
+  renderManage();
+  // Graph
+  renderGraph();
+  window.addEventListener('resize',renderGraph);
+});
+</script>
 </body>
 </html>
