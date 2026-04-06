@@ -80,12 +80,21 @@ jobs:
 
       - name: Commit ingested files
         run: |
+          echo "=== Debug: raw/ contents ==="
+          find raw/ -type f | sort
+          echo "=== Debug: git status ==="
+          git status --short
+          echo "=== Debug: git diff ==="
+          git diff --name-only
+          echo "=========================="
+          
           git config user.name "lumina-bot[bot]"
           git config user.email "lumina-bot@users.noreply.github.com"
-          if git diff --quiet && git diff --staged --quiet; then
+          git add raw/
+          if git diff --staged --quiet; then
             echo "::notice::No new content to commit"
           else
-            git add raw/
+            echo "::notice::New files detected, committing..."
             git commit -m "📥 Lumina: ingest $(date -u +'%Y-%m-%d') [skip ci]"
             git push
           fi

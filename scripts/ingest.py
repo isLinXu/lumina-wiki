@@ -135,18 +135,26 @@ class IngestEngine:
             try:
                 paths = await self.ingest_issue(issue)
                 saved_files.extend(paths)
+                console.print(f"  ✅ 保存了 {len(paths)} 个文件:")
+                for p in paths:
+                    console.print(f"     📄 {p} ({p.stat().st_size:,} bytes)" if p.exists() else f"     ❌ {p} (不存在!)")
 
                 # 可选：关闭已摄入的 issue
                 if self.config.ingest.close_after_ingest:
-                    issue.create_comment(
-                        "✅ **Lumina 已摄入**\n\n"
-                        f"内容已归档至 `raw/` 目录，等待编译。\n"
-                        f"_由 Lumina Compiler 自动处理于 {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}_"
-                    )
-                    issue.edit(state="closed")
-                    console.print(f"  🔒 已关闭 #{issue.number}")
+                    try:
+                        issue.create_comment(
+                            "✅ **Lumina 已摄入**\n\n"
+                            f"内容已归档至 `raw/` 目录，等待编译。\n"
+                            f"_由 Lumina Compiler 自动处理于 {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}_"
+                        )
+                        issue.edit(state="closed")
+                        console.print(f"  🔒 已关闭 #{issue.number}")
+                    except Exception as close_err:
+                        console.print(f"  ⚠️ 关闭 Issue 失败 (不影响摄入): {close_err}")
             except Exception as e:
                 console.print(f"[red]  ❌ 处理 #{issue.number} 失败: {e}[/red]")
+                import traceback
+                traceback.print_exc()
 
         return saved_files
 

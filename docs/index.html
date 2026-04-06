@@ -678,6 +678,18 @@ async function ingestURL() {
   // 同时创建 GitHub Issue
   const title = url.includes('arxiv')?'[Lumina] arXiv Paper':'[Lumina] Web Link';
   ingestProgress.log('📌 创建 GitHub Issue 触发后台编译...','info');
+  
+  // 如果没有 LLM 或 LLM 已完成，标记剩余步骤
+  if (!cfg || !cfg.apiKey) {
+    ingestProgress.setStep('pp-parse','done','⏭️ 跳过（无 LLM）');
+    ingestProgress.setStep('pp-summarize','done','⏭️ 跳过（无 LLM）');
+    ingestProgress.setStep('pp-extract','done','⏭️ 跳过（无 LLM）');
+    ingestProgress.setStep('pp-write','done','⏭️ 跳过（无 LLM）');
+    ingestProgress.log('⚠️ 未配置 LLM，在线编译跳过。通过 GitHub Issue 触发后台处理。','warn');
+  }
+  ingestProgress.setStep('pp-done','done','✅ Issue 已创建');
+  ingestProgress.complete(true);
+  
   window.open(`${REPO_URL}/issues/new?title=${encodeURIComponent(title)}&body=${encodeURIComponent('## 类型：链接收藏\n\n### 链接\n'+url)}&labels=lumina`,'_blank');
   document.getElementById('ingest-url').value = '';
 }
