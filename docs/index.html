@@ -589,31 +589,100 @@ document.getElementById('page-modal').addEventListener('click',e=>{if(e.target==
 // ── Simple Markdown Renderer ──
 function renderMarkdown(md) {
   if(!md) return '';
-  let h = md
-    .replace(/^---[\s\S]*?---\n*/,'')
-    .replace(/^### (.+)$/gm,'<h3>$1</h3>')
-    .replace(/^## (.+)$/gm,'<h2>$1</h2>')
-    .replace(/^# (.+)$/gm,'<h1>$1</h1>')
-    .replace(/^> (.+)$/gm,'<blockquote>$1</blockquote>')
-    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
-    .replace(/\*(.+?)\*/g,'<em>$1</em>')
-    .replace(/`([^`]+)`/g,'<code>$1</code>')
-    .replace(/\[\[([^\]]+)\]\]/g,'<span class="wikilink" onclick="searchWikilink(\'$1\')">🔗 $1</span>')
-    .replace(/^\| (.+)$/gm, (m) => {
-      const cells = m.split('|').filter(c=>c.trim()).map(c=>c.trim());
-      if(cells.every(c=>/^[-:]+$/.test(c))) return '';
-      const tag = m.includes('---')?'th':'td';
-      return '<tr>'+cells.map(c=>`<${tag}>${c}</${tag}>`).join('')+'</tr>';
-    })
-    .replace(/^(\d+)\. (.+)$/gm,'<li>$2</li>')
-    .replace(/^- (.+)$/gm,'<li>$1</li>')
-    .replace(/^---$/gm,'<hr>')
-    .replace(/\n{2,}/g,'</p><p>')
-    .replace(/\n/g,'<br>');
-  // Wrap tables
-  h = h.replace(/(<tr>[\s\S]*?<\/tr>[\s<br>]*)+/g,'<table>$&</table>');
-  h = h.replace(/(<li>[\s\S]*?<\/li>[\s<br>]*)+/g,'<ul>$&</ul>');
-  return '<p>'+h+'</p>';
+  // Remove front matter
+  let text = md.replace(/^---[\s\S]*?---\s*\n*/,'');
+  
+  // Process line by line for better control
+  const lines = text.split('\n');
+  let html = '';
+  let inList = false;
+  let inTable = false;
+  let inBlockquote = false;
+  let listType = 'ul';
+  
+  for (let i = 0; i < lines.length; i++) {
+    let line = lines[i];
+    
+    // Apply inline formatting
+    line = line
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.+?)\*/g, '<em>$1</em>')
+      .replace(/`([^`]+)`/g, '<code>$1</code>')
+      .replace(/\[\[([^\]]+)\]\]/g, '<span class="wikilink" onclick="searchWikilink(\'$1\')">🔗 $1</span>')
+      .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+    
+    const trimmed = line.trim();
+    
+    // Empty line
+    if (!trimmed) {
+      if (inList) { html += inList === 'ol' ? '</ol>' : '</ul>'; inList = false; }
+      if (inTable) { html += '</table>'; inTable = false; }
+      if (inBlockquote) { html += '</blockquote>'; inBlockquote = false; }
+      html += '<br>';
+      continue;
+    }
+    
+    // Headings
+    if (/^### (.+)/.test(trimmed)) { html += '<h3>' + trimmed.slice(4) + '</h3>'; continue; }
+    if (/^## (.+)/.test(trimmed)) { html += '<h2>' + trimmed.slice(3) + '</h2>'; continue; }
+    if (/^# (.+)/.test(trimmed)) { html += '<h1>' + trimmed.slice(2) + '</h1>'; continue; }
+    
+    // Horizontal rule
+    if (/^---+$/.test(trimmed) || /^\*\*\*+$/.test(trimmed)) { html += '<hr>'; continue; }
+    
+    // Blockquote
+    if (trimmed.startsWith('> ')) {
+      if (!inBlockquote) { html += '<blockquote>'; inBlockquote = true; }
+      html += trimmed.slice(2) + '<br>';
+      continue;
+    } else if (inBlockquote) { html += '</blockquote>'; inBlockquote = false; }
+    
+    // Unordered list (- or *)
+    if (/^[-*] (.+)/.test(trimmed)) {
+      if (!inList || inList !== 'ul') {
+        if (inList) html += inList === 'ol' ? '</ol>' : '</ul>';
+        html += '<ul>'; inList = 'ul';
+      }
+      html += '<li>' + trimmed.replace(/^[-*] /, '') + '</li>';
+      continue;
+    }
+    
+    // Ordered list
+    if (/^\d+\. (.+)/.test(trimmed)) {
+      if (!inList || inList !== 'ol') {
+        if (inList) html += inList === 'ol' ? '</ol>' : '</ul>';
+        html += '<ol>'; inList = 'ol';
+      }
+      html += '<li>' + trimmed.replace(/^\d+\. /, '') + '</li>';
+      continue;
+    }
+    
+    // Close list if not a list item
+    if (inList) { html += inList === 'ol' ? '</ol>' : '</ul>'; inList = false; }
+    
+    // Table
+    if (trimmed.startsWith('|') && trimmed.endsWith('|')) {
+      const cells = trimmed.split('|').filter(c => c.trim()).map(c => c.trim());
+      // Skip separator row
+      if (cells.every(c => /^[-:]+$/.test(c))) continue;
+      if (!inTable) { html += '<table>'; inTable = true; }
+      const isHeader = i + 1 < lines.length && /^\|[\s-:|]+\|$/.test(lines[i+1]?.trim() || '');
+      const tag = isHeader ? 'th' : 'td';
+      html += '<tr>' + cells.map(c => `<${tag}>${c}</${tag}>`).join('') + '</tr>';
+      continue;
+    }
+    if (inTable) { html += '</table>'; inTable = false; }
+    
+    // Regular paragraph
+    html += '<p>' + line + '</p>';
+  }
+  
+  // Close any open tags
+  if (inList) html += inList === 'ol' ? '</ol>' : '</ul>';
+  if (inTable) html += '</table>';
+  if (inBlockquote) html += '</blockquote>';
+  
+  return html;
 }
 function searchWikilink(name) {
   closeModal();
