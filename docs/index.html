@@ -167,6 +167,7 @@ textarea.ingest-area:focus{border-color:var(--cyan)}
     <button class="nav-tab active" onclick="switchTab('dashboard')">📊 Dashboard</button>
     <button class="nav-tab" onclick="switchTab('wiki')">📖 Wiki 浏览</button>
     <button class="nav-tab" onclick="switchTab('ingest')">📥 投喂上传</button>
+    <button class="nav-tab" onclick="switchTab('llm')">🤖 LLM 编译</button>
     <button class="nav-tab" onclick="switchTab('manage')">⚙️ 管理</button>
   </nav>
 </header>
@@ -278,6 +279,114 @@ textarea.ingest-area:focus{border-color:var(--cyan)}
   <div id="ingest-preview-box" style="display:none">
     <h3 class="section-title">👁️ 投喂预览</h3>
     <div class="md-viewer" id="ingest-preview-content"></div>
+  </div>
+</div>
+
+<!-- ═══════ Panel: LLM Compile ═══════ -->
+<div class="panel" id="panel-llm">
+
+  <h3 class="section-title">🤖 LLM 编译器设置</h3>
+  <p style="color:var(--t2);font-size:.85rem;margin-bottom:.5rem">配置 LLM API 信息后，可在浏览器中直接对知识库进行摘要、实体提取等编译操作。</p>
+  <p style="color:var(--orange);font-size:.75rem;margin-bottom:1rem">🔒 安全提示：API Key 仅保存在你的浏览器 localStorage 中，<strong>不会上传到 GitHub</strong>。</p>
+
+  <!-- API Config -->
+  <div class="card" style="margin-bottom:1rem">
+    <h4 style="margin-bottom:.8rem">⚙️ API 配置</h4>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem">
+      <div>
+        <label style="font-size:.75rem;color:var(--t2);display:block;margin-bottom:.2rem">Provider</label>
+        <select id="llm-provider" style="width:100%;padding:.5rem;background:var(--bg2);border:1px solid var(--bd);border-radius:6px;color:var(--t1);font-size:.85rem">
+          <option value="openai">OpenAI</option>
+          <option value="dashscope">DashScope (通义千问)</option>
+          <option value="azure">Azure OpenAI</option>
+          <option value="ollama">Ollama (本地)</option>
+          <option value="custom">自定义 OpenAI 兼容</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:.75rem;color:var(--t2);display:block;margin-bottom:.2rem">Model</label>
+        <input type="text" id="llm-model" placeholder="gpt-4o / qwen-turbo / ..." style="width:100%;padding:.5rem;background:var(--bg2);border:1px solid var(--bd);border-radius:6px;color:var(--t1);font-size:.85rem;outline:none">
+      </div>
+    </div>
+    <div style="margin-top:.6rem">
+      <label style="font-size:.75rem;color:var(--t2);display:block;margin-bottom:.2rem">API Base URL</label>
+      <input type="text" id="llm-base-url" placeholder="https://api.openai.com/v1" style="width:100%;padding:.5rem;background:var(--bg2);border:1px solid var(--bd);border-radius:6px;color:var(--t1);font-size:.85rem;outline:none">
+    </div>
+    <div style="margin-top:.6rem">
+      <label style="font-size:.75rem;color:var(--t2);display:block;margin-bottom:.2rem">API Key <span style="color:var(--orange)">🔒 仅存于浏览器</span></label>
+      <div style="display:flex;gap:.4rem">
+        <input type="password" id="llm-api-key" placeholder="sk-..." style="flex:1;padding:.5rem;background:var(--bg2);border:1px solid var(--bd);border-radius:6px;color:var(--t1);font-size:.85rem;outline:none;font-family:monospace">
+        <button class="btn btn-outline" style="font-size:.75rem;padding:.3rem .6rem;white-space:nowrap" onclick="toggleKeyVisibility()">👁️</button>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-top:.6rem">
+      <div>
+        <label style="font-size:.75rem;color:var(--t2);display:block;margin-bottom:.2rem">Temperature</label>
+        <input type="number" id="llm-temp" value="0.3" min="0" max="2" step="0.1" style="width:100%;padding:.5rem;background:var(--bg2);border:1px solid var(--bd);border-radius:6px;color:var(--t1);font-size:.85rem;outline:none">
+      </div>
+      <div>
+        <label style="font-size:.75rem;color:var(--t2);display:block;margin-bottom:.2rem">Max Tokens</label>
+        <input type="number" id="llm-max-tokens" value="4096" min="256" max="32000" step="256" style="width:100%;padding:.5rem;background:var(--bg2);border:1px solid var(--bd);border-radius:6px;color:var(--t1);font-size:.85rem;outline:none">
+      </div>
+    </div>
+    <div class="btn-group" style="margin-top:.8rem">
+      <button class="btn btn-primary" onclick="saveLLMConfig()">💾 保存配置</button>
+      <button class="btn btn-outline" onclick="testLLMConnection()">🔌 测试连接</button>
+      <button class="btn btn-danger" onclick="clearLLMConfig()">🗑️ 清除配置</button>
+    </div>
+    <div id="llm-status" style="margin-top:.6rem;font-size:.82rem"></div>
+  </div>
+
+  <!-- Compile Actions -->
+  <div class="card" style="margin-bottom:1rem">
+    <h4 style="margin-bottom:.8rem">🔧 在线编译操作</h4>
+    <p style="color:var(--t2);font-size:.82rem;margin-bottom:.8rem">选择一个 Raw 文件，使用 LLM 进行在线编译（摘要 → 实体提取 → 生成 Wiki 页面）。</p>
+    
+    <div>
+      <label style="font-size:.75rem;color:var(--t2);display:block;margin-bottom:.2rem">选择 Raw 文件</label>
+      <select id="compile-source" style="width:100%;padding:.5rem;background:var(--bg2);border:1px solid var(--bd);border-radius:6px;color:var(--t1);font-size:.85rem">
+        <option value="">-- 选择文件 --</option>
+      </select>
+    </div>
+
+    <div style="margin-top:.6rem">
+      <label style="font-size:.75rem;color:var(--t2);display:block;margin-bottom:.2rem">或粘贴自定义内容</label>
+      <textarea id="compile-custom-text" class="ingest-area" style="min-height:120px" placeholder="粘贴论文摘要、笔记内容...&#10;LLM 将生成摘要 + 实体提取 + Wiki 页面"></textarea>
+    </div>
+
+    <div class="btn-group" style="margin-top:.8rem">
+      <button class="btn btn-primary" onclick="runOnlineCompile('summarize')">📝 生成摘要</button>
+      <button class="btn btn-outline" onclick="runOnlineCompile('extract')">🏷️ 提取实体</button>
+      <button class="btn btn-outline" onclick="runOnlineCompile('full')">🔧 完整编译</button>
+      <button class="btn btn-outline" onclick="runOnlineCompile('ask')">❓ 自由提问</button>
+    </div>
+  </div>
+
+  <!-- LLM Output -->
+  <div id="llm-output-section" style="display:none">
+    <h3 class="section-title">📤 LLM 输出</h3>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">
+        <span id="llm-output-label" style="font-size:.82rem;color:var(--t2)">结果</span>
+        <div style="display:flex;gap:.3rem">
+          <button class="btn btn-outline" style="font-size:.7rem;padding:.2rem .5rem" onclick="copyLLMOutput()">📋 复制</button>
+          <button class="btn btn-outline" style="font-size:.7rem;padding:.2rem .5rem" onclick="createIssueFromOutput()">🐙 创建 Issue</button>
+        </div>
+      </div>
+      <div class="md-viewer" id="llm-output" style="max-height:50vh"></div>
+    </div>
+  </div>
+
+  <!-- Chat -->
+  <div class="card" style="margin-top:1rem">
+    <h4 style="margin-bottom:.6rem">💬 对话模式（基于 Wiki 问答）</h4>
+    <div id="chat-messages" style="max-height:300px;overflow-y:auto;margin-bottom:.6rem;padding:.5rem;background:var(--bg2);border-radius:8px;min-height:60px">
+      <div style="color:var(--t3);font-size:.82rem;padding:.5rem">💡 输入问题，LLM 将基于你的 Wiki 知识库回答。</div>
+    </div>
+    <div style="display:flex;gap:.4rem">
+      <input type="text" id="chat-input" placeholder="问一个关于知识库的问题..." style="flex:1;padding:.5rem .8rem;background:var(--bg2);border:1px solid var(--bd);border-radius:8px;color:var(--t1);font-size:.85rem;outline:none" onkeydown="if(event.key==='Enter')sendChat()">
+      <button class="btn btn-primary" onclick="sendChat()">发送</button>
+    </div>
   </div>
 </div>
 
@@ -603,6 +712,239 @@ function renderGraph() {
   container.innerHTML = svg + nodesHtml;
 }
 
+// ═══════════════════════════════════════════════════════════════
+// LLM Configuration & Online Compile (API Key stored in localStorage ONLY)
+// ═══════════════════════════════════════════════════════════════
+
+const LLM_STORAGE_KEY = 'lumina_llm_config';
+
+const PROVIDER_PRESETS = {
+  openai:    { baseUrl: 'https://api.openai.com/v1', model: 'gpt-4o' },
+  dashscope: { baseUrl: 'https://dashscope.aliyuncs.com/compatible-mode/v1', model: 'qwen-turbo' },
+  azure:     { baseUrl: '', model: 'gpt-4o' },
+  ollama:    { baseUrl: 'http://localhost:11434/v1', model: 'qwen2.5:14b' },
+  custom:    { baseUrl: '', model: '' },
+};
+
+function loadLLMConfig() {
+  try {
+    const raw = localStorage.getItem(LLM_STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch(e) {}
+  return null;
+}
+
+function saveLLMConfig() {
+  const cfg = {
+    provider: document.getElementById('llm-provider').value,
+    model: document.getElementById('llm-model').value.trim(),
+    baseUrl: document.getElementById('llm-base-url').value.trim(),
+    apiKey: document.getElementById('llm-api-key').value.trim(),
+    temperature: parseFloat(document.getElementById('llm-temp').value) || 0.3,
+    maxTokens: parseInt(document.getElementById('llm-max-tokens').value) || 4096,
+  };
+  if (!cfg.apiKey && cfg.provider !== 'ollama') {
+    toast('请输入 API Key', 'error'); return;
+  }
+  localStorage.setItem(LLM_STORAGE_KEY, JSON.stringify(cfg));
+  toast('✅ LLM 配置已保存到浏览器（不会上传到 GitHub）', 'success');
+  showLLMStatus(cfg);
+}
+
+function clearLLMConfig() {
+  localStorage.removeItem(LLM_STORAGE_KEY);
+  ['llm-api-key','llm-base-url','llm-model'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('llm-status').innerHTML = '<span style="color:var(--t3)">配置已清除</span>';
+  toast('🗑️ LLM 配置已清除', 'info');
+}
+
+function restoreLLMConfig() {
+  const cfg = loadLLMConfig();
+  if (!cfg) return;
+  document.getElementById('llm-provider').value = cfg.provider || 'openai';
+  document.getElementById('llm-model').value = cfg.model || '';
+  document.getElementById('llm-base-url').value = cfg.baseUrl || '';
+  document.getElementById('llm-api-key').value = cfg.apiKey || '';
+  document.getElementById('llm-temp').value = cfg.temperature ?? 0.3;
+  document.getElementById('llm-max-tokens').value = cfg.maxTokens ?? 4096;
+  showLLMStatus(cfg);
+}
+
+function showLLMStatus(cfg) {
+  const el = document.getElementById('llm-status');
+  const masked = cfg.apiKey ? cfg.apiKey.slice(0,6) + '****' + cfg.apiKey.slice(-4) : '未设置';
+  el.innerHTML = `<span style="color:var(--green)">✅ 已配置</span> — ${cfg.provider} / ${cfg.model} — Key: <code>${masked}</code>`;
+}
+
+function toggleKeyVisibility() {
+  const inp = document.getElementById('llm-api-key');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+
+// Provider preset auto-fill
+document.addEventListener('DOMContentLoaded', () => {
+  const sel = document.getElementById('llm-provider');
+  if (sel) sel.addEventListener('change', () => {
+    const preset = PROVIDER_PRESETS[sel.value];
+    if (preset) {
+      document.getElementById('llm-base-url').value = preset.baseUrl;
+      document.getElementById('llm-model').value = preset.model;
+    }
+  });
+});
+
+// ── LLM API Call ──
+async function callLLM(messages, options = {}) {
+  const cfg = loadLLMConfig();
+  if (!cfg || !cfg.apiKey) {
+    toast('请先在 LLM 面板中配置 API Key', 'error');
+    throw new Error('LLM 未配置');
+  }
+  const url = (cfg.baseUrl || 'https://api.openai.com/v1').replace(/\/+$/, '') + '/chat/completions';
+  const body = {
+    model: cfg.model || 'gpt-4o',
+    messages: messages,
+    temperature: options.temperature ?? cfg.temperature ?? 0.3,
+    max_tokens: options.maxTokens ?? cfg.maxTokens ?? 4096,
+    ...( options.jsonMode ? { response_format: { type: 'json_object' } } : {} ),
+  };
+
+  const resp = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${cfg.apiKey}`,
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!resp.ok) {
+    const err = await resp.text();
+    throw new Error(`API ${resp.status}: ${err.slice(0, 200)}`);
+  }
+  const data = await resp.json();
+  return data.choices[0].message.content;
+}
+
+// ── Test Connection ──
+async function testLLMConnection() {
+  const status = document.getElementById('llm-status');
+  status.innerHTML = '<span style="color:var(--yellow)">⏳ 测试中...</span>';
+  try {
+    const resp = await callLLM([{ role: 'user', content: '请回复"连接成功"四个字' }], { maxTokens: 20 });
+    status.innerHTML = `<span style="color:var(--green)">✅ 连接成功！</span> 模型回复: <code>${resp.slice(0, 50)}</code>`;
+    toast('✅ LLM API 连接成功！', 'success');
+  } catch (e) {
+    status.innerHTML = `<span style="color:var(--red)">❌ 连接失败:</span> ${e.message.slice(0, 100)}`;
+    toast('❌ 连接失败: ' + e.message.slice(0, 50), 'error');
+  }
+}
+
+// ── Online Compile ──
+async function runOnlineCompile(mode) {
+  const sel = document.getElementById('compile-source');
+  const custom = document.getElementById('compile-custom-text').value.trim();
+  let sourceText = custom;
+
+  // 如果选了 raw 文件但没自定义文本，用文件内容
+  if (!sourceText && sel.value) {
+    const page = [...DATA.papers, ...DATA.concepts, ...DATA.notes, ...DATA.raw].find(p => p.path === sel.value || p.name === sel.value);
+    sourceText = page?.content || page?.excerpt || sel.value;
+  }
+  if (!sourceText && mode !== 'ask') {
+    toast('请选择文件或粘贴内容', 'error'); return;
+  }
+
+  const outSection = document.getElementById('llm-output-section');
+  const outEl = document.getElementById('llm-output');
+  const outLabel = document.getElementById('llm-output-label');
+  outSection.style.display = 'block';
+  outEl.innerHTML = '<p style="color:var(--yellow)">⏳ LLM 处理中...</p>';
+
+  // 收集 wiki 上下文用于 ask 模式
+  const wikiContext = [...DATA.papers, ...DATA.concepts].map(p => `### ${p.title}\n${p.excerpt || ''}`).join('\n\n');
+
+  const prompts = {
+    summarize: {
+      label: '📝 摘要',
+      system: '你是 Lumina Wiki 的摘要生成器。对给定内容生成结构化中文摘要。',
+      user: `请对以下内容生成结构化摘要（中文）：\n\n## 要求\n1. 一段话核心摘要（200字以内）\n2. 5个关键要点\n3. 方法论\n4. 关键结果\n5. 局限性\n\n## 原文\n${sourceText}`
+    },
+    extract: {
+      label: '🏷️ 实体提取',
+      system: '你是 Lumina Wiki 的实体提取器。从学术/技术文本中提取核心概念和实体。',
+      user: `从以下文本中提取核心实体/概念：\n\n## 分类体系\nalgorithm / model / paper / method / concept / metric / dataset / tool / other\n\n## 文本\n${sourceText}\n\n请列出每个实体的名称、类型和简短描述。`
+    },
+    full: {
+      label: '🔧 完整编译',
+      system: '你是 Lumina Wiki 的知识编译器。将原始素材编译为结构化的 Wiki 页面。',
+      user: `请将以下原始素材编译为 Lumina Wiki 格式的页面：\n\n## 要求\n1. 生成 YAML front matter（title, type, tags, status）\n2. 摘要块（> 💡 **摘要**）\n3. 关键要点（编号列表）\n4. 相关实体（[[wikilink]] 格式）\n5. 方法论、结果、局限性\n\n## 原始素材\n${sourceText}`
+    },
+    ask: {
+      label: '❓ 问答',
+      system: `你是 Lumina Wiki 的知识问答助手。请仅基于以下 Wiki 知识库内容回答。每个论断注明来源。\n\n## Wiki 知识库\n${wikiContext}`,
+      user: sourceText || document.getElementById('chat-input').value
+    }
+  };
+
+  const prompt = prompts[mode];
+  if (!prompt) return;
+  outLabel.textContent = prompt.label;
+
+  try {
+    const result = await callLLM([
+      { role: 'system', content: prompt.system },
+      { role: 'user', content: prompt.user }
+    ]);
+    outEl.innerHTML = renderMarkdown(result);
+    outSection.dataset.rawOutput = result;
+    toast('✅ LLM 编译完成！', 'success');
+  } catch (e) {
+    outEl.innerHTML = `<p style="color:var(--red)">❌ 错误: ${e.message}</p>`;
+    toast('❌ ' + e.message.slice(0, 50), 'error');
+  }
+}
+
+function copyLLMOutput() {
+  const raw = document.getElementById('llm-output-section').dataset.rawOutput || document.getElementById('llm-output').textContent;
+  navigator.clipboard.writeText(raw).then(() => toast('📋 已复制到剪贴板', 'success'));
+}
+
+function createIssueFromOutput() {
+  const raw = document.getElementById('llm-output-section').dataset.rawOutput || '';
+  const title = '[Lumina] LLM 编译结果';
+  window.open(`${REPO_URL}/issues/new?title=${encodeURIComponent(title)}&body=${encodeURIComponent(raw)}&labels=lumina`, '_blank');
+}
+
+// ── Chat ──
+async function sendChat() {
+  const input = document.getElementById('chat-input');
+  const q = input.value.trim();
+  if (!q) return;
+  input.value = '';
+
+  const msgs = document.getElementById('chat-messages');
+  msgs.innerHTML += `<div style="margin:.4rem 0;padding:.4rem .6rem;background:var(--bg3);border-radius:6px;font-size:.82rem"><strong style="color:var(--cyan)">你:</strong> ${q}</div>`;
+  msgs.innerHTML += `<div id="chat-loading" style="color:var(--yellow);font-size:.8rem;padding:.3rem .6rem">⏳ 思考中...</div>`;
+  msgs.scrollTop = msgs.scrollHeight;
+
+  const wikiContext = [...DATA.papers, ...DATA.concepts].map(p => `### ${p.title}\n${p.excerpt || ''}`).join('\n\n');
+
+  try {
+    const ans = await callLLM([
+      { role: 'system', content: `你是 Lumina Wiki 问答助手。基于以下 Wiki 回答问题，引用来源。\n\n${wikiContext}` },
+      { role: 'user', content: q }
+    ], { maxTokens: 2048 });
+
+    document.getElementById('chat-loading')?.remove();
+    msgs.innerHTML += `<div style="margin:.4rem 0;padding:.6rem;background:rgba(88,166,255,.08);border:1px solid rgba(88,166,255,.15);border-radius:6px;font-size:.82rem;line-height:1.6"><strong style="color:var(--green)">Lumina:</strong><br>${renderMarkdown(ans)}</div>`;
+  } catch (e) {
+    document.getElementById('chat-loading')?.remove();
+    msgs.innerHTML += `<div style="color:var(--red);font-size:.8rem;padding:.3rem .6rem">❌ ${e.message.slice(0, 100)}</div>`;
+  }
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
 // ── Init ──
 document.addEventListener('DOMContentLoaded', () => {
   renderStats();
@@ -621,6 +963,24 @@ document.addEventListener('DOMContentLoaded', () => {
   // Graph
   renderGraph();
   window.addEventListener('resize',renderGraph);
+  // LLM: restore saved config
+  restoreLLMConfig();
+  // Populate raw file selector
+  const sel = document.getElementById('compile-source');
+  if (sel) {
+    DATA.raw.forEach(r => {
+      const opt = document.createElement('option');
+      opt.value = r.path;
+      opt.textContent = `📄 ${r.name} (${r.date})`;
+      sel.appendChild(opt);
+    });
+    [...DATA.papers, ...DATA.concepts].forEach(p => {
+      const opt = document.createElement('option');
+      opt.value = p.id;
+      opt.textContent = `${p.type === 'paper' ? '📑' : '💡'} ${p.title}`;
+      sel.appendChild(opt);
+    });
+  }
 });
 </script>
 </body>
