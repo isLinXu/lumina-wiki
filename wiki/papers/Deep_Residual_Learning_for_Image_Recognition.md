@@ -17,7 +17,7 @@ author: "He et al."
 |------|-----|
 | 作者 | He et al. |
 | 方法论 | [[Residual Learning]] |
-| 关键结果 | ImageNet top-5 3.57% |
+| 关键结果 | [[ImageNet]] top-5 3.57% |
 | 类型 | paper |
 | 来源 | `raw/2026-04-06/Deep_Residual_Learning_for_Image_Recognition.md` |
 | 编译时间 | 2026-04-06 |
@@ -33,7 +33,7 @@ author: "He et al."
 
 ## 关键结果
 
-ImageNet top-5 3.57%
+[[ImageNet]] top-5 3.57%
 
 ## 局限性
 
@@ -48,3 +48,12 @@ ImageNet top-5 3.57%
 
 *由 **Lumina Compiler** 于 2026-04-06T04:42:11Z 自动生成*
 *来源: `raw/2026-04-06/Deep_Residual_Learning_for_Image_Recognition.md`*
+
+---
+
+**▸ 更新于 2026-04-07T00:44:24Z**
+> 来源: `raw/2026-04-06/Deep_Residual_Learning_for_Image_Recognition.md`
+
+**补充摘要**: 本文提出深度残差学习框架，通过引入残差函数解决深度神经网络训练困难的问题，在ImageNet等数据集上取得显著性能提升。
+
+**相关实体**: [[Deep Residual Learning]] | [[ResNet]] | [[Residual Learning]] | [[ImageNet]] | [[VGG nets]] | [[COCO]] | [[ILSVRC 2015]] | [[He, Kaiming]] | [[Zhang, Xiangyu]] | [[Ren, Shaoqing]] | [[Sun, Jian]]
