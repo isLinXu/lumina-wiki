@@ -1,60 +1,80 @@
 {
   "attention_is_all_you_need": [
     "index",
+    "WMT14",
+    "arXiv",
+    "Multi_Head_Attention",
+    "WMT_2014",
     "Encoder_Decoder",
+    "Transformer",
     "Self_Attention",
     "Positional_Encoding",
-    "Multi_Head_Attention",
-    "Transformer",
-    "WMT14",
-    "Vaswani",
-    "arXiv",
+    "NeurIPS",
     "BLEU",
-    "NeurIPS"
+    "Vaswani"
   ],
   "deep_residual_learning_for_image_recognition": [
     "index",
+    "VGG_nets",
+    "Ren_Shaoqing",
+    "Residual_Learning",
+    "Sun_Jian",
+    "He_Kaiming",
+    "ResNet",
+    "CVPR_2016",
+    "ImageNet",
+    "COCO",
     "ILSVRC_2015",
     "Zhang_Xiangyu",
-    "Sun_Jian",
-    "COCO",
-    "Residual_Learning",
-    "ResNet",
-    "ImageNet",
-    "Ren_Shaoqing",
-    "VGG_nets",
-    "Deep_Residual_Learning",
-    "He_Kaiming"
+    "Deep_Residual_Learning"
   ],
   "flashattention_fast_and_memory_efficient_exact_attention": [
     "index",
-    "xFormers",
-    "Self_Attention",
+    "Online_Softmax",
+    "Tiling",
+    "Hopper",
     "FlashAttention",
-    "FlashAttention_2",
-    "Fan_Xiang_Chuan_Bo_Zhong_Ji_Suan",
-    "Zhong_Ji_Suan",
-    "Fen_Kuai_Ji_Suan",
     "FlashAttention_3",
-    "Triton",
-    "IO_Gan_Zhi_She_Ji",
     "Zai_Xian_Softmax",
+    "GPT_2",
+    "BERT_large",
+    "SDPA",
+    "xFormers",
+    "Fen_Kuai_Ji_Suan",
+    "FlashAttention_2",
+    "Zhong_Ji_Suan",
+    "Fan_Xiang_Chuan_Bo_Zhong_Ji_Suan",
+    "IO_Gan_Zhi_She_Ji",
+    "Transformer",
+    "Self_Attention",
+    "A100",
     "PyTorch",
-    "Transformer"
+    "Triton",
+    "Recomputation"
   ],
   "lumina_arxiv_paper": [
     "index",
     "Residual_Learning",
     "ResNet"
   ],
+  "a100": [
+    "index",
+    "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
+  ],
+  "bert_large": [
+    "index"
+  ],
   "bleu": [
     "index",
-    "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention",
-    "Attention_Is_All_You_Need"
+    "Attention_Is_All_You_Need",
+    "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
   ],
   "coco": [
     "index",
     "Deep_Residual_Learning_for_Image_Recognition"
+  ],
+  "cvpr_2016": [
+    "index"
   ],
   "deep_residual_learning": [
     "index"
@@ -78,8 +98,15 @@
   "flashattention_3": [
     "index"
   ],
+  "gpt_2": [
+    "index"
+  ],
   "he_kaiming": [
     "index"
+  ],
+  "hopper": [
+    "index",
+    "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
   ],
   "ilsvrc_2015": [
     "index"
@@ -98,10 +125,17 @@
     "index",
     "Attention_Is_All_You_Need"
   ],
+  "online_softmax": [
+    "index"
+  ],
   "positional_encoding": [
     "index"
   ],
   "pytorch": [
+    "index",
+    "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
+  ],
+  "recomputation": [
     "index",
     "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
   ],
@@ -116,16 +150,24 @@
   "residual_learning": [
     "index"
   ],
+  "sdpa": [
+    "index",
+    "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
+  ],
   "self_attention": [
     "index"
   ],
   "sun_jian": [
     "index"
   ],
+  "tiling": [
+    "index",
+    "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
+  ],
   "transformer": [
     "index",
-    "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention",
-    "Attention_Is_All_You_Need"
+    "Attention_Is_All_You_Need",
+    "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
   ],
   "triton": [
     "index",
@@ -136,12 +178,15 @@
   ],
   "vaswani": [
     "index",
-    "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention",
-    "Attention_Is_All_You_Need"
+    "Attention_Is_All_You_Need",
+    "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
   ],
   "wmt14": [
     "index",
     "Attention_Is_All_You_Need"
+  ],
+  "wmt_2014": [
+    "index"
   ],
   "zai_xian_softmax": [
     "index"
@@ -185,12 +230,24 @@
   "sun, jian": [
     "Deep_Residual_Learning_for_Image_Recognition"
   ],
+  "cvpr 2016": [
+    "Deep_Residual_Learning_for_Image_Recognition"
+  ],
   "self-attention": [
-    "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention",
-    "Attention_Is_All_You_Need"
+    "Attention_Is_All_You_Need",
+    "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
   ],
   "multi-head attention": [
-    "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention",
+    "Attention_Is_All_You_Need",
+    "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
+  ],
+  "positional encoding": [
+    "Attention_Is_All_You_Need"
+  ],
+  "encoder-decoder": [
+    "Attention_Is_All_You_Need"
+  ],
+  "wmt 2014": [
     "Attention_Is_All_You_Need"
   ],
   "io 感知设计": [
@@ -214,10 +271,13 @@
   "flashattention-3": [
     "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
   ],
-  "positional encoding": [
-    "Attention_Is_All_You_Need"
+  "online softmax": [
+    "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
   ],
-  "encoder-decoder": [
-    "Attention_Is_All_You_Need"
+  "gpt-2": [
+    "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
+  ],
+  "bert-large": [
+    "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
   ]
 }
