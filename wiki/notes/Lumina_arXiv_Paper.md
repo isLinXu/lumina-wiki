@@ -1,12 +1,12 @@
 ---
-title: "[Lumina] arXiv Paper"
+title: "[Lumina] [[arXiv]] Paper"
 type: other
 created: 2026-04-07T00:45:28Z
 source: raw/2026-04-06/Lumina_arXiv_Paper.md
 status: seed
 ---
 
-# [Lumina] arXiv Paper
+# [Lumina] [[arXiv]] Paper
 
 > 💡 **摘要**
 > 
@@ -19,7 +19,7 @@ status: seed
 
 ---
 
-*由 **Lumina Compiler** 于 2026-04-07T00:45:28Z 自动生成*
+*由 **[[Lumina]] Compiler** 于 2026-04-07T00:45:28Z 自动生成*
 *来源: `raw/2026-04-06/Lumina_arXiv_Paper.md`*
 
 ---
@@ -27,3 +27,11 @@ status: seed
 **▸ 更新于 2026-04-08T00:44:49Z**
 > 来源: `raw/2026-04-06/Lumina_arXiv_Paper.md`
 
+
+
+---
+
+**▸ 更新于 2026-04-09T00:37:35Z**
+> 来源: `raw/2026-04-06/Lumina_arXiv_Paper.md`
+
+**相关实体**: [[Lumina]]

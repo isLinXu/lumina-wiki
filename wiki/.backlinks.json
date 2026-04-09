@@ -10,12 +10,14 @@
     "Self_Attention",
     "Positional_Encoding",
     "NeurIPS",
+    "WMT",
     "BLEU",
     "Vaswani"
   ],
   "deep_residual_learning_for_image_recognition": [
     "index",
     "VGG_nets",
+    "Image_Classification",
     "Ren_Shaoqing",
     "Residual_Learning",
     "Sun_Jian",
@@ -49,11 +51,13 @@
     "Self_Attention",
     "A100",
     "PyTorch",
+    "IO_Gan_Zhi",
     "Triton",
     "Recomputation"
   ],
   "lumina_arxiv_paper": [
     "index",
+    "Lumina",
     "Residual_Learning",
     "ResNet"
   ],
@@ -111,12 +115,22 @@
   "ilsvrc_2015": [
     "index"
   ],
+  "io_gan_zhi": [
+    "index"
+  ],
   "io_gan_zhi_she_ji": [
     "index"
   ],
   "imagenet": [
     "index",
     "Deep_Residual_Learning_for_Image_Recognition"
+  ],
+  "image_classification": [
+    "index"
+  ],
+  "lumina": [
+    "index",
+    "Lumina_arXiv_Paper"
   ],
   "multi_head_attention": [
     "index"
@@ -181,6 +195,10 @@
     "Attention_Is_All_You_Need",
     "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
   ],
+  "wmt": [
+    "index",
+    "Attention_Is_All_You_Need"
+  ],
   "wmt14": [
     "index",
     "Attention_Is_All_You_Need"
@@ -199,7 +217,8 @@
   ],
   "arxiv": [
     "index",
-    "Attention_Is_All_You_Need"
+    "Attention_Is_All_You_Need",
+    "Lumina_arXiv_Paper"
   ],
   "xformers": [
     "index",
@@ -231,6 +250,12 @@
     "Deep_Residual_Learning_for_Image_Recognition"
   ],
   "cvpr 2016": [
+    "Deep_Residual_Learning_for_Image_Recognition"
+  ],
+  "image classification": [
+    "Deep_Residual_Learning_for_Image_Recognition"
+  ],
+  "he kaiming": [
     "Deep_Residual_Learning_for_Image_Recognition"
   ],
   "self-attention": [
@@ -278,6 +303,9 @@
     "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
   ],
   "bert-large": [
+    "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
+  ],
+  "io 感知": [
     "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
   ]
 }
