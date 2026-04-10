@@ -130,6 +130,9 @@
   ],
   "lumina": [
     "index",
+    "Deep_Residual_Learning_for_Image_Recognition",
+    "Attention_Is_All_You_Need",
+    "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention",
     "Lumina_arXiv_Paper"
   ],
   "multi_head_attention": [

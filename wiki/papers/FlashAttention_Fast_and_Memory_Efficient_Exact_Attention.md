@@ -46,7 +46,7 @@ O(n²)
 
 ---
 
-*由 **Lumina Compiler** 于 2026-04-06T02:27:42Z 自动生成*
+*由 **[[Lumina]] Compiler** 于 2026-04-06T02:27:42Z 自动生成*
 *来源: `raw/2026-04-06/FlashAttention_Paper.md`*
 
 ---
@@ -75,5 +75,15 @@ O(n²)
 > 来源: `raw/2026-04-06/FlashAttention_Paper.md`
 
 **补充摘要**: 本文提出FlashAttention算法，通过分块计算和重计算策略显著降低自注意力机制的内存占用，同时保持数学等价性。该方法在多个基准测试中表现出色，提升了大规模模型训练效率。
+
+**相关实体**: [[FlashAttention]] | [[IO 感知]] | [[分块计算]] | [[在线 Softmax]] | [[反向传播重计算]] | [[FlashAttention-2]] | [[FlashAttention-3]]
+
+
+---
+
+**▸ 更新于 2026-04-10T00:44:34Z**
+> 来源: `raw/2026-04-06/FlashAttention_Paper.md`
+
+**补充摘要**: 本文提出FlashAttention算法，通过分块计算和重计算策略显著降低自注意力机制的内存占用，同时保持数学等价性。该方法优化了GPU内存访问效率，在多个基准测试中表现出色。
 
 **相关实体**: [[FlashAttention]] | [[IO 感知]] | [[分块计算]] | [[在线 Softmax]] | [[反向传播重计算]] | [[FlashAttention-2]] | [[FlashAttention-3]]
