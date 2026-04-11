@@ -1,6 +1,7 @@
 {
   "attention_is_all_you_need": [
     "index",
+    "FlashAttention",
     "WMT14",
     "arXiv",
     "Multi_Head_Attention",
@@ -94,6 +95,7 @@
   ],
   "flashattention": [
     "index",
+    "Attention_Is_All_You_Need",
     "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
   ],
   "flashattention_2": [
@@ -259,6 +261,15 @@
     "Deep_Residual_Learning_for_Image_Recognition"
   ],
   "he kaiming": [
+    "Deep_Residual_Learning_for_Image_Recognition"
+  ],
+  "zhang xiangyu": [
+    "Deep_Residual_Learning_for_Image_Recognition"
+  ],
+  "ren shaoqing": [
+    "Deep_Residual_Learning_for_Image_Recognition"
+  ],
+  "sun jian": [
     "Deep_Residual_Learning_for_Image_Recognition"
   ],
   "self-attention": [
