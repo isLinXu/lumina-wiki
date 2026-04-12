@@ -33,6 +33,7 @@
   ],
   "flashattention_fast_and_memory_efficient_exact_attention": [
     "index",
+    "IOGan_Zhi_She_Ji",
     "Online_Softmax",
     "Tiling",
     "Hopper",
@@ -44,9 +45,11 @@
     "SDPA",
     "xFormers",
     "Fen_Kuai_Ji_Suan",
+    "Zai_Xian_SoftmaxJi_Zhu",
     "FlashAttention_2",
     "Zhong_Ji_Suan",
     "Fan_Xiang_Chuan_Bo_Zhong_Ji_Suan",
+    "Fen_Kuai_Ji_Suan_Ce_Lue",
     "IO_Gan_Zhi_She_Ji",
     "Transformer",
     "Self_Attention",
@@ -93,6 +96,9 @@
   "fen_kuai_ji_suan": [
     "index"
   ],
+  "fen_kuai_ji_suan_ce_lue": [
+    "index"
+  ],
   "flashattention": [
     "index",
     "Attention_Is_All_You_Need",
@@ -115,6 +121,9 @@
     "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
   ],
   "ilsvrc_2015": [
+    "index"
+  ],
+  "iogan_zhi_she_ji": [
     "index"
   ],
   "io_gan_zhi": [
@@ -212,6 +221,9 @@
     "index"
   ],
   "zai_xian_softmax": [
+    "index"
+  ],
+  "zai_xian_softmaxji_zhu": [
     "index"
   ],
   "zhang_xiangyu": [
@@ -320,6 +332,15 @@
     "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
   ],
   "io 感知": [
+    "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
+  ],
+  "io感知设计": [
+    "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
+  ],
+  "分块计算策略": [
+    "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
+  ],
+  "在线softmax技术": [
     "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
   ]
 }
