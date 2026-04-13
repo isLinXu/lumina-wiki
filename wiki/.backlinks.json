@@ -63,7 +63,8 @@
     "index",
     "Lumina",
     "Residual_Learning",
-    "ResNet"
+    "ResNet",
+    "arXiv_Paper"
   ],
   "a100": [
     "index",
@@ -237,6 +238,9 @@
     "Attention_Is_All_You_Need",
     "Lumina_arXiv_Paper"
   ],
+  "arxiv_paper": [
+    "index"
+  ],
   "xformers": [
     "index",
     "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
@@ -342,5 +346,8 @@
   ],
   "在线softmax技术": [
     "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
+  ],
+  "arxiv paper": [
+    "Lumina_arXiv_Paper"
   ]
 }

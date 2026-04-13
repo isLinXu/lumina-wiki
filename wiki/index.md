@@ -1,13 +1,13 @@
 # Lumina Wiki — 全局索引
 
-> 由 Lumina Compiler 自动维护 | 最后更新: 2026-04-12 00:48 UTC
+> 由 Lumina Compiler 自动维护 | 最后更新: 2026-04-13 00:48 UTC
 
 ### 📄 论文 (4)
 
 [[Attention_Is_All_You_Need]] | [[Deep_Residual_Learning_for_Image_Recognition]] | [[FlashAttention_Fast_and_Memory_Efficient_Exact_Attention]]
 [[Lumina_arXiv_Paper]]
 
-### 💡 概念 (49)
+### 💡 概念 (50)
 
 [[A100]] | [[BERT_large]] | [[BLEU]]
 [[COCO]] | [[CVPR_2016]] | [[Deep_Residual_Learning]]
@@ -25,4 +25,4 @@
 [[Vaswani]] | [[WMT]] | [[WMT14]]
 [[WMT_2014]] | [[Zai_Xian_Softmax]] | [[Zai_Xian_SoftmaxJi_Zhu]]
 [[Zhang_Xiangyu]] | [[Zhong_Ji_Suan]] | [[arXiv]]
-[[xFormers]]
+[[arXiv_Paper]] | [[xFormers]]
