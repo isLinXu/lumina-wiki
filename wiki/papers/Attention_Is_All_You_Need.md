@@ -117,3 +117,13 @@ O(n²)
 **补充摘要**: 本文提出了一种全新的网络架构——[[Transformer]]，完全基于注意力机制，摒弃了传统的循环和卷积结构。该模型在机器翻译任务中取得了显著的性能提升，并成为后续大语言模型的基础。
 
 **相关实体**: [[Transformer]] | [[Self-Attention]] | [[Multi-Head Attention]] | [[Positional Encoding]] | [[Encoder-Decoder]] | [[BLEU]] | [[FlashAttention]]
+
+
+---
+
+**▸ 更新于 2026-04-13T09:02:19Z**
+> 来源: `raw/2026-04-06/Attention_Is_All_You_Need.md`
+
+**补充摘要**: 本文提出了一种全新的网络架构——[[Transformer]]，完全基于注意力机制，摒弃了传统的循环和卷积结构。该模型在机器翻译任务中取得了显著的性能提升，并成为后续大语言模型的基础。
+
+**相关实体**: [[Transformer]] | [[Self-Attention]] | [[Multi-Head Attention]] | [[Positional Encoding]] | [[Encoder-Decoder]]

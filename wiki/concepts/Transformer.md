@@ -21,3 +21,8 @@ tags: [model]
 ### 来源补充 (2026-04-06T02:27:42Z)
 - 发现于: [[FlashAttention_Fast_and_Memory_Efficient_Exact_Attention]] (`raw/2026-04-06/FlashAttention_Paper.md`)
 - 上下文: Transformer 架构论文摘要...
+
+
+### 来源补充 (2026-04-13T09:02:33Z)
+- 发现于: [[Lumina_arXiv_Paper]] (`raw/2026-04-06/Lumina_arXiv_Paper.md`)
+- 上下文: ...

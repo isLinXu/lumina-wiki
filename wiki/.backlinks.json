@@ -64,6 +64,8 @@
     "Lumina",
     "Residual_Learning",
     "ResNet",
+    "arXiv",
+    "Transformer",
     "arXiv_Paper"
   ],
   "a100": [
@@ -196,7 +198,8 @@
   "transformer": [
     "index",
     "Attention_Is_All_You_Need",
-    "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
+    "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention",
+    "Lumina_arXiv_Paper"
   ],
   "triton": [
     "index",
@@ -345,6 +348,9 @@
     "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
   ],
   "在线softmax技术": [
+    "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
+  ],
+  "在线softmax": [
     "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
   ],
   "arxiv paper": [
