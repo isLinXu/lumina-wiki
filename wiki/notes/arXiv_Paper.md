@@ -1,12 +1,12 @@
 ---
-title: "arXiv Paper"
+title: "[[arXiv]] Paper"
 type: other
 created: 2026-04-13T09:02:14Z
 source: raw/2026-04-13/arXiv_2604_01161.md
 status: seed
 ---
 
-# arXiv Paper
+# [[arXiv]] Paper
 
 > 💡 **摘要**
 > 
@@ -19,5 +19,12 @@ status: seed
 
 ---
 
-*由 **Lumina Compiler** 于 2026-04-13T09:02:14Z 自动生成*
+*由 **[[Lumina]] Compiler** 于 2026-04-13T09:02:14Z 自动生成*
 *来源: `raw/2026-04-13/arXiv_2604_01161.md`*
+
+---
+
+**▸ 更新于 2026-04-14T00:49:21Z**
+> 来源: `raw/2026-04-13/arXiv_2604_01161.md`
+
+**相关实体**: [[FlashAttention]] | [[Transformer]] | [[BERT_large]] | [[COCO]] | [[CVPR_2016]] | [[Deep_Residual_Learning]] | [[Encoder-Decoder]] | [[He Kaiming]] | [[Hopper]]

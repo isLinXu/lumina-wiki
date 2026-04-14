@@ -73,7 +73,8 @@
     "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
   ],
   "bert_large": [
-    "index"
+    "index",
+    "arXiv_Paper"
   ],
   "bleu": [
     "index",
@@ -82,13 +83,16 @@
   ],
   "coco": [
     "index",
-    "Deep_Residual_Learning_for_Image_Recognition"
+    "Deep_Residual_Learning_for_Image_Recognition",
+    "arXiv_Paper"
   ],
   "cvpr_2016": [
-    "index"
+    "index",
+    "arXiv_Paper"
   ],
   "deep_residual_learning": [
-    "index"
+    "index",
+    "arXiv_Paper"
   ],
   "encoder_decoder": [
     "index"
@@ -105,7 +109,8 @@
   "flashattention": [
     "index",
     "Attention_Is_All_You_Need",
-    "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
+    "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention",
+    "arXiv_Paper"
   ],
   "flashattention_2": [
     "index"
@@ -121,7 +126,8 @@
   ],
   "hopper": [
     "index",
-    "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
+    "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention",
+    "arXiv_Paper"
   ],
   "ilsvrc_2015": [
     "index"
@@ -147,6 +153,7 @@
     "Deep_Residual_Learning_for_Image_Recognition",
     "Attention_Is_All_You_Need",
     "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention",
+    "arXiv_Paper",
     "Lumina_arXiv_Paper"
   ],
   "multi_head_attention": [
@@ -199,6 +206,7 @@
     "index",
     "Attention_Is_All_You_Need",
     "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention",
+    "arXiv_Paper",
     "Lumina_arXiv_Paper"
   ],
   "triton": [
@@ -239,10 +247,19 @@
   "arxiv": [
     "index",
     "Attention_Is_All_You_Need",
+    "arXiv_Paper",
     "Lumina_arXiv_Paper"
   ],
   "arxiv_paper": [
-    "index"
+    "index",
+    "Hopper",
+    "FlashAttention",
+    "He_Kaiming",
+    "BERT_large",
+    "CVPR_2016",
+    "Encoder_Decoder",
+    "COCO",
+    "Deep_Residual_Learning"
   ],
   "xformers": [
     "index",
@@ -280,7 +297,8 @@
     "Deep_Residual_Learning_for_Image_Recognition"
   ],
   "he kaiming": [
-    "Deep_Residual_Learning_for_Image_Recognition"
+    "Deep_Residual_Learning_for_Image_Recognition",
+    "arXiv_Paper"
   ],
   "zhang xiangyu": [
     "Deep_Residual_Learning_for_Image_Recognition"
@@ -303,7 +321,8 @@
     "Attention_Is_All_You_Need"
   ],
   "encoder-decoder": [
-    "Attention_Is_All_You_Need"
+    "Attention_Is_All_You_Need",
+    "arXiv_Paper"
   ],
   "wmt 2014": [
     "Attention_Is_All_You_Need"

@@ -20,3 +20,8 @@ Deep Residual Learning 最著名的应用是 ResNet（残差网络），在 Imag
 
 ---
 *由 Lumina Compiler 自动创建*
+
+
+### 来源补充 (2026-04-14T00:49:21Z)
+- 发现于: [[arXiv_Paper]] (`raw/2026-04-13/arXiv_2604_01161.md`)
+- 上下文: ...

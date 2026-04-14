@@ -127,3 +127,13 @@ author: "He et al."
 **补充摘要**: 本文提出深度残差学习框架，通过引入残差函数解决深度神经网络训练困难的问题，在图像识别任务中取得显著性能提升。
 
 **相关实体**: [[ResNet]] | [[Residual Learning]] | [[ImageNet]] | [[ILSVRC 2015]] | [[COCO]] | [[He Kaiming]] | [[Zhang Xiangyu]] | [[Ren Shaoqing]] | [[Sun Jian]]
+
+
+---
+
+**▸ 更新于 2026-04-14T00:49:03Z**
+> 来源: `raw/2026-04-06/Deep_Residual_Learning_for_Image_Recognition.md`
+
+**补充摘要**: 本文提出残差学习框架，通过显式学习残差函数而非直接学习原始函数，解决了深度神经网络训练困难的问题。实验表明，残差网络更容易优化，并且能从显著增加的深度中获益。在ImageNet数据集上，深度达152层的残差网络取得了3.57%的错误率，赢得了ILSVRC 2015分类任务的第一名。
+
+**相关实体**: [[ResNet]] | [[Residual Learning]] | [[ImageNet]] | [[ILSVRC 2015]] | [[COCO]] | [[He Kaiming]]
