@@ -38,6 +38,7 @@
     "Tiling",
     "Hopper",
     "FlashAttention",
+    "Zhong_Ji_Suan_Ce_Lue",
     "FlashAttention_3",
     "Zai_Xian_Softmax",
     "GPT_2",
@@ -244,6 +245,9 @@
   "zhong_ji_suan": [
     "index"
   ],
+  "zhong_ji_suan_ce_lue": [
+    "index"
+  ],
   "arxiv": [
     "index",
     "Attention_Is_All_You_Need",
@@ -370,6 +374,9 @@
     "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
   ],
   "在线softmax": [
+    "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
+  ],
+  "重计算策略": [
     "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
   ],
   "arxiv paper": [
