@@ -167,3 +167,13 @@ O(n²)
 **补充摘要**: 本文提出 [[FlashAttention]] 算法，通过分块计算和重计算策略显著降低 [[Self-Attention]] 的内存占用，同时保持数学等价性。该方法在多个任务中实现了显著的加速和扩展性提升。
 
 **相关实体**: [[FlashAttention]] | [[IO 感知设计]] | [[分块计算]] | [[在线 Softmax]] | [[反向传播重计算]] | [[FlashAttention-2]] | [[FlashAttention-3]]
+
+
+---
+
+**▸ 更新于 2026-04-18T00:44:10Z**
+> 来源: `raw/2026-04-06/FlashAttention_Paper.md`
+
+**补充摘要**: 本文提出FlashAttention算法，通过分块计算和重计算策略显著降低自注意力机制的内存占用，同时保持数学等价性。该方法在保持精度的前提下提升了计算效率，支持更长的序列长度，并已在多个框架中集成。
+
+**相关实体**: [[FlashAttention]] | [[IO 感知]] | [[分块计算]] | [[在线 Softmax]] | [[反向传播重计算]] | [[FlashAttention-2]] | [[FlashAttention-3]] | [[PyTorch]]
