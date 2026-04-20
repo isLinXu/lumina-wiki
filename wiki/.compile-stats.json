@@ -1,12 +1,12 @@
 {
-  "timestamp": "2026-04-19T00:49:21.266836+00:00",
+  "timestamp": "2026-04-20T00:48:39.325852+00:00",
   "added": 0,
   "modified": 5,
   "removed": 0,
   "summarized": 5,
   "concepts_extracted": 24,
-  "new_concepts": 12,
+  "new_concepts": 16,
   "articles_written": 5,
   "errors": 0,
-  "duration_seconds": 23.77
+  "duration_seconds": 20.87
 }
