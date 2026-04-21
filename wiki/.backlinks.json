@@ -51,6 +51,7 @@
     "Zhong_Ji_Suan",
     "Fan_Xiang_Chuan_Bo_Zhong_Ji_Suan",
     "Fen_Kuai_Ji_Suan_Ce_Lue",
+    "IO_Aware",
     "IO_Gan_Zhi_She_Ji",
     "Transformer",
     "Self_Attention",
@@ -136,6 +137,9 @@
     "Deep_Residual_Learning_for_Image_Recognition"
   ],
   "iogan_zhi_she_ji": [
+    "index"
+  ],
+  "io_aware": [
     "index"
   ],
   "io_gan_zhi": [
@@ -379,6 +383,9 @@
     "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
   ],
   "重计算策略": [
+    "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
+  ],
+  "io-aware": [
     "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
   ],
   "arxiv paper": [
