@@ -152,3 +152,11 @@ status: seed
 > 来源: `raw/2026-04-06/Lumina_arXiv_Paper.md`
 
 **相关实体**: [[Lumina]]
+
+
+---
+
+**▸ 更新于 2026-04-24T00:51:01Z**
+> 来源: `raw/2026-04-06/Lumina_arXiv_Paper.md`
+
+**相关实体**: [[Lumina]]
