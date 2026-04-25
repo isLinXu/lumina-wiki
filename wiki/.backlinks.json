@@ -60,6 +60,7 @@
     "PyTorch",
     "IO_Gan_Zhi",
     "Triton",
+    "Hopper_Jia_Gou",
     "Recomputation"
   ],
   "lumina_arxiv_paper": [
@@ -132,6 +133,9 @@
     "index",
     "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention",
     "arXiv_Paper"
+  ],
+  "hopper_jia_gou": [
+    "index"
   ],
   "ilsvrc_2015": [
     "index",
@@ -393,6 +397,9 @@
     "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
   ],
   "io-aware": [
+    "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
+  ],
+  "hopper 架构": [
     "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
   ],
   "arxiv paper": [
