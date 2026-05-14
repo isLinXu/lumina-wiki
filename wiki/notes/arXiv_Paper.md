@@ -130,21 +130,21 @@ status: seed
 **▸ 更新于 2026-04-27T00:51:37Z**
 > 来源: `raw/2026-04-13/arXiv_2604_01161.md`
 
-**补充摘要**: # arXiv Paper
+**补充摘要**: # [[arXiv Paper]]
 
 ## 原始内容
 
 ## 类型：链接收藏
 
 ### 链接
-https://arxiv.org/pdf/2604.01161
+https://[[arXiv]].org/pdf/2604.01161
 
 
 ## 抓取内容
 
-## arXiv Paper
+## [[arXiv Paper]]
 
-**arXiv URL**: https://arxiv.org/pdf/2604.01161
+**[[arXiv]] URL**: https://[[arXiv]].org/pdf/2604.01161
 
 
 
@@ -153,21 +153,21 @@ https://arxiv.org/pdf/2604.01161
 **▸ 更新于 2026-04-28T00:53:43Z**
 > 来源: `raw/2026-04-13/arXiv_2604_01161.md`
 
-**补充摘要**: # arXiv Paper
+**补充摘要**: # [[arXiv Paper]]
 
 ## 原始内容
 
 ## 类型：链接收藏
 
 ### 链接
-https://arxiv.org/pdf/2604.01161
+https://[[arXiv]].org/pdf/2604.01161
 
 
 ## 抓取内容
 
-## arXiv Paper
+## [[arXiv Paper]]
 
-**arXiv URL**: https://arxiv.org/pdf/2604.01161
+**[[arXiv]] URL**: https://[[arXiv]].org/pdf/2604.01161
 
 
 
@@ -176,21 +176,21 @@ https://arxiv.org/pdf/2604.01161
 **▸ 更新于 2026-04-29T00:54:48Z**
 > 来源: `raw/2026-04-13/arXiv_2604_01161.md`
 
-**补充摘要**: # arXiv Paper
+**补充摘要**: # [[arXiv Paper]]
 
 ## 原始内容
 
 ## 类型：链接收藏
 
 ### 链接
-https://arxiv.org/pdf/2604.01161
+https://[[arXiv]].org/pdf/2604.01161
 
 
 ## 抓取内容
 
-## arXiv Paper
+## [[arXiv Paper]]
 
-**arXiv URL**: https://arxiv.org/pdf/2604.01161
+**[[arXiv]] URL**: https://[[arXiv]].org/pdf/2604.01161
 
 
 
@@ -199,21 +199,21 @@ https://arxiv.org/pdf/2604.01161
 **▸ 更新于 2026-04-30T00:54:38Z**
 > 来源: `raw/2026-04-13/arXiv_2604_01161.md`
 
-**补充摘要**: # arXiv Paper
+**补充摘要**: # [[arXiv Paper]]
 
 ## 原始内容
 
 ## 类型：链接收藏
 
 ### 链接
-https://arxiv.org/pdf/2604.01161
+https://[[arXiv]].org/pdf/2604.01161
 
 
 ## 抓取内容
 
-## arXiv Paper
+## [[arXiv Paper]]
 
-**arXiv URL**: https://arxiv.org/pdf/2604.01161
+**[[arXiv]] URL**: https://[[arXiv]].org/pdf/2604.01161
 
 
 
@@ -222,21 +222,21 @@ https://arxiv.org/pdf/2604.01161
 **▸ 更新于 2026-05-01T00:58:22Z**
 > 来源: `raw/2026-04-13/arXiv_2604_01161.md`
 
-**补充摘要**: # arXiv Paper
+**补充摘要**: # [[arXiv Paper]]
 
 ## 原始内容
 
 ## 类型：链接收藏
 
 ### 链接
-https://arxiv.org/pdf/2604.01161
+https://[[arXiv]].org/pdf/2604.01161
 
 
 ## 抓取内容
 
-## arXiv Paper
+## [[arXiv Paper]]
 
-**arXiv URL**: https://arxiv.org/pdf/2604.01161
+**[[arXiv]] URL**: https://[[arXiv]].org/pdf/2604.01161
 
 
 
@@ -245,21 +245,21 @@ https://arxiv.org/pdf/2604.01161
 **▸ 更新于 2026-05-02T00:52:12Z**
 > 来源: `raw/2026-04-13/arXiv_2604_01161.md`
 
-**补充摘要**: # arXiv Paper
+**补充摘要**: # [[arXiv Paper]]
 
 ## 原始内容
 
 ## 类型：链接收藏
 
 ### 链接
-https://arxiv.org/pdf/2604.01161
+https://[[arXiv]].org/pdf/2604.01161
 
 
 ## 抓取内容
 
-## arXiv Paper
+## [[arXiv Paper]]
 
-**arXiv URL**: https://arxiv.org/pdf/2604.01161
+**[[arXiv]] URL**: https://[[arXiv]].org/pdf/2604.01161
 
 
 
@@ -268,21 +268,21 @@ https://arxiv.org/pdf/2604.01161
 **▸ 更新于 2026-05-03T00:56:32Z**
 > 来源: `raw/2026-04-13/arXiv_2604_01161.md`
 
-**补充摘要**: # arXiv Paper
+**补充摘要**: # [[arXiv Paper]]
 
 ## 原始内容
 
 ## 类型：链接收藏
 
 ### 链接
-https://arxiv.org/pdf/2604.01161
+https://[[arXiv]].org/pdf/2604.01161
 
 
 ## 抓取内容
 
-## arXiv Paper
+## [[arXiv Paper]]
 
-**arXiv URL**: https://arxiv.org/pdf/2604.01161
+**[[arXiv]] URL**: https://[[arXiv]].org/pdf/2604.01161
 
 
 
@@ -291,21 +291,21 @@ https://arxiv.org/pdf/2604.01161
 **▸ 更新于 2026-05-04T00:54:45Z**
 > 来源: `raw/2026-04-13/arXiv_2604_01161.md`
 
-**补充摘要**: # arXiv Paper
+**补充摘要**: # [[arXiv Paper]]
 
 ## 原始内容
 
 ## 类型：链接收藏
 
 ### 链接
-https://arxiv.org/pdf/2604.01161
+https://[[arXiv]].org/pdf/2604.01161
 
 
 ## 抓取内容
 
-## arXiv Paper
+## [[arXiv Paper]]
 
-**arXiv URL**: https://arxiv.org/pdf/2604.01161
+**[[arXiv]] URL**: https://[[arXiv]].org/pdf/2604.01161
 
 
 
@@ -314,21 +314,21 @@ https://arxiv.org/pdf/2604.01161
 **▸ 更新于 2026-05-05T00:50:35Z**
 > 来源: `raw/2026-04-13/arXiv_2604_01161.md`
 
-**补充摘要**: # arXiv Paper
+**补充摘要**: # [[arXiv Paper]]
 
 ## 原始内容
 
 ## 类型：链接收藏
 
 ### 链接
-https://arxiv.org/pdf/2604.01161
+https://[[arXiv]].org/pdf/2604.01161
 
 
 ## 抓取内容
 
-## arXiv Paper
+## [[arXiv Paper]]
 
-**arXiv URL**: https://arxiv.org/pdf/2604.01161
+**[[arXiv]] URL**: https://[[arXiv]].org/pdf/2604.01161
 
 
 
@@ -337,21 +337,21 @@ https://arxiv.org/pdf/2604.01161
 **▸ 更新于 2026-05-06T00:49:44Z**
 > 来源: `raw/2026-04-13/arXiv_2604_01161.md`
 
-**补充摘要**: # arXiv Paper
+**补充摘要**: # [[arXiv Paper]]
 
 ## 原始内容
 
 ## 类型：链接收藏
 
 ### 链接
-https://arxiv.org/pdf/2604.01161
+https://[[arXiv]].org/pdf/2604.01161
 
 
 ## 抓取内容
 
-## arXiv Paper
+## [[arXiv Paper]]
 
-**arXiv URL**: https://arxiv.org/pdf/2604.01161
+**[[arXiv]] URL**: https://[[arXiv]].org/pdf/2604.01161
 
 
 
@@ -360,21 +360,21 @@ https://arxiv.org/pdf/2604.01161
 **▸ 更新于 2026-05-07T00:54:25Z**
 > 来源: `raw/2026-04-13/arXiv_2604_01161.md`
 
-**补充摘要**: # arXiv Paper
+**补充摘要**: # [[arXiv Paper]]
 
 ## 原始内容
 
 ## 类型：链接收藏
 
 ### 链接
-https://arxiv.org/pdf/2604.01161
+https://[[arXiv]].org/pdf/2604.01161
 
 
 ## 抓取内容
 
-## arXiv Paper
+## [[arXiv Paper]]
 
-**arXiv URL**: https://arxiv.org/pdf/2604.01161
+**[[arXiv]] URL**: https://[[arXiv]].org/pdf/2604.01161
 
 
 
@@ -383,21 +383,21 @@ https://arxiv.org/pdf/2604.01161
 **▸ 更新于 2026-05-08T00:54:00Z**
 > 来源: `raw/2026-04-13/arXiv_2604_01161.md`
 
-**补充摘要**: # arXiv Paper
+**补充摘要**: # [[arXiv Paper]]
 
 ## 原始内容
 
 ## 类型：链接收藏
 
 ### 链接
-https://arxiv.org/pdf/2604.01161
+https://[[arXiv]].org/pdf/2604.01161
 
 
 ## 抓取内容
 
-## arXiv Paper
+## [[arXiv Paper]]
 
-**arXiv URL**: https://arxiv.org/pdf/2604.01161
+**[[arXiv]] URL**: https://[[arXiv]].org/pdf/2604.01161
 
 
 
@@ -406,21 +406,21 @@ https://arxiv.org/pdf/2604.01161
 **▸ 更新于 2026-05-09T00:54:10Z**
 > 来源: `raw/2026-04-13/arXiv_2604_01161.md`
 
-**补充摘要**: # arXiv Paper
+**补充摘要**: # [[arXiv Paper]]
 
 ## 原始内容
 
 ## 类型：链接收藏
 
 ### 链接
-https://arxiv.org/pdf/2604.01161
+https://[[arXiv]].org/pdf/2604.01161
 
 
 ## 抓取内容
 
-## arXiv Paper
+## [[arXiv Paper]]
 
-**arXiv URL**: https://arxiv.org/pdf/2604.01161
+**[[arXiv]] URL**: https://[[arXiv]].org/pdf/2604.01161
 
 
 
@@ -429,21 +429,21 @@ https://arxiv.org/pdf/2604.01161
 **▸ 更新于 2026-05-10T00:57:45Z**
 > 来源: `raw/2026-04-13/arXiv_2604_01161.md`
 
-**补充摘要**: # arXiv Paper
+**补充摘要**: # [[arXiv Paper]]
 
 ## 原始内容
 
 ## 类型：链接收藏
 
 ### 链接
-https://arxiv.org/pdf/2604.01161
+https://[[arXiv]].org/pdf/2604.01161
 
 
 ## 抓取内容
 
-## arXiv Paper
+## [[arXiv Paper]]
 
-**arXiv URL**: https://arxiv.org/pdf/2604.01161
+**[[arXiv]] URL**: https://[[arXiv]].org/pdf/2604.01161
 
 
 
@@ -452,21 +452,21 @@ https://arxiv.org/pdf/2604.01161
 **▸ 更新于 2026-05-11T00:58:11Z**
 > 来源: `raw/2026-04-13/arXiv_2604_01161.md`
 
-**补充摘要**: # arXiv Paper
+**补充摘要**: # [[arXiv Paper]]
 
 ## 原始内容
 
 ## 类型：链接收藏
 
 ### 链接
-https://arxiv.org/pdf/2604.01161
+https://[[arXiv]].org/pdf/2604.01161
 
 
 ## 抓取内容
 
-## arXiv Paper
+## [[arXiv Paper]]
 
-**arXiv URL**: https://arxiv.org/pdf/2604.01161
+**[[arXiv]] URL**: https://[[arXiv]].org/pdf/2604.01161
 
 
 
@@ -475,21 +475,21 @@ https://arxiv.org/pdf/2604.01161
 **▸ 更新于 2026-05-12T00:53:36Z**
 > 来源: `raw/2026-04-13/arXiv_2604_01161.md`
 
-**补充摘要**: # arXiv Paper
+**补充摘要**: # [[arXiv Paper]]
 
 ## 原始内容
 
 ## 类型：链接收藏
 
 ### 链接
-https://arxiv.org/pdf/2604.01161
+https://[[arXiv]].org/pdf/2604.01161
 
 
 ## 抓取内容
 
-## arXiv Paper
+## [[arXiv Paper]]
 
-**arXiv URL**: https://arxiv.org/pdf/2604.01161
+**[[arXiv]] URL**: https://[[arXiv]].org/pdf/2604.01161
 
 
 
@@ -498,19 +498,27 @@ https://arxiv.org/pdf/2604.01161
 **▸ 更新于 2026-05-13T00:57:34Z**
 > 来源: `raw/2026-04-13/arXiv_2604_01161.md`
 
-**补充摘要**: # arXiv Paper
+**补充摘要**: # [[arXiv Paper]]
 
 ## 原始内容
 
 ## 类型：链接收藏
 
 ### 链接
-https://arxiv.org/pdf/2604.01161
+https://[[arXiv]].org/pdf/2604.01161
 
 
 ## 抓取内容
 
-## arXiv Paper
+## [[arXiv Paper]]
 
-**arXiv URL**: https://arxiv.org/pdf/2604.01161
+**[[arXiv]] URL**: https://[[arXiv]].org/pdf/2604.01161
 
+
+
+---
+
+**▸ 更新于 2026-05-14T00:59:26Z**
+> 来源: `raw/2026-04-13/arXiv_2604_01161.md`
+
+**相关实体**: [[arXiv Paper]]

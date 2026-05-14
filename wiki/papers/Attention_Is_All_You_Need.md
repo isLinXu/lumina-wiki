@@ -257,3 +257,13 @@ O(n²)
 **补充摘要**: 本文提出了一种基于注意力机制的全新网络架构——[[Transformer]]，完全摒弃了传统的循环和卷积结构。通过Self-Attention和Multi-Head Attention机制实现序列建模，结合Positional Encoding处理位置信息，在机器翻译任务中取得了显著性能提升。
 
 **相关实体**: [[Transformer]] | [[Self-Attention]] | [[Multi-Head Attention]] | [[Positional Encoding]] | [[Encoder-Decoder]] | [[BLEU]]
+
+
+---
+
+**▸ 更新于 2026-05-14T00:59:07Z**
+> 来源: `raw/2026-04-06/Attention_Is_All_You_Need.md`
+
+**补充摘要**: 本文提出了Transformer架构，完全基于注意力机制，在机器翻译任务上达到SOTA效果。通过Self-Attention和Multi-Head Attention实现并行计算，结合Positional Encoding解决位置信息问题，显著提升了模型性能和训练效率。
+
+**相关实体**: [[Transformer]] | [[Self-Attention]] | [[Multi-Head Attention]] | [[Positional Encoding]] | [[Encoder-Decoder]] | [[BLEU]]

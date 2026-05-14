@@ -21,6 +21,7 @@
     "VGG_nets",
     "Image_Classification",
     "Ren_Shaoqing",
+    "CIFAR_10",
     "Residual_Learning",
     "Sun_Jian",
     "He_Kaiming",
@@ -84,6 +85,9 @@
     "index",
     "Attention_Is_All_You_Need",
     "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
+  ],
+  "cifar_10": [
+    "index"
   ],
   "coco": [
     "index",
@@ -325,6 +329,9 @@
     "Deep_Residual_Learning_for_Image_Recognition"
   ],
   "sun jian": [
+    "Deep_Residual_Learning_for_Image_Recognition"
+  ],
+  "cifar-10": [
     "Deep_Residual_Learning_for_Image_Recognition"
   ],
   "self-attention": [
