@@ -25,14 +25,17 @@
     "Ren_Shaoqing",
     "Deep_Residual_Learning",
     "Image_Classification",
+    "Xiangyu_Zhang",
     "Residual_Learning",
     "He_Kaiming",
     "ImageNet",
     "ILSVRC_2015",
     "Zhang_Xiangyu",
     "Sun_Jian",
+    "Jian_Sun",
     "ResNet",
-    "Residual_Network"
+    "Residual_Network",
+    "Shaoqing_Ren"
   ],
   "flashattention_fast_and_memory_efficient_exact_attention": [
     "index",
@@ -165,6 +168,9 @@
   "image_classification": [
     "index"
   ],
+  "jian_sun": [
+    "index"
+  ],
   "lumina": [
     "index",
     "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention",
@@ -218,6 +224,9 @@
   "self_attention": [
     "index"
   ],
+  "shaoqing_ren": [
+    "index"
+  ],
   "sun_jian": [
     "index"
   ],
@@ -253,6 +262,9 @@
     "Attention_Is_All_You_Need"
   ],
   "wmt_2014": [
+    "index"
+  ],
+  "xiangyu_zhang": [
     "index"
   ],
   "zai_xian_softmax": [
@@ -414,6 +426,15 @@
     "Deep_Residual_Learning_for_Image_Recognition"
   ],
   "residual network": [
+    "Deep_Residual_Learning_for_Image_Recognition"
+  ],
+  "xiangyu zhang": [
+    "Deep_Residual_Learning_for_Image_Recognition"
+  ],
+  "shaoqing ren": [
+    "Deep_Residual_Learning_for_Image_Recognition"
+  ],
+  "jian sun": [
     "Deep_Residual_Learning_for_Image_Recognition"
   ],
   "arxiv paper": [
