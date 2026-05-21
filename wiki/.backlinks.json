@@ -18,6 +18,7 @@
   ],
   "deep_residual_learning_for_image_recognition": [
     "index",
+    "Residual_Function",
     "VGG_nets",
     "CIFAR_10",
     "CVPR_2016",
@@ -33,6 +34,7 @@
     "Zhang_Xiangyu",
     "Sun_Jian",
     "Jian_Sun",
+    "Skip_Connection",
     "ResNet",
     "Residual_Network",
     "Shaoqing_Ren"
@@ -211,6 +213,9 @@
     "Deep_Residual_Learning_for_Image_Recognition",
     "Lumina_arXiv_Paper"
   ],
+  "residual_function": [
+    "index"
+  ],
   "residual_learning": [
     "index"
   ],
@@ -225,6 +230,9 @@
     "index"
   ],
   "shaoqing_ren": [
+    "index"
+  ],
+  "skip_connection": [
     "index"
   ],
   "sun_jian": [
@@ -435,6 +443,12 @@
     "Deep_Residual_Learning_for_Image_Recognition"
   ],
   "jian sun": [
+    "Deep_Residual_Learning_for_Image_Recognition"
+  ],
+  "residual function": [
+    "Deep_Residual_Learning_for_Image_Recognition"
+  ],
+  "skip connection": [
     "Deep_Residual_Learning_for_Image_Recognition"
   ],
   "arxiv paper": [

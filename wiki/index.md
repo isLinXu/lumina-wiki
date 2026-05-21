@@ -1,13 +1,13 @@
 # Lumina Wiki — 全局索引
 
-> 由 Lumina Compiler 自动维护 | 最后更新: 2026-05-20 01:03 UTC
+> 由 Lumina Compiler 自动维护 | 最后更新: 2026-05-21 01:03 UTC
 
 ### 📄 论文 (4)
 
 [[Attention_Is_All_You_Need]] | [[Deep_Residual_Learning_for_Image_Recognition]] | [[FlashAttention_Fast_and_Memory_Efficient_Exact_Attention]]
 [[Lumina_arXiv_Paper]]
 
-### 💡 概念 (59)
+### 💡 概念 (61)
 
 [[A100]] | [[BERT_large]] | [[BLEU]]
 [[CIFAR_10]] | [[COCO]] | [[CVPR_2016]]
@@ -21,11 +21,12 @@
 [[Multi_Head_Attention]] | [[NeurIPS]] | [[NeurIPS_2017]]
 [[Online_Softmax]] | [[Positional_Encoding]] | [[PyTorch]]
 [[Recomputation]] | [[Ren_Shaoqing]] | [[ResNet]]
-[[Residual_Learning]] | [[Residual_Network]] | [[SDPA]]
-[[Self_Attention]] | [[Shaoqing_Ren]] | [[Sun_Jian]]
-[[Tiling]] | [[Transformer]] | [[Triton]]
-[[VGG_nets]] | [[Vaswani]] | [[WMT]]
-[[WMT14]] | [[WMT_2014]] | [[Xiangyu_Zhang]]
-[[Zai_Xian_Softmax]] | [[Zai_Xian_SoftmaxJi_Zhu]] | [[Zhang_Xiangyu]]
-[[Zhong_Ji_Suan]] | [[Zhong_Ji_Suan_Ce_Lue]] | [[arXiv]]
-[[arXiv_Paper]] | [[xFormers]]
+[[Residual_Function]] | [[Residual_Learning]] | [[Residual_Network]]
+[[SDPA]] | [[Self_Attention]] | [[Shaoqing_Ren]]
+[[Skip_Connection]] | [[Sun_Jian]] | [[Tiling]]
+[[Transformer]] | [[Triton]] | [[VGG_nets]]
+[[Vaswani]] | [[WMT]] | [[WMT14]]
+[[WMT_2014]] | [[Xiangyu_Zhang]] | [[Zai_Xian_Softmax]]
+[[Zai_Xian_SoftmaxJi_Zhu]] | [[Zhang_Xiangyu]] | [[Zhong_Ji_Suan]]
+[[Zhong_Ji_Suan_Ce_Lue]] | [[arXiv]] | [[arXiv_Paper]]
+[[xFormers]]
