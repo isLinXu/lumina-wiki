@@ -1045,14 +1045,14 @@ https://[[arXiv]].org/pdf/1512.03385
 **▸ 更新于 2026-06-25T01:01:58Z**
 > 来源: `raw/2026-04-06/Lumina_arXiv_Paper.md`
 
-**补充摘要**: # [Lumina] arXiv Paper
+**补充摘要**: # [Lumina] [[arXiv Paper]]
 
 ## 原始内容
 
 ## 类型：链接收藏
 
 ### 链接
-https://arxiv.org/pdf/1512.03385
+https://[[arXiv]].org/pdf/1512.03385
 
 
 
@@ -1061,14 +1061,14 @@ https://arxiv.org/pdf/1512.03385
 **▸ 更新于 2026-06-26T01:04:51Z**
 > 来源: `raw/2026-04-06/Lumina_arXiv_Paper.md`
 
-**补充摘要**: # [Lumina] arXiv Paper
+**补充摘要**: # [Lumina] [[arXiv Paper]]
 
 ## 原始内容
 
 ## 类型：链接收藏
 
 ### 链接
-https://arxiv.org/pdf/1512.03385
+https://[[arXiv]].org/pdf/1512.03385
 
 
 
@@ -1077,14 +1077,14 @@ https://arxiv.org/pdf/1512.03385
 **▸ 更新于 2026-06-27T01:00:34Z**
 > 来源: `raw/2026-04-06/Lumina_arXiv_Paper.md`
 
-**补充摘要**: # [Lumina] arXiv Paper
+**补充摘要**: # [Lumina] [[arXiv Paper]]
 
 ## 原始内容
 
 ## 类型：链接收藏
 
 ### 链接
-https://arxiv.org/pdf/1512.03385
+https://[[arXiv]].org/pdf/1512.03385
 
 
 
@@ -1093,14 +1093,14 @@ https://arxiv.org/pdf/1512.03385
 **▸ 更新于 2026-06-28T01:05:11Z**
 > 来源: `raw/2026-04-06/Lumina_arXiv_Paper.md`
 
-**补充摘要**: # [Lumina] arXiv Paper
+**补充摘要**: # [Lumina] [[arXiv Paper]]
 
 ## 原始内容
 
 ## 类型：链接收藏
 
 ### 链接
-https://arxiv.org/pdf/1512.03385
+https://[[arXiv]].org/pdf/1512.03385
 
 
 
@@ -1109,14 +1109,14 @@ https://arxiv.org/pdf/1512.03385
 **▸ 更新于 2026-06-29T01:06:03Z**
 > 来源: `raw/2026-04-06/Lumina_arXiv_Paper.md`
 
-**补充摘要**: # [Lumina] arXiv Paper
+**补充摘要**: # [Lumina] [[arXiv Paper]]
 
 ## 原始内容
 
 ## 类型：链接收藏
 
 ### 链接
-https://arxiv.org/pdf/1512.03385
+https://[[arXiv]].org/pdf/1512.03385
 
 
 
@@ -1125,14 +1125,14 @@ https://arxiv.org/pdf/1512.03385
 **▸ 更新于 2026-06-30T01:01:57Z**
 > 来源: `raw/2026-04-06/Lumina_arXiv_Paper.md`
 
-**补充摘要**: # [Lumina] arXiv Paper
+**补充摘要**: # [Lumina] [[arXiv Paper]]
 
 ## 原始内容
 
 ## 类型：链接收藏
 
 ### 链接
-https://arxiv.org/pdf/1512.03385
+https://[[arXiv]].org/pdf/1512.03385
 
 
 
@@ -1141,12 +1141,20 @@ https://arxiv.org/pdf/1512.03385
 **▸ 更新于 2026-07-01T01:06:19Z**
 > 来源: `raw/2026-04-06/Lumina_arXiv_Paper.md`
 
-**补充摘要**: # [Lumina] arXiv Paper
+**补充摘要**: # [Lumina] [[arXiv Paper]]
 
 ## 原始内容
 
 ## 类型：链接收藏
 
 ### 链接
-https://arxiv.org/pdf/1512.03385
+https://[[arXiv]].org/pdf/1512.03385
 
+
+
+---
+
+**▸ 更新于 2026-07-02T01:02:15Z**
+> 来源: `raw/2026-04-06/Lumina_arXiv_Paper.md`
+
+**相关实体**: [[Lumina]] | [[arXiv Paper]]
