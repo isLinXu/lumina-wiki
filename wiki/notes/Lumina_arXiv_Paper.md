@@ -1846,3 +1846,19 @@ https://arxiv.org/pdf/1512.03385
 ### 链接
 https://arxiv.org/pdf/1512.03385
 
+
+
+---
+
+**▸ 更新于 2026-08-15T01:23:06Z**
+> 来源: `raw/2026-04-06/Lumina_arXiv_Paper.md`
+
+**补充摘要**: # [Lumina] arXiv Paper
+
+## 原始内容
+
+## 类型：链接收藏
+
+### 链接
+https://arxiv.org/pdf/1512.03385
+
