@@ -13,7 +13,6 @@ import math
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Optional
 
 try:
     from rich.console import Console
@@ -65,12 +64,14 @@ class BM25Engine:
         self.doc_texts: dict[str, str] = {}
         # doc_id -> metadata
         self.doc_meta: dict[str, dict] = {}
+        # 最后一次搜索的匹配总数（top_k 截断前）
+        self.last_total_hits: int = 0
 
     def add_document(self, doc_id: str, text: str, meta: dict | None = None) -> None:
         """添加文档到索引。"""
         terms = self._tokenize(text)
         self.doc_count += 1
-        
+
         # TF
         tf: dict[str, int] = {}
         for t in terms:
@@ -88,6 +89,33 @@ class BM25Engine:
 
         # 更新平均文档长度
         self.avg_dl = sum(self.doc_lengths.values()) / max(self.doc_count, 1)
+
+    def to_dict(self) -> dict:
+        """序列化索引为 JSON 兼容字典，用于持久化缓存。"""
+        return {
+            "k1": self.k1,
+            "b": self.b,
+            "doc_count": self.doc_count,
+            "avg_dl": self.avg_dl,
+            "doc_tf": self.doc_tf,
+            "doc_lengths": self.doc_lengths,
+            "df": self.df,
+            "doc_texts": self.doc_texts,
+            "doc_meta": self.doc_meta,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict) -> "BM25Engine":
+        """从字典反序列化索引。"""
+        engine = cls(k1=data["k1"], b=data["b"])
+        engine.doc_count = data["doc_count"]
+        engine.avg_dl = data["avg_dl"]
+        engine.doc_tf = data["doc_tf"]
+        engine.doc_lengths = data["doc_lengths"]
+        engine.df = data["df"]
+        engine.doc_texts = data["doc_texts"]
+        engine.doc_meta = data["doc_meta"]
+        return engine
 
     def search(
         self,
@@ -159,6 +187,9 @@ class BM25Engine:
 
         scores.sort(key=lambda x: x[1], reverse=True)
 
+        # 记录匹配总数（top_k 截断前）
+        self.last_total_hits = len(scores)
+
         results = []
         for doc_id, score in scores[:top_k]:
             text = self.doc_texts.get(doc_id, "")
@@ -205,7 +236,9 @@ class BM25Engine:
 # ─── 搜索管理器 ──────────────────────────────────────────────────────
 
 class WikiSearcher:
-    """Lumina Wiki 的统一搜索接口。"""
+    """Lumina Wiki 的统一搜索接口，支持索引持久化缓存。"""
+
+    CACHE_FILENAME = ".search-index.json"
 
     def __init__(self, wiki_path: Path | str):
         self.wiki_path = Path(wiki_path)
@@ -213,7 +246,64 @@ class WikiSearcher:
         self._built = False
 
     def _build_index(self) -> BM25Engine:
-        """从 wiki 目录构建 BM25 索引。"""
+        """
+        构建或加载 BM25 索引。
+        
+        策略（按优先级）：
+        1. 内存缓存命中 → 直接返回
+        2. 磁盘缓存有效 → 加载并返回
+        3. 重建索引 → 从 wiki 目录扫描并保存到磁盘
+        """
+        # 1. 内存缓存
+        if self._built and self._bm25 is not None:
+            return self._bm25
+
+        cache_path = self.wiki_path / self.CACHE_FILENAME
+
+        # 2. 尝试从磁盘缓存加载
+        engine = self._try_load_cache(cache_path)
+        if engine is None:
+            # 3. 缓存不存在或过期，重建
+            engine = self._rebuild_index()
+            self._save_cache(engine, cache_path)
+
+        self._built = True
+        self._bm25 = engine
+        return engine
+
+    def _try_load_cache(self, cache_path: Path) -> BM25Engine | None:
+        """尝试从磁盘缓存加载索引，验证缓存新鲜度。"""
+        if not cache_path.exists():
+            return None
+
+        try:
+            data = json.loads(cache_path.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            return None
+
+        # 验证缓存新鲜度：比较 wiki 下所有 md 文件的修改时间
+        cached_mtime = data.get("_cached_at", 0)
+        if self.wiki_path.exists():
+            try:
+                for md_file in self.wiki_path.rglob("*.md"):
+                    if md_file.name.startswith("."):
+                        continue
+                    if md_file.stat().st_mtime > cached_mtime:
+                        return None  # 有文件比缓存更新 → 过期
+            except OSError:
+                return None
+
+        # 反序列化
+        try:
+            engine = BM25Engine.from_dict(data)
+            if engine.doc_count == 0:
+                return None
+            return engine
+        except (KeyError, TypeError):
+            return None
+
+    def _rebuild_index(self) -> BM25Engine:
+        """从 wiki 目录扫描所有 .md 文件重建 BM25 索引。"""
         engine = BM25Engine()
 
         if not self.wiki_path.exists():
@@ -222,7 +312,7 @@ class WikiSearcher:
         for md_file in self.wiki_path.rglob("*.md"):
             if md_file.name.startswith("."):
                 continue
-            
+
             rel_path = str(md_file.relative_to(self.wiki_path))
             content = md_file.read_text(encoding="utf-8")
 
@@ -246,9 +336,30 @@ class WikiSearcher:
 
             engine.add_document(rel_path, content, meta)
 
-        self._built = True
-        self._bm25 = engine
         return engine
+
+    def _save_cache(self, engine: BM25Engine, cache_path: Path) -> None:
+        """保存索引到磁盘缓存。"""
+        import time
+        try:
+            data = engine.to_dict()
+            data["_cached_at"] = time.time()
+            cache_path.write_text(
+                json.dumps(data, ensure_ascii=False),
+                encoding="utf-8",
+            )
+        except (OSError, TypeError):
+            pass  # 缓存写入失败不影响搜索
+
+    def invalidate_cache(self) -> None:
+        """手动失效缓存（内存 + 磁盘），下次搜索将重建索引。"""
+        self._bm25 = None
+        self._built = False
+        cache_path = self.wiki_path / self.CACHE_FILENAME
+        try:
+            cache_path.unlink(missing_ok=True)
+        except OSError:
+            pass
 
     def search(
         self,
@@ -275,7 +386,7 @@ class WikiSearcher:
         return SearchResponse(
             query=query,
             results=results,
-            total_hits=len(engine.search(query, top_k=len(engine.doc_texts), required_tags=tags)),
+            total_hits=engine.last_total_hits,
             search_time_ms=round(elapsed, 1),
         )
 
