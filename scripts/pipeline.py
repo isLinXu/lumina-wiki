@@ -10,15 +10,11 @@ Lumina Wiki - Enhanced 5-Pass Compiler Pipeline
 
 from __future__ import annotations
 
-import asyncio
-import hashlib
 import json
 import re
-import sys
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Optional
 
 from rich.console import Console
 from rich.panel import Panel
@@ -164,6 +160,7 @@ class CompilerPipeline:
         pending = diff_result.needs_processing
         if not pending:
             console.print("[green]✅ 所有素材已是最新，无需编译。[/green]")
+            stats.duration_seconds = time.time() - start_time
             self._save_stats(stats, start_time)
             return stats
 
@@ -244,9 +241,12 @@ class CompilerPipeline:
 
         # ── Pass 5: Post-Process ─────────────────────────────────
         console.print("\n[bold]▶ Pass 5/5: Post-Process[/bold] — 后处理...")
+
+        # 先计算耗时，再执行后处理（日志和统计需要正确的 duration_seconds）
+        stats.duration_seconds = time.time() - start_time
         await self.pass5_postprocess(stats)
 
-        stats.duration_seconds = time.time() - start_time
+        # 保存统计（duration_seconds 已在 pass5 前设置）
         self._save_stats(stats, start_time)
 
         # 最终报告
@@ -255,6 +255,9 @@ class CompilerPipeline:
 
     async def re_extract(self) -> dict:
         """从已有摘要重新运行 Pass 3+4（不重新摘要）。"""
+        import time
+        start_time = time.time()
+
         # 找到所有已编译的源文件记录
         to_reextract = []
         for rel, mtime in self._compiled_index.get("compiled", {}).items():
@@ -280,6 +283,8 @@ class CompilerPipeline:
             except Exception as e:
                 stats.errors += 1
 
+        # 先计算耗时，再执行后处理（日志需要正确的 duration_seconds）
+        stats.duration_seconds = time.time() - start_time
         await self.pass5_postprocess(stats)
         return {"concepts_extracted": stats.concepts_extracted,
                 "articles_written": stats.articles_written,
@@ -387,16 +392,16 @@ class CompilerPipeline:
         combined = f"标题: {summary.title}\n"
         combined += f"摘要: {summary.summary_text}\n"
         combined += f"要点: {' | '.join(summary.key_points)}\n"
-        
+
         # 也读取部分原文
         _, body = self._parse_raw_markdown(raw_file.read_text(encoding="utf-8"))
         combined += f"\n原文前3000字:\n{body[:3000]}"
 
-        # 已有概念提示（避免重复提取）
+        # 已有概念提示（参考用途，不抑制提取）
         existing_hint = ""
         if self._all_concepts:
             sample = sorted(list(self._all_concepts))[:20]
-            existing_hint = f"以下概念已经存在，不需要重复提取：{', '.join(sample)}\n"
+            existing_hint = f"参考（已有概念，可补充新视角）：{', '.join(sample)}\n"
 
         prompt = f"""从以下文档中提取核心技术概念和实体。直接输出 JSON，不要包含其他文字。
 
@@ -406,6 +411,7 @@ class CompilerPipeline:
 - 只提取有独立 Wiki 页面价值的重要实体
 - 不要提取"深度学习""神经网络"等过于宽泛的词
 - 每个实体给出 0.7-1.0 的置信度
+- 即使概念已存在，也照常提取（系统会自动去重）
 {existing_hint}
 输出格式: {{"entities": [{{"name": "实体名", "type": "类型", "confidence": 0.95}}]}}
 
@@ -415,21 +421,59 @@ class CompilerPipeline:
 {combined}"""
 
         try:
-            result = await self.llm.extract_json([{"role": "user", "content": prompt}])
+            result = await self.llm.extract_json(
+                [{"role": "user", "content": prompt}],
+                system_prompt="你是一个 JSON 输出机器。只输出合法 JSON，不要输出任何其他文字、解释或 markdown 标记。",
+            )
             entities = result.get("entities", [])
-            
+
             # 过滤低置信度
             threshold = self.config.compiler.entity_confidence
             entities = [e for e in entities if e.get("confidence", 0) >= threshold]
-            
-            # 过滤已存在的概念（降低噪声）
-            entities = [e for e in entities 
-                       if e.get("name", "") not in self._all_concepts 
+
+            # 过滤已存在的概念（使用 slugified 名称比较，避免命名风格差异导致漏匹配）
+            entities = [e for e in entities
+                       if _slugify(e.get("name", "")) not in self._all_concepts
                        or e.get("confidence", 0) > 0.9]
-            
+
+            if not entities:
+                console.print(f"[dim]  ℹ️  实体提取完成但全部已存在或被过滤({raw_file.name})[/dim]")
             return ExtractResult(entities=entities)
         except Exception as e:
-            console.print(f"[yellow]  ⚠️ 实体提取失败({raw_file.name}): {e}[/yellow]")
+            console.print(f"[yellow]  ⚠️ JSON 实体提取失败({raw_file.name}): {e}[/yellow]")
+            console.print("[dim]     降级为文本模式提取...[/dim]")
+            return await self._fallback_extract(raw_file, summary)
+
+    async def _fallback_extract(self, raw_file: Path, summary: SummaryResult) -> ExtractResult:
+        """JSON 提取失败时的降级方案：用纯文本提取实体。"""
+        _, body = self._parse_raw_markdown(raw_file.read_text(encoding="utf-8"))
+        combined = f"标题: {summary.title}\n摘要: {summary.summary_text}\n原文前2000字:\n{body[:2000]}"
+
+        prompt = f"""从以下文档中提取核心技术概念。以逗号分隔输出实体名称列表，不要输出 JSON 或其他格式。
+
+示例输出: FlashAttention, Transformer, Multi-Head Attention, Softmax
+
+文档内容:
+{combined}"""
+
+        try:
+            text = await self.llm.chat([{"role": "user", "content": prompt}])
+            # 解析逗号分隔的列表
+            names = [n.strip() for n in text.replace("\n", ",").split(",") if n.strip()]
+            # 去重并过滤已存在的概念
+            entities = []
+            seen: set[str] = set()
+            for name in names:
+                slug = _slugify(name)
+                if slug and slug not in self._all_concepts and slug not in seen:
+                    seen.add(slug)
+                    entities.append({"name": name, "type": "concept", "confidence": 0.75})
+
+            if entities:
+                console.print(f"[green]  ✅ 降级提取成功: {len(entities)} 个实体[/green]")
+            return ExtractResult(entities=entities)
+        except Exception:
+            console.print(f"[red]  ❌ 降级提取也失败({raw_file.name})[/red]")
             return ExtractResult(entities=[])
 
     # ═══════════════════════════════════════════════════════════════════
@@ -818,8 +862,10 @@ tags: [{etype}]
         Path(self.INDEX_FILE).write_text("\n".join(lines), encoding="utf-8")
 
     def _append_log(self, stats: CompileStats) -> None:
-        """追加编译日志到 wiki/log.md。"""
+        """追加编译日志到 wiki/log.md（含实际健康度计算）。"""
         now = datetime.now(timezone.utc)
+        health_score = self._quick_health_score()
+
         entry = f"""\n## [{now.strftime('%Y-%m-%d %H:%M:%S')} UTC]
 
 ### 统计
@@ -835,7 +881,12 @@ tags: [{etype}]
 | 耗时 | {stats.duration_seconds:.1f}s |
 
 ### 健康度
-<!-- 由 linter 计算 -->
+| 指标 | 数值 |
+|------|------|
+| 健康分数 | {health_score:.1f}/100 |
+| 断链数 | {self._broken_link_count} |
+| 孤儿页 | {self._orphan_page_count} |
+| 种子页 | {self._seed_page_count} |
 
 ---
 """
@@ -849,7 +900,7 @@ tags: [{etype}]
             log_path.write_text(header + entry, encoding="utf-8")
 
     def _update_home_stats(self, stats: CompileStats) -> None:
-        """更新 Home.md 的统计数据。"""
+        """更新 Home.md 的统计数据（替换而非追加，避免重复膨胀）。"""
         home_path = self.wiki_path / "Home.md"
         if not home_path.exists():
             return
@@ -864,20 +915,71 @@ tags: [{etype}]
                 if d == self.concepts_path:
                     concept_count = len(list(d.glob("*.md")))
 
-        new_stats = f"""| 总页面数 | {total_pages} |
+        # 计算健康度
+        health_score = self._quick_health_score()
+
+        new_stats_table = f"""| 指标 | 数值 |
+|------|------|
+| 总页面数 | {total_pages} |
 | 概念数 | {concept_count} |
-| 健康度 | -- |
+| 健康度 | {health_score:.1f}/100 |
 | 最后编译 | {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M')} UTC |"""
 
-        # 替换统计区域
-        import re
-        pattern = r"\| 总页面数 \|.*?\|\n(?:\|.*?\|\n)*"
-        if "| 总页面数 |" in content:
-            content = re.sub(r"(\| 总页面数 \|.*\|(?:\n\|.*\|)*?)", new_stats + "\n", content)
+        # 查找统计区域标记并替换整个表格
+        stats_marker = "## 📊 统计"
+        stats_start = content.find(stats_marker)
+        if stats_start != -1:
+            # 找到统计区域结束位置（下一个 ## 标题或文件末尾）
+            after_marker = content[stats_start + len(stats_marker):]
+            # 统计区域结束于下一个 ## 标题或 ---
+            next_section = re.search(r'\n## |\n---\n\*Lumina', after_marker)
+            if next_section:
+                stats_end = stats_start + len(stats_marker) + next_section.start()
+            else:
+                stats_end = len(content)
+
+            # 替换整个统计区域
+            new_section = f"{stats_marker}\n<!-- 由 Compiler 自动更新 -->\n{new_stats_table}\n"
+            content = content[:stats_start] + new_section + content[stats_end:]
         else:
-            content = content.rstrip() + "\n\n" + new_stats + "\n"
+            # 没有统计区域，追加到末尾
+            content = content.rstrip("\n") + f"\n\n{stats_marker}\n{new_stats_table}\n"
 
         home_path.write_text(content, encoding="utf-8")
+
+    def _quick_health_score(self) -> float:
+        """快速计算知识库健康分数（0-100），同时缓存各子指标。"""
+        from .linker import find_broken_links
+
+        # 断链检测
+        broken = find_broken_links(self.wiki_path)
+        self._broken_link_count = len(broken)
+
+        # 孤儿页面检测
+        self._orphan_page_count = 0
+        backlinks = self._backlink_index or {}
+        if backlinks:
+            all_linked = set(backlinks.keys())
+            all_pages: set[str] = set()
+            for d in [self.concepts_path, self.papers_path, self.notes_path]:
+                if d.exists():
+                    for md in d.glob("*.md"):
+                        all_pages.add(md.stem.lower())
+            self._orphan_page_count = max(0, len(all_pages - all_linked))
+
+        # 种子页检测
+        self._seed_page_count = 0
+        if self.concepts_path.exists():
+            for md in self.concepts_path.glob("*.md"):
+                c = md.read_text(encoding="utf-8")
+                if "status: seed" in c or len(c.strip()) < 150:
+                    self._seed_page_count += 1
+
+        score = 100.0
+        score -= min(self._broken_link_count * 2, 30)
+        score -= min(self._orphan_page_count * 1, 15)
+        score -= min(self._seed_page_count * 0.5, 5)
+        return max(0, min(100, round(score, 1)))
 
     def _save_stats(self, stats: CompileStats, start_time: float) -> None:
         """保存编译统计为 JSON。"""
