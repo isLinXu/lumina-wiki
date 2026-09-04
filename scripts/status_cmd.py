@@ -8,8 +8,6 @@ Wiki 统计信息和配置验证工具。
 from __future__ import annotations
 
 import json
-import sys
-from datetime import datetime, timezone
 from pathlib import Path
 
 try:
@@ -22,9 +20,7 @@ except ImportError:
 
 
 from .config import load_config, LuminaConfig
-from .linter import KnowledgeLinter
-from .linker import AutoLinker, find_broken_links
-from .search import WikiSearcher
+from .linker import find_broken_links
 
 
 def get_status(wiki_path: str | Path, verbose: bool = False) -> dict:

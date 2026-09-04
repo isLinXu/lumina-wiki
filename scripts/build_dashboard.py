@@ -13,8 +13,7 @@ import re
 from datetime import datetime, timezone
 from pathlib import Path
 
-from .config import load_config
-from .linker import AutoLinker, find_broken_links
+from .linker import find_broken_links
 
 
 def build_dashboard_data(wiki_dir: str = "wiki", raw_dir: str = "raw", output: str = "docs/wiki-data.js") -> dict:

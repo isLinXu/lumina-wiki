@@ -11,10 +11,8 @@ Lumina Wiki - Query System (问答系统)
 from __future__ import annotations
 
 import json
-import sys
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Optional
 
 from .config import LuminaConfig, load_config
 from .llm_client import LLMClient

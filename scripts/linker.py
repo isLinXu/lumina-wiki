@@ -8,7 +8,6 @@ from __future__ import annotations
 import json
 import re
 from pathlib import Path
-from typing import Optional
 
 from .config import load_config, LuminaConfig
 
@@ -16,7 +15,7 @@ from .config import load_config, LuminaConfig
 class AutoLinker:
     """自动链接管理器。"""
 
-    def __init__(self, config: Optional[LuminaConfig] = None):
+    def __init__(self, config: LuminaConfig | None = None):
         self.config = config or load_config()
         self.wiki_path = Path(self.config.compiler.wiki_dir)
         # 反向链接索引文件
