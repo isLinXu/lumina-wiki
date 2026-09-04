@@ -36,16 +36,14 @@ async def cmd_init(args: argparse.Namespace):
 
 async def cmd_ingest(args: argparse.Namespace):
     """摄入素材（支持 URL、本地路径、Issue 编号）。"""
-    from .ingest_enhanced import EnhancedIngestEngine
+    from .ingest import IngestEngine
+    from .config import load_config
 
     # 优先处理 --issue 参数（由 Actions 传入）
     issue_num = getattr(args, 'issue', None)
 
     if not args.target:
         # 无 URL/Path 参数 → 走 Issue 摄入模式
-        from .ingest import IngestEngine
-        from .config import load_config
-
         cfg = load_config(getattr(args, 'config', None))
         engine = IngestEngine(cfg)
 
@@ -62,7 +60,8 @@ async def cmd_ingest(args: argparse.Namespace):
         print(f"\n✅ 摄入完成！共处理 {len(files)} 个文件")
         return
 
-    engine = EnhancedIngestEngine()
+    cfg = load_config(getattr(args, 'config', None))
+    engine = IngestEngine(cfg)
 
     if args.target == "-":
         # 从 stdin 读取
@@ -284,8 +283,8 @@ async def cmd_full(args: argparse.Namespace):
 
     # Step 1: Ingest (如果有指定目标或自动检测 Issues)
     if hasattr(args, 'target') and args.target:
-        from .ingest_enhanced import EnhancedIngestEngine
-        ingest = EnhancedIngestEngine(cfg)
+        from .ingest import IngestEngine
+        ingest = IngestEngine(cfg)
         result = await ingest.ingest(args.target)
         print(f"📥 Ingest: {result}")
 
