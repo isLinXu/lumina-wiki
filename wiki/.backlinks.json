@@ -102,10 +102,12 @@
   ],
   "cvpr_2016": [
     "index",
+    "Deep_Residual_Learning_for_Image_Recognition",
     "arXiv_Paper"
   ],
   "deep_residual_learning": [
     "index",
+    "Deep_Residual_Learning_for_Image_Recognition",
     "arXiv_Paper"
   ],
   "encoder_decoder": [
@@ -168,7 +170,8 @@
     "Deep_Residual_Learning_for_Image_Recognition"
   ],
   "image_classification": [
-    "index"
+    "index",
+    "Deep_Residual_Learning_for_Image_Recognition"
   ],
   "jian_sun": [
     "index"
@@ -217,7 +220,8 @@
     "index"
   ],
   "residual_learning": [
-    "index"
+    "index",
+    "Deep_Residual_Learning_for_Image_Recognition"
   ],
   "residual_network": [
     "index"
@@ -254,7 +258,8 @@
     "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
   ],
   "vgg_nets": [
-    "index"
+    "index",
+    "Deep_Residual_Learning_for_Image_Recognition"
   ],
   "vaswani": [
     "index",
