@@ -1,6 +1,6 @@
 # Lumina Wiki — 全局索引
 
-> 由 Lumina Compiler 自动维护 | 最后更新: 2026-11-05 05:47 UTC
+> 由 Lumina Compiler 自动维护 | 最后更新: 2026-11-06 05:44 UTC
 
 ### 📄 论文 (4)
 
