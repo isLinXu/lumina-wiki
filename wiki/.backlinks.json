@@ -1,83 +1,83 @@
 {
   "attention_is_all_you_need": [
     "index",
-    "arXiv",
-    "NeurIPS_2017",
-    "NeurIPS",
-    "WMT_2014",
-    "Vaswani",
-    "Transformer",
     "Positional_Encoding",
-    "FlashAttention",
+    "Multi_Head_Attention",
     "Self_Attention",
     "WMT14",
     "BLEU",
-    "WMT",
+    "arXiv",
     "Encoder_Decoder",
-    "Multi_Head_Attention"
+    "WMT_2014",
+    "Vaswani",
+    "WMT",
+    "NeurIPS_2017",
+    "NeurIPS",
+    "FlashAttention",
+    "Transformer"
   ],
   "deep_residual_learning_for_image_recognition": [
     "index",
-    "Image_Classification",
-    "VGG_nets",
-    "CVPR_2016",
-    "Residual_Function",
-    "He_Kaiming",
-    "CIFAR_10",
-    "Deep_Residual_Learning",
-    "ILSVRC_2015",
-    "ImageNet",
-    "Jian_Sun",
-    "Sun_Jian",
-    "Ren_Shaoqing",
-    "ResNet",
-    "Residual_Learning",
-    "Residual_Network",
-    "Skip_Connection",
-    "Shaoqing_Ren",
     "COCO",
     "Zhang_Xiangyu",
-    "Xiangyu_Zhang"
+    "Deep_Residual_Learning",
+    "Residual_Function",
+    "Residual_Network",
+    "ILSVRC_2015",
+    "He_Kaiming",
+    "Image_Classification",
+    "CIFAR_10",
+    "ImageNet",
+    "Ren_Shaoqing",
+    "Shaoqing_Ren",
+    "Jian_Sun",
+    "ResNet",
+    "Skip_Connection",
+    "Sun_Jian",
+    "Residual_Learning",
+    "Xiangyu_Zhang",
+    "CVPR_2016",
+    "VGG_nets"
   ],
   "flashattention_fast_and_memory_efficient_exact_attention": [
     "index",
-    "IO_Gan_Zhi",
-    "BERT_large",
+    "Fen_Kuai_Ji_Suan_Ce_Lue",
+    "Self_Attention",
+    "IO_Aware",
+    "Zhong_Ji_Suan_Ce_Lue",
+    "IOGan_Zhi_She_Ji",
+    "Hopper_Jia_Gou",
     "PyTorch",
     "Tiling",
-    "Hopper",
-    "GPT_2",
-    "Zai_Xian_SoftmaxJi_Zhu",
-    "Triton",
-    "IO_Aware",
-    "Transformer",
-    "Hopper_Jia_Gou",
-    "IOGan_Zhi_She_Ji",
-    "Fan_Xiang_Chuan_Bo_Zhong_Ji_Suan",
-    "IO_Gan_Zhi_She_Ji",
     "FlashAttention_2",
-    "A100",
-    "Zhong_Ji_Suan_Ce_Lue",
-    "Recomputation",
-    "FlashAttention",
-    "Fen_Kuai_Ji_Suan",
     "FlashAttention_3",
+    "Recomputation",
+    "GPT_2",
+    "BERT_large",
+    "IO_Gan_Zhi_She_Ji",
     "SDPA",
-    "Self_Attention",
-    "Zai_Xian_Softmax",
-    "Fen_Kuai_Ji_Suan_Ce_Lue",
-    "xFormers",
+    "IO_Gan_Zhi",
+    "A100",
+    "Hopper",
+    "Triton",
     "Online_Softmax",
-    "Zhong_Ji_Suan"
+    "FlashAttention",
+    "Zhong_Ji_Suan",
+    "Fen_Kuai_Ji_Suan",
+    "Zai_Xian_SoftmaxJi_Zhu",
+    "Fan_Xiang_Chuan_Bo_Zhong_Ji_Suan",
+    "Transformer",
+    "xFormers",
+    "Zai_Xian_Softmax"
   ],
   "lumina_arxiv_paper": [
     "index",
     "arXiv",
-    "Transformer",
+    "arXiv_Paper",
+    "Lumina",
     "ResNet",
     "Residual_Learning",
-    "arXiv_Paper",
-    "Lumina"
+    "Transformer"
   ],
   "a100": [
     "index",
@@ -97,18 +97,18 @@
   ],
   "coco": [
     "index",
-    "Deep_Residual_Learning_for_Image_Recognition",
-    "arXiv_Paper"
+    "arXiv_Paper",
+    "Deep_Residual_Learning_for_Image_Recognition"
   ],
   "cvpr_2016": [
     "index",
-    "Deep_Residual_Learning_for_Image_Recognition",
-    "arXiv_Paper"
+    "arXiv_Paper",
+    "Deep_Residual_Learning_for_Image_Recognition"
   ],
   "deep_residual_learning": [
     "index",
-    "Deep_Residual_Learning_for_Image_Recognition",
-    "arXiv_Paper"
+    "arXiv_Paper",
+    "Deep_Residual_Learning_for_Image_Recognition"
   ],
   "encoder_decoder": [
     "index"
@@ -124,9 +124,9 @@
   ],
   "flashattention": [
     "index",
+    "arXiv_Paper",
     "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention",
-    "Attention_Is_All_You_Need",
-    "arXiv_Paper"
+    "Attention_Is_All_You_Need"
   ],
   "flashattention_2": [
     "index"
@@ -143,8 +143,8 @@
   ],
   "hopper": [
     "index",
-    "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention",
-    "arXiv_Paper"
+    "arXiv_Paper",
+    "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
   ],
   "hopper_jia_gou": [
     "index"
@@ -178,11 +178,11 @@
   ],
   "lumina": [
     "index",
-    "Deep_Residual_Learning_for_Image_Recognition",
-    "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention",
-    "Attention_Is_All_You_Need",
+    "Lumina_arXiv_Paper",
     "arXiv_Paper",
-    "Lumina_arXiv_Paper"
+    "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention",
+    "Deep_Residual_Learning_for_Image_Recognition",
+    "Attention_Is_All_You_Need"
   ],
   "multi_head_attention": [
     "index"
@@ -213,8 +213,8 @@
   ],
   "resnet": [
     "index",
-    "Deep_Residual_Learning_for_Image_Recognition",
-    "Lumina_arXiv_Paper"
+    "Lumina_arXiv_Paper",
+    "Deep_Residual_Learning_for_Image_Recognition"
   ],
   "residual_function": [
     "index"
@@ -248,10 +248,10 @@
   ],
   "transformer": [
     "index",
-    "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention",
-    "Attention_Is_All_You_Need",
+    "Lumina_arXiv_Paper",
     "arXiv_Paper",
-    "Lumina_arXiv_Paper"
+    "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention",
+    "Attention_Is_All_You_Need"
   ],
   "triton": [
     "index",
@@ -297,88 +297,39 @@
   ],
   "arxiv": [
     "index",
-    "Attention_Is_All_You_Need",
+    "Lumina_arXiv_Paper",
     "arXiv_Paper",
-    "Lumina_arXiv_Paper"
+    "Attention_Is_All_You_Need"
   ],
   "arxiv_paper": [
     "index",
-    "BERT_large",
-    "CVPR_2016",
-    "He_Kaiming",
+    "COCO",
     "Deep_Residual_Learning",
+    "He_Kaiming",
+    "BERT_large",
+    "Encoder_Decoder",
     "Hopper",
     "FlashAttention",
-    "COCO",
-    "Encoder_Decoder"
+    "CVPR_2016"
   ],
   "xformers": [
     "index",
     "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
   ],
-  "residual learning": [
-    "Deep_Residual_Learning_for_Image_Recognition",
-    "Lumina_arXiv_Paper"
-  ],
-  "deep residual learning": [
-    "Deep_Residual_Learning_for_Image_Recognition"
-  ],
-  "vgg nets": [
-    "Deep_Residual_Learning_for_Image_Recognition"
-  ],
-  "ilsvrc 2015": [
-    "Deep_Residual_Learning_for_Image_Recognition"
-  ],
-  "he, kaiming": [
-    "Deep_Residual_Learning_for_Image_Recognition"
-  ],
-  "zhang, xiangyu": [
-    "Deep_Residual_Learning_for_Image_Recognition"
-  ],
-  "ren, shaoqing": [
-    "Deep_Residual_Learning_for_Image_Recognition"
-  ],
-  "sun, jian": [
-    "Deep_Residual_Learning_for_Image_Recognition"
-  ],
-  "cvpr 2016": [
-    "Deep_Residual_Learning_for_Image_Recognition"
-  ],
-  "image classification": [
-    "Deep_Residual_Learning_for_Image_Recognition"
-  ],
-  "he kaiming": [
-    "Deep_Residual_Learning_for_Image_Recognition",
+  "arxiv paper": [
+    "Lumina_arXiv_Paper",
     "arXiv_Paper"
   ],
-  "zhang xiangyu": [
+  "encoder-decoder": [
+    "arXiv_Paper",
+    "Attention_Is_All_You_Need"
+  ],
+  "he kaiming": [
+    "arXiv_Paper",
     "Deep_Residual_Learning_for_Image_Recognition"
   ],
-  "ren shaoqing": [
-    "Deep_Residual_Learning_for_Image_Recognition"
-  ],
-  "sun jian": [
-    "Deep_Residual_Learning_for_Image_Recognition"
-  ],
-  "cifar-10": [
-    "Deep_Residual_Learning_for_Image_Recognition"
-  ],
-  "residual network": [
-    "Deep_Residual_Learning_for_Image_Recognition"
-  ],
-  "xiangyu zhang": [
-    "Deep_Residual_Learning_for_Image_Recognition"
-  ],
-  "shaoqing ren": [
-    "Deep_Residual_Learning_for_Image_Recognition"
-  ],
-  "jian sun": [
-    "Deep_Residual_Learning_for_Image_Recognition"
-  ],
-  "residual function": [
-    "Deep_Residual_Learning_for_Image_Recognition"
-  ],
-  "skip connection": [
+  "residual learning": [
+    "Lumina_arXiv_Paper",
     "Deep_Residual_Learning_for_Image_Recognition"
   ],
   "self-attention": [
@@ -443,21 +394,70 @@
   "hopper 架构": [
     "FlashAttention_Fast_and_Memory_Efficient_Exact_Attention"
   ],
+  "deep residual learning": [
+    "Deep_Residual_Learning_for_Image_Recognition"
+  ],
+  "vgg nets": [
+    "Deep_Residual_Learning_for_Image_Recognition"
+  ],
+  "ilsvrc 2015": [
+    "Deep_Residual_Learning_for_Image_Recognition"
+  ],
+  "he, kaiming": [
+    "Deep_Residual_Learning_for_Image_Recognition"
+  ],
+  "zhang, xiangyu": [
+    "Deep_Residual_Learning_for_Image_Recognition"
+  ],
+  "ren, shaoqing": [
+    "Deep_Residual_Learning_for_Image_Recognition"
+  ],
+  "sun, jian": [
+    "Deep_Residual_Learning_for_Image_Recognition"
+  ],
+  "cvpr 2016": [
+    "Deep_Residual_Learning_for_Image_Recognition"
+  ],
+  "image classification": [
+    "Deep_Residual_Learning_for_Image_Recognition"
+  ],
+  "zhang xiangyu": [
+    "Deep_Residual_Learning_for_Image_Recognition"
+  ],
+  "ren shaoqing": [
+    "Deep_Residual_Learning_for_Image_Recognition"
+  ],
+  "sun jian": [
+    "Deep_Residual_Learning_for_Image_Recognition"
+  ],
+  "cifar-10": [
+    "Deep_Residual_Learning_for_Image_Recognition"
+  ],
+  "residual network": [
+    "Deep_Residual_Learning_for_Image_Recognition"
+  ],
+  "xiangyu zhang": [
+    "Deep_Residual_Learning_for_Image_Recognition"
+  ],
+  "shaoqing ren": [
+    "Deep_Residual_Learning_for_Image_Recognition"
+  ],
+  "jian sun": [
+    "Deep_Residual_Learning_for_Image_Recognition"
+  ],
+  "residual function": [
+    "Deep_Residual_Learning_for_Image_Recognition"
+  ],
+  "skip connection": [
+    "Deep_Residual_Learning_for_Image_Recognition"
+  ],
   "positional encoding": [
     "Attention_Is_All_You_Need"
-  ],
-  "encoder-decoder": [
-    "Attention_Is_All_You_Need",
-    "arXiv_Paper"
   ],
   "wmt 2014": [
     "Attention_Is_All_You_Need"
   ],
   "neurips 2017": [
     "Attention_Is_All_You_Need"
-  ],
-  "arxiv paper": [
-    "arXiv_Paper",
-    "Lumina_arXiv_Paper"
   ]
 }
